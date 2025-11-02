@@ -4,11 +4,15 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import { getSubtaskStylingLink } from 'components/task/StandardTaskItem/helpers';
+import {
+  getSubtaskStylingLink,
+  originConfig,
+} from 'components/task/StandardTaskItem/helpers';
 import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 import {
   Draggable,
@@ -33,6 +37,7 @@ import { CollapseContext } from '../../VirtualTaskList';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 import { CSS } from '@dnd-kit/utilities';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { getAddTaskWidths } from '../../helpers';
 
 export interface Props extends Segment {
   task: any;
@@ -45,6 +50,7 @@ export interface Props extends Segment {
   isFirstSubTaskOfParentTask: boolean;
   isSubtaskOfTask: boolean;
   isFirstSubtaskOfWorkflowTask: boolean;
+  origin: any;
 }
 
 function VSubtask(
@@ -61,6 +67,7 @@ function VSubtask(
     isFirstSubTaskOfParentTask,
     isSubtaskOfTask,
     isFirstSubtaskOfWorkflowTask,
+    origin,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -93,19 +100,28 @@ function VSubtask(
   const { workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
 
-  const taskGroup = !!taskGroups
-    ? taskGroups.filter((taskGroup) =>
+  const taskGroup = useMemo(
+    () =>
+      taskGroups?.filter((taskGroup: any) =>
         taskGroup?.groupType === 'TASK_BUNDLE' ? taskGroup : '',
-      )
-    : '';
+      ) || '',
+    [taskGroups],
+  );
 
   useEffect(() => {
-    workflowIdentifierMap.some(
+    const shouldAddWorkflowTask = workflowIdentifierMap.some(
       (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
-    )
-      ? setAddWorkflowTask(true)
-      : setAddWorkflowTask(false);
-  }, [parentTask, workflowIdentifierMap]);
+    );
+
+    if (shouldAddWorkflowTask !== addWorkflowTask) {
+      setAddWorkflowTask(shouldAddWorkflowTask);
+    }
+  }, [
+    parentTask?.identifier,
+    workflowIdentifierMap,
+    taskGroup,
+    addWorkflowTask,
+  ]);
 
   // @ts-ignore
   const noOfSubtask = metadata.parent?.children.length - 1;
@@ -137,6 +153,20 @@ function VSubtask(
     ],
   );
 
+  const {
+    addSubtaskVisibleWidth,
+    addSubtaskDroppableHeaderWidth,
+    addSubtaskPaddingRight,
+    addWorkflowTaskVisibleWidth,
+    addWorkflowTaskDroppableHeaderWidth,
+    addWorkflowTaskPaddingRight,
+  } = getAddTaskWidths({
+    origin,
+    percentage,
+    visibleWidth: visibleWidth || 0,
+    droppableHeaderWidth: droppableHeaderWidth || 0,
+    componentType: 'VSUBTASK',
+  });
   return (
     <>
       <div
@@ -177,6 +207,7 @@ function VSubtask(
           }
           isSortApplied={!!sort.key}
           bgColor={bgColor}
+          hasCustomOffset={originConfig[origin]?.hasCustomOffset ?? false}
         >
           <div
             style={{
@@ -190,7 +221,7 @@ function VSubtask(
                 ? Object.keys(selectedFilters).length > 0
                 : !!selectedFilters) ||
               !!sort.key ||
-              getSubtaskStylingLink(isLast())}
+              getSubtaskStylingLink(isLast(), origin)}
           </div>
           <StandardTaskItem
             // @ts-ignore
@@ -200,7 +231,7 @@ function VSubtask(
             // isDragging={snapshot.isDragging}
             isWorkflowSubtask={isWorkflowSubTask}
             isSubtask
-            origin={TaskOrigin.LIST}
+            origin={origin}
             pageBackground={bgColor ? palette.aliceBlue : ''}
             isVirtualTask
             isVirtualSubtask
@@ -215,8 +246,8 @@ function VSubtask(
       {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
         <div
           style={{
-            width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-            paddingRight: percentage > 90 ? '17px' : '15px',
+            width: addSubtaskDroppableHeaderWidth,
+            paddingRight: addSubtaskPaddingRight,
             background: bgColor ? palette.aliceBlue : '',
             paddingBottom:
               isLastTaskOfGroup &&
@@ -239,13 +270,9 @@ function VSubtask(
           }}
         >
           <Sc.QuickAddContainer
-            $width={
-              percentage > 90
-                ? visibleWidth
-                  ? `${visibleWidth - 100}px`
-                  : '100%'
-                : `${visibleWidth - 120}px`
-            }
+            $width={addSubtaskVisibleWidth}
+            hasCustomOffset={originConfig[origin]?.hasCustomOffset ?? false}
+            isNarrowView={percentage > 90}
           >
             <QuickAddSubtask
               taskListIdentifier={parentTask?.taskList?.taskListIdentifier}
@@ -257,8 +284,8 @@ function VSubtask(
       {isLastSubtaskParentTask && addWorkflowTask && (
         <div
           style={{
-            width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-            paddingRight: percentage > 90 ? '16px' : '15px',
+            width: addWorkflowTaskDroppableHeaderWidth,
+            paddingRight: addWorkflowTaskPaddingRight,
             background: bgColor ? palette.aliceBlue : '',
             paddingBottom:
               isLastTaskOfGroup && !isNextVirtualTaskItemTypeBundle
@@ -275,14 +302,10 @@ function VSubtask(
           }}
         >
           <Sc.WorkflowQuickAddTaskContainer
-            $width={
-              percentage > 90
-                ? visibleWidth
-                  ? `${visibleWidth - 70}px`
-                  : '100%'
-                : `${visibleWidth - 85}px`
-            }
+            $width={addWorkflowTaskVisibleWidth}
             subtaskQuickAddOpen={subtaskQuickAddOpen}
+            disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
+            isNarrowView={percentage > 90}
           >
             <QuickAddInputWrapper>
               <QuickAddTaskInput
@@ -299,7 +322,7 @@ function VSubtask(
 
                   return null;
                 }}
-                origin={TaskOrigin.LIST}
+                origin={origin}
                 // iconColorActive={iconColorActive}
               />
             </QuickAddInputWrapper>

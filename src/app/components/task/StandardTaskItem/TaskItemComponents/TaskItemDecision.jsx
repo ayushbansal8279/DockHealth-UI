@@ -13,20 +13,20 @@ const TaskItemDecision = ({
   clearError,
 }) => {
   const options = outcomes
-    .map(outcome => ({
+    .map((outcome) => ({
       label: outcome.name,
       value: outcome.taskOutcomeIdentifier,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
 
   const [value, setValue] = useState(
-    outcomes.find(outcome => outcome.isSelected)?.taskOutcomeIdentifier ?? null,
+    outcomes.find((outcome) => outcome.isSelected)?.taskOutcomeIdentifier ?? '',
   );
 
   const selectedTask =
-    outcomes.find(outcome => outcome.isSelected)?.name ?? null;
+    outcomes.find((outcome) => outcome.isSelected)?.name ?? null;
 
-  const handleValueChange = event => {
+  const handleValueChange = (event) => {
     clearError();
     const { value: newValue } = event.target;
     onSelect(newValue, task, templateBundleIdentifier, () =>

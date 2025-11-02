@@ -13,7 +13,7 @@ import * as ListDetailsActions from 'actions/list-details-actions';
 import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import Calendar from 'components/common/Calendar/Calendar';
 import ListDetailsHeader from '../ListDetailsHeader/ListDetailsHeader';
-import { ListPageContext } from '../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 
 const ListDetailsCalendarView = () => {
   const dispatch = useDispatch();
@@ -25,14 +25,21 @@ const ListDetailsCalendarView = () => {
   const { taskListIdentifier, listName, listDescription, color } =
     taskList || {};
   const { startDate, endDate } = useSelector(calendarDateRangeSelector);
-  const { handleScroll } = useContext(ListPageContext);
+  const { handleScroll } = useContext(TaskViewContext);
   const [clearFilter, setClearFilter] = useState(false);
 
   useEffect(() => {
     if (currentTaskListIdentifier && status && startDate && endDate) {
       dispatch(ListDetailsActions.getListCalendarTasks());
     }
-  }, [dispatch, currentTaskListIdentifier, status, startDate, endDate,clearFilter]);
+  }, [
+    dispatch,
+    currentTaskListIdentifier,
+    status,
+    startDate,
+    endDate,
+    clearFilter,
+  ]);
 
   useEffect(() => {
     return () => {

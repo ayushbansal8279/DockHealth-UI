@@ -21,11 +21,16 @@ const CustomTextEditor = React.forwardRef(
       errorMessage,
       isSelectedTaskComplete = false,
       selectedTask,
+      addExtraPaddingOnTop = false,
     },
     reference,
   ) => {
     return (
-      <TextEditorFormStyleContainer focused={focused} ref={reference}>
+      <TextEditorFormStyleContainer
+        focused={focused}
+        ref={reference}
+        addExtraPaddingOnTop={addExtraPaddingOnTop}
+      >
         <TextEditorInputLabel
           richTextEnabled={richTextEnabled}
           focused={focused}

@@ -5,7 +5,7 @@ import { AddPlaceholder } from 'components/task/styled';
 import { BooleanBox, BooleanSelect, PlaceholderContainer } from './styled';
 
 const TaskItemBoolean = ({
-  value: initialValue,
+  value: initialValue = '',
   onChange,
   readOnly = false,
 }) => {
@@ -17,7 +17,7 @@ const TaskItemBoolean = ({
 
   const handleChange = useCallback(
     ({ target }) => {
-      setValue(target.value);
+      setValue(target.value || '');
       onChange(target.value);
     },
     [onChange],

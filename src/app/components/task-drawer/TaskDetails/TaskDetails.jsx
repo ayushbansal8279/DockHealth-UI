@@ -8,7 +8,12 @@ import debounce from 'lodash.debounce';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DetailsContainer } from './styled';
 
-const TaskDetails = ({ readOnly, addTaskDrawer, taskDetail, setTaskDetail }) => {
+const TaskDetails = ({
+  readOnly,
+  addTaskDrawer,
+  taskDetail,
+  setTaskDetail,
+}) => {
   const selectedTask = useSelector(selectedTaskSelector);
   const dispatch = useDispatch();
   const [isFocused] = useBoolean();
@@ -62,6 +67,7 @@ const TaskDetails = ({ readOnly, addTaskDrawer, taskDetail, setTaskDetail }) => 
         empty={!details || details?.length === 0}
         focused={isFocused}
         richTextEnabled
+        addExtraPaddingOnTop
       >
         <RichTextEditor
           readonly={readOnly}

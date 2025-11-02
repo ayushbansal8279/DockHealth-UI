@@ -301,6 +301,26 @@ export const userHasConfigInboundEmailsFeatureSelector = createSelector(
     ),
 );
 
+export const userHasEscalationsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'ESCALATIONS',
+    ),
+);
+
+export const userHasDataManagementFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'DATA_MANAGEMENT',
+    ),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

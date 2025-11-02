@@ -19,6 +19,7 @@ import {
   onTaskDrawerSubtaskCompleted,
   onTaskDrawerSubtaskReActivated,
   onTaskDrawerSubtaskAssigned,
+  onTaskDueDateChanged,
 } from 'helpers/ga-event-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Spacing from 'components/common/Spacing';
@@ -77,6 +78,7 @@ import { isMemberAdmin } from '@/app/helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from '@/app/helpers/user-helper';
 import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 import { openModal } from '@/app/modal/actions';
+import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -119,10 +121,10 @@ const DrawerTask = (props) => {
     reminderType,
     dependencyTasksCompletedCount,
     dependencyTasksCount,
+    startDate,
   } = task;
 
   const [assignedToUsers, setAssignedToUsers] = useState(taskAssignedToUsers);
-  const [dueDate, setDueDate] = useState(taskDueDate);
   const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
   const selectedOrganization = useSelector(selectedUserOrganizationSelector);
   const currentTasklist = useSelector(currentTaskListSelector);
@@ -130,13 +132,16 @@ const DrawerTask = (props) => {
   if (!taskListRestrictions) {
     taskListRestrictions = {};
   }
+  const [momentDueDate, setMomentDueDate] = useState(() =>
+    taskDueDate ? moment(taskDueDate) : null,
+  );
 
   useEffect(() => {
     if (task?.status === 'COMPLETE') {
       setIsCompleted(true);
     }
     setAssignedToUsers(taskAssignedToUsers);
-    setDueDate(taskDueDate);
+    setMomentDueDate(taskDueDate ? moment(taskDueDate) : null);
   }, [task]);
 
   const updateStatus = () => {
@@ -227,11 +232,30 @@ const DrawerTask = (props) => {
     taskListRestrictions.completeTask = DISABLED;
   }
 
-  const handleDueDateChange = useCallback(
+  const handleSave = useCallback(
     (newDueDate) => {
-      setDueDate(newDueDate);
+      setMomentDueDate(!!newDueDate ? moment(newDueDate) : null);
       const dueDateIntent = checkDateTimeIntent(newDueDate);
       dispatch(updateTaskDueDate(task, newDueDate, dueDateIntent));
+      onTaskDueDateChanged();
+    },
+    [dispatch, task],
+  );
+
+  const handleDueDateChange = useCallback(
+    (newDueDate) => {
+      const isDateValid = isDueDateValid(startDate, newDueDate);
+      if (isDateValid) {
+        setMomentDueDate(newDueDate ? moment(newDueDate) : null);
+        handleSave(newDueDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'dueDate',
+            onSave: () => handleSave(newDueDate),
+          }),
+        );
+      }
     },
     [dispatch, task],
   );
@@ -384,7 +408,7 @@ const DrawerTask = (props) => {
             <DueDatePicker
               taskIdentifier={taskIdentifier}
               selectedDate={adjustUTCDateForDateIntent(
-                moment(dueDate),
+                momentDueDate,
                 dueDateIntent,
               )}
               onDateChange={handleDueDateChange}
@@ -396,15 +420,15 @@ const DrawerTask = (props) => {
             />
           )}
         >
-          {dueDate ? (
+          {taskDueDate ? (
             <Tooltip placement="top" title="Edit due date">
               <DueDateBasicLabel
-                isOverdue={isDueDateOverdue({ ...task, dueDate })}
+                isOverdue={isDueDateOverdue({ ...task, dueDate: taskDueDate })}
               >
                 <DueDateText>
                   {dueDateIntent === DueDateIntent.DATE
-                    ? moment(dueDate).utc().format('MM/DD')
-                    : moment(dueDate).format('MM/DD')}
+                    ? moment(taskDueDate).utc().format('MM/DD')
+                    : moment(taskDueDate).format('MM/DD')}
                 </DueDateText>
                 {reminderType && reminderType !== ReminderType.NONE && (
                   <>

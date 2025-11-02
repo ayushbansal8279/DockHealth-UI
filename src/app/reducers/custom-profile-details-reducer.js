@@ -5,6 +5,7 @@ import { TaskItemType } from '../helpers/task-helpers';
 import { updateWorkflowInState } from './patient-details-reducer';
 
 const initial = {
+  profileIdentifier: null,
   lists: null,
   tasksMap: {},
   isFetching: false,
@@ -13,13 +14,13 @@ const initial = {
 export const updateProfileTaskOrSubtaskInListsArray = (
   lists,
   newTaskData,
-  taskIdentifier
+  taskIdentifier,
 ) =>
   lists?.map((list) => {
     const updatedTasks = updateProfileTaskOrSubtask(
       list.tasks,
       taskIdentifier,
-      newTaskData
+      newTaskData,
     );
     return { ...list, tasks: updatedTasks };
   });
@@ -27,7 +28,7 @@ export const updateProfileTaskOrSubtaskInListsArray = (
 export const updateProfileTaskOrSubtask = (
   tasks,
   taskIdentifier,
-  newTaskData
+  newTaskData,
 ) =>
   tasks?.map((task) => {
     let updatedSubtasks = [];
@@ -35,7 +36,7 @@ export const updateProfileTaskOrSubtask = (
       updatedSubtasks = updateProfileTaskOrSubtask(
         task.subtasks,
         taskIdentifier,
-        newTaskData
+        newTaskData,
       );
     }
 
@@ -57,7 +58,7 @@ const updateProfileTaskReducer = (state, updatedTaskData, taskIdentifier) => {
   const updatedLists = updateProfileTaskOrSubtaskInListsArray(
     state.lists,
     updatedTaskData,
-    taskIdentifier
+    taskIdentifier,
   );
 
   const updatedTaskMap = {
@@ -78,6 +79,13 @@ const updateProfileTaskReducer = (state, updatedTaskData, taskIdentifier) => {
 export default (state = initial, action) => {
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (action.type) {
+    case ActionTypes.INITIALIZE_PROFILE_STATE: {
+      return {
+        ...state,
+        profileIdentifier: action.profileIdentifier,
+      };
+    }
+
     case ActionTypes.GET_CURRENT_PROFILE_TASKS: {
       return {
         ...state,
@@ -163,7 +171,7 @@ export default (state = initial, action) => {
       // }
 
       const listToUpdate = state.lists?.find(
-        (l) => l.taskListIdentifier === taskListIdentifier
+        (l) => l.taskListIdentifier === taskListIdentifier,
       );
 
       let updatedLists;
@@ -175,7 +183,7 @@ export default (state = initial, action) => {
                 ...l,
                 tasks: [addedTask, ...(l.tasks || [])],
               }
-            : l
+            : l,
         );
       } else {
         const newList = {

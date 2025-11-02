@@ -5,7 +5,7 @@ export const HorizontalScrollOuterWrapper = styled.div`
   position: relative;
   display: flex;
   overflow-x: auto;
-  overflow-y: overlay;
+  overflow-y: ${({ noOuterScroll }) => (noOuterScroll ? 'hidden' : 'overlay')};
   flex: 1;
 
   @media print {

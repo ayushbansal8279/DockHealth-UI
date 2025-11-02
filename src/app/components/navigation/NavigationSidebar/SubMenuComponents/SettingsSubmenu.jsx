@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-import { UserOrganizationRole } from 'helpers/user-helper';
+import { isUserDockPro, UserOrganizationRole } from 'helpers/user-helper';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -10,6 +10,7 @@ import {
   TASK_CUSTOMIZATIONS_PATH,
   DEVELOPERS_PATH,
   INTEGRATIONS_PATH,
+  ESCALATION_POLICIES_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -22,9 +23,16 @@ import {
   userHasAutomationMeteringFeatureSelector,
   userHasWorkspacesFeatureSelector,
   userHasConfigIntegrationsFeatureSelector,
+  userHasEscalationsFeatureSelector,
+  userHasDataManagementFeatureSelector,
+  userProfileSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { isPlanTrial } from 'helpers/subscription-helper';
+import {
+  isPlanTrial,
+  isPlanStandard,
+  isPlanPremium,
+} from 'helpers/subscription-helper';
 import { SubMenuLink } from './styled';
 
 const { ADMIN, OWNER } = UserOrganizationRole;
@@ -36,6 +44,8 @@ const SettingsSubmenu = () => {
   const taskCustomFieldsAvailable = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
+  const currentUser = useSelector(userProfileSelector);
+  const isUserDockCrew = isUserDockPro(currentUser);
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
   const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
@@ -50,10 +60,16 @@ const SettingsSubmenu = () => {
   const configIntegrationsAvailable = useSelector(
     userHasConfigIntegrationsFeatureSelector,
   );
+  const escalationsAvailable = useSelector(userHasEscalationsFeatureSelector);
+  const dataManagementAvailable = useSelector(
+    userHasDataManagementFeatureSelector,
+  );
 
   const organization = useSelector(organizationSelector);
   const subscription = organization?.subscriptionDetails;
   const isInTrial = isPlanTrial(subscription);
+  const isStandardPlan = isPlanStandard(subscription);
+  const isPremiumPlan = isPlanPremium(subscription);
 
   const isApiAllowed = organization?.availableFeatures?.includes('API');
 
@@ -63,7 +79,9 @@ const SettingsSubmenu = () => {
       {!isInTrial && (
         <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
       )}
-      <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
+      {(isInTrial || isStandardPlan || isPremiumPlan) && (
+        <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
+      )}
       {automationMeteringAvailable && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to="/settings/metering">Metering</SubMenuLink>
@@ -95,9 +113,23 @@ const SettingsSubmenu = () => {
           <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
         </AccessRestrictor>
       )}
+      {dataManagementAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/data-management">
+            Data Management
+          </SubMenuLink>
+        </AccessRestrictor>
+      )}
       {configIntegrationsAvailable && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {escalationsAvailable && isUserDockCrew && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={ESCALATION_POLICIES_PATH}>
+            Escalation Policies
+          </SubMenuLink>
         </AccessRestrictor>
       )}
     </Box>

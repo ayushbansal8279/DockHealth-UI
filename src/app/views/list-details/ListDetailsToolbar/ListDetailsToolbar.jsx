@@ -29,7 +29,7 @@ import {
   GridItemSlimView,
   ToolbarContainer,
 } from './styled';
-import { ListPageContext } from '../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
@@ -67,7 +67,7 @@ const ListDetailsToolbar = ({
     ) || {};
 
   const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
-    useContext(ListPageContext);
+    useContext(TaskViewContext);
   const [calendarView, setCalendarView] = useState(false);
   const [boardView, setBoardView] = useState(false);
   const [slimView, setSlimView] = useState(false);

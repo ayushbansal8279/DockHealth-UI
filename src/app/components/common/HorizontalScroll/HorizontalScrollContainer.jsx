@@ -9,7 +9,7 @@ import {
 
 export const Context = createContext(0);
 
-const HorizontalScrollContainer = ({ children }) => {
+const HorizontalScrollContainer = ({ children, noOuterScroll }) => {
   const reference = useRef(null);
   const [elementWidth, setElementWidth] = useState(0);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
@@ -36,7 +36,10 @@ const HorizontalScrollContainer = ({ children }) => {
 
   return (
     <Context.Provider value={elementWidth}>
-      <HorizontalScrollOuterWrapper ref={reference}>
+      <HorizontalScrollOuterWrapper
+        ref={reference}
+        noOuterScroll={noOuterScroll}
+      >
         <HorizontalScrollInnerWrapper>{children}</HorizontalScrollInnerWrapper>
       </HorizontalScrollOuterWrapper>
     </Context.Provider>

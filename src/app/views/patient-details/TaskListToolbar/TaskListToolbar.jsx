@@ -65,7 +65,8 @@ import FullViewIcon from '@/app/img/list/FullViewIcon';
 import SlimViewIcon from '@/app/img/list/SlimViewIcon';
 
 const TaskListToolbar = (props) => {
-  const { lists, patientViewType, handlePatientView } = props;
+  const { lists, patientViewType, handlePatientView, handleRemoveAllTasks } =
+    props;
   // const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
   // const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
@@ -194,7 +195,9 @@ const TaskListToolbar = (props) => {
 
   const handleQuickFilterCreate = useCallback(
     (name, scope) =>
-      dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters, scope)),
+      dispatch(
+        createQuickFilter(name, { patientIdentifier }, selectedFilters, scope),
+      ),
     [dispatch, patientIdentifier, selectedFilters],
   );
 
@@ -217,10 +220,13 @@ const TaskListToolbar = (props) => {
     [dispatch],
   );
 
-  const performSearch = useCallback((value) => {
-    dispatch(setPatientTaskSearch(value));
-    onSearchChanged();
-  }, [setPatientTaskSearch, onSearchChanged]);
+  const performSearch = useCallback(
+    (value) => {
+      dispatch(setPatientTaskSearch(value));
+      onSearchChanged();
+    },
+    [setPatientTaskSearch, onSearchChanged],
+  );
 
   const handleSearchValueChange = (newValue) => {
     setSearchValue(newValue);
@@ -375,6 +381,7 @@ const TaskListToolbar = (props) => {
             active={patientViewType === 'FULL_VIEW'}
             onClick={() => {
               handlePatientView('FULL_VIEW');
+              handleRemoveAllTasks();
             }}
           >
             <FullViewIcon />
@@ -383,6 +390,7 @@ const TaskListToolbar = (props) => {
             active={patientViewType === 'SLIM_VIEW'}
             onClick={() => {
               handlePatientView('SLIM_VIEW');
+              handleRemoveAllTasks();
             }}
           >
             <SlimViewIcon />

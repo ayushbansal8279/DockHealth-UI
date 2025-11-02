@@ -147,6 +147,11 @@ const EditCustomFieldModal = ({
           }),
         )
         .nullable(),
+      relatedProfileType: string().when('fieldType', {
+        is: FieldType.RELATIONSHIP,
+        then: (schema) => schema.required(REQUIRED_MESSAGE),
+        otherwise: (schema) => schema.nullable(),
+      }),
 
       ...(type === 'PROFILE'
         ? {}
@@ -165,6 +170,8 @@ const EditCustomFieldModal = ({
                 ? Category.OTHER_INFO
                 : type === 'PROVIDER'
                 ? 'PROVIDER_OTHER'
+                : type === 'GLOBAL'
+                ? Category.GLOBAL
                 : '',
           }
         : {
@@ -705,7 +712,7 @@ const EditCustomFieldModal = ({
                                   <SelectOptionColor
                                     required
                                     name={`selectOptionColor[${identifier}]`}
-                                    value={color}
+                                    value={color || ''}
                                     onChange={handleOptionColorChange(
                                       identifier,
                                     )}
@@ -727,7 +734,7 @@ const EditCustomFieldModal = ({
                                   <SelectParentDropdown
                                     label="Parent Dropdown"
                                     name={`selectParentDropdown[${identifier}]`}
-                                    value={linkedCustomFieldIdentifier}
+                                    value={linkedCustomFieldIdentifier || ''}
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
@@ -744,7 +751,9 @@ const EditCustomFieldModal = ({
                                   <SelectParentOption
                                     label="Parent Option"
                                     name={`selectParentOption[${identifier}]`}
-                                    value={linkedCustomFieldOptionIdentifier}
+                                    value={
+                                      linkedCustomFieldOptionIdentifier || ''
+                                    }
                                     onChange={handleParentOptionChange(
                                       identifier,
                                     )}

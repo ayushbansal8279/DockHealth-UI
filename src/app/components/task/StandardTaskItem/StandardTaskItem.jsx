@@ -22,10 +22,10 @@ import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskL
 import useActions from 'hooks/use-actions';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
-import { getMatchedComments } from './helpers';
+import { getMatchedComments, originConfig } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
-import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 
 const Task = React.memo(
   ({
@@ -100,7 +100,7 @@ const Task = React.memo(
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
-    const { tasks, handleAddTask } = useContext(ListPageContext);
+    const { tasks, handleAddTask } = useContext(TaskViewContext);
     const taskActions = useActions(TaskActions);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,7 +184,10 @@ const Task = React.memo(
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
-        handleSetSubtasksOpen(true);
+        const timer = setTimeout(() => {
+          handleSetSubtasksOpen(true);
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }, [
       handleSetSubtasksOpen,
@@ -261,6 +264,7 @@ const Task = React.memo(
         isAddingTask={isAddingTask}
         $isVirtualSubtask={isVirtualSubtask}
         $isWorkflowTask={isTaskTemplate}
+        disableRightOffset={originConfig[origin]?.disableRightOffset ?? false}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem

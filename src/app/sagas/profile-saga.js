@@ -18,6 +18,7 @@ import {
 import { showGlobalAlert, showGlobalErrorAlert } from '../alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal } from 'modal/actions';
+import { ProfileStatus, ProfileQueryType } from 'helpers/profile-helpers';
 
 function* getCurrentProfileFilterOptions() {
   try {
@@ -252,6 +253,241 @@ function* deleteProfileAttachment({ profileIdentifier, identifier }) {
   }
 }
 
+function* profileBulkArchive({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  status,
+  profileStatus,
+}) {
+  try {
+    yield call(
+      ProfileApi.bulkArchiveProfiles,
+      profileIdentifiers,
+      profileTypeIdentifier,
+      status,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.ARCHIVED)),
+      put({
+        type: ActionTypes.PROFILE_BULK_ARCHIVE_SUCCESS,
+        profileIdentifiers,
+        profileTypeIdentifier,
+        status,
+      }),
+      put({
+        type: ActionTypes.GET_PROFILES,
+        profileTypeIdentifier,
+        profileStatus: profileStatus || ProfileStatus.ALL,
+      }),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.PROFILE_BULK_ARCHIVE_FAILURE,
+        profileIdentifiers,
+        profileTypeIdentifier,
+        status,
+      }),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* profileBulkDelete({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+}) {
+  try {
+    yield call(
+      ProfileApi.bulkDeleteProfiles,
+      profileIdentifiers,
+      profileTypeIdentifier,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.DELETED)),
+      put({
+        type: ActionTypes.PROFILE_BULK_DELETE_SUCCESS,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put({
+        type: ActionTypes.GET_PROFILES,
+        profileTypeIdentifier,
+        profileStatus: profileStatus || ProfileStatus.ALL,
+      }),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.PROFILE_BULK_DELETE_FAILURE,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* getProfiles({ profileTypeIdentifier, profileStatus }) {
+  try {
+    const queryType =
+      profileStatus === ProfileStatus.ACTIVE
+        ? ProfileQueryType.ACTIVE_PROFILES
+        : profileStatus === ProfileStatus.ARCHIVED
+        ? ProfileQueryType.ARCHIVED_PROFILES
+        : ProfileQueryType.ALL_PROFILES;
+
+    const profiles = yield call(
+      ProfileApi.getAllProfiles,
+      profileTypeIdentifier,
+      queryType,
+    );
+
+    yield put({
+      type: ActionTypes.GET_PROFILES_SUCCESS,
+      profiles,
+    });
+  } catch (error) {
+    yield put({
+      type: ActionTypes.GET_PROFILES_FAILURE,
+      error: error.message,
+    });
+  }
+}
+
+function* filterProfiles({ profileTypeIdentifier, filter }) {
+  try {
+    const filteredProfiles = yield call(
+      ProfileApi.getProfileDetailByFilter,
+      profileTypeIdentifier,
+      filter,
+    );
+
+    yield put({
+      type: ActionTypes.FILTER_PROFILES_SUCCESS,
+      filteredProfiles,
+    });
+  } catch (error) {
+    yield put({
+      type: ActionTypes.FILTER_PROFILES_FAILURE,
+      error: error.message,
+    });
+  }
+}
+
+function* profileBulkEditCustomFields({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  fields,
+  profileStatus,
+}) {
+  try {
+    yield call(ProfileApi.bulkEditProfilesCustomFields, {
+      profileIdentifiers,
+      profileTypeIdentifier,
+      fields,
+    });
+    yield all([
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put({
+        type: ActionTypes.PROFILE_BULK_EDIT_CUSTOM_FIELDS_SUCCESS,
+        profileIdentifiers,
+        profileTypeIdentifier,
+        fields,
+      }),
+      put({
+        type: ActionTypes.GET_PROFILES,
+        profileTypeIdentifier,
+        profileStatus: profileStatus || ProfileStatus.ALL,
+      }),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.PROFILE_BULK_EDIT_CUSTOM_FIELDS_FAILURE,
+        profileIdentifiers,
+        profileTypeIdentifier,
+        fields,
+      }),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* profileBulkUnarchive({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+}) {
+  try {
+    yield call(
+      ProfileApi.bulkUnarchiveProfiles,
+      profileIdentifiers,
+      profileTypeIdentifier,
+      ProfileStatus.ACTIVE,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.UNARCHIVED)),
+      put({
+        type: ActionTypes.PROFILE_BULK_UNARCHIVE_SUCCESS,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put({
+        type: ActionTypes.GET_PROFILES,
+        profileTypeIdentifier,
+        profileStatus: profileStatus || ProfileStatus.ALL,
+      }),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.PROFILE_BULK_UNARCHIVE_FAILURE,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* profileBulkRecover({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+}) {
+  try {
+    yield call(
+      ProfileApi.bulkRestoreProfiles,
+      profileIdentifiers,
+      profileTypeIdentifier,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.RECOVERED)),
+      put({
+        type: ActionTypes.PROFILE_BULK_RECOVER_SUCCESS,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put({
+        type: ActionTypes.GET_PROFILES,
+        profileTypeIdentifier,
+        profileStatus: profileStatus || ProfileStatus.ALL,
+      }),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.PROFILE_BULK_RECOVER_FAILURE,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchProfileDetail() {
   yield takeEvery(
     ActionTypes.GET_CURRENT_PROFILE_FILTER_OPTIONS,
@@ -281,4 +517,11 @@ export default function* watchProfileDetail() {
     ActionTypes.DELETE_PROFILE_ATTACHMENT,
     deleteProfileAttachment,
   );
+  yield takeEvery(ActionTypes.PROFILE_BULK_ARCHIVE, profileBulkArchive);
+  yield takeEvery(ActionTypes.PROFILE_BULK_DELETE, profileBulkDelete);
+  yield takeEvery(ActionTypes.PROFILE_BULK_EDIT_CUSTOM_FIELDS, profileBulkEditCustomFields);
+  yield takeEvery(ActionTypes.PROFILE_BULK_UNARCHIVE, profileBulkUnarchive);
+  yield takeEvery(ActionTypes.PROFILE_BULK_RECOVER, profileBulkRecover);
+  yield takeEvery(ActionTypes.GET_PROFILES, getProfiles);
+  yield takeEvery(ActionTypes.FILTER_PROFILES, filterProfiles);
 }

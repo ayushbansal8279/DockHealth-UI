@@ -22,12 +22,24 @@ import { Draggable } from 'react-beautiful-dnd';
 import palette from '@/app/styles/palette';
 import { useDroppable } from '@dnd-kit/core';
 import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
+import { originConfig } from '@/app/components/task/StandardTaskItem/helpers';
+import { openModal } from '@/app/modal/actions';
+import { getTaskListForUser } from '@/app/api/task-list-api';
+import { applyTemplate } from 'actions/template-bundle-actions';
+import { addTask } from '@/app/actions/task-actions';
+import { getCurrentPatientTasks } from '@/app/actions/patient-details-actions';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
   groupWithZeroTask: boolean;
   bgColor: boolean;
   isLoadingGroup: boolean;
+  origin: string;
+}
+
+interface RouteParams {
+  taskListIdentifier?: string;
+  patientIdentifier?: string;
 }
 
 function VQuickAddTask(
@@ -38,13 +50,14 @@ function VQuickAddTask(
     groupWithZeroTask,
     bgColor,
     isLoadingGroup,
+    origin,
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const dispatch = useDispatch();
   const taskCounters = useSelector(taskCountersSelector);
-  const { taskListIdentifier } = useParams();
+  const { taskListIdentifier, patientIdentifier } = useParams<RouteParams>();
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
@@ -53,6 +66,11 @@ function VQuickAddTask(
   const percentage = ((!!number ? number : 0) / screenWidth) * 100;
   const taskGroupIdentifierRef = useRef(taskGroupIdentifier);
   const { workspaceIdentifier } = useIsWorkspaceScopedList();
+  const computedWidth = visibleWidth
+    ? `${
+        (visibleWidth ?? 0) - (originConfig[origin]?.quickAddWidthOffset ?? 0)
+      }px`
+    : '100%';
 
   useEffect(() => {
     taskGroupIdentifierRef.current = taskGroupIdentifier;
@@ -70,13 +88,33 @@ function VQuickAddTask(
 
   const quickAddTask = useCallback(
     (task: any) => {
-      if (task?.description) {
-        const payload = {
-          ...task,
-          autoOpenDrawer: taskCounters?.incomplete === 0,
-        };
+      if (originConfig[origin]?.showListPickerModal) {
+        dispatch(
+          openModal('ListPicker', {
+            enableSelectingGroupStep: true,
+            fetchMethod: getTaskListForUser,
+            confirm: (listId: any, taskGroupId: any) => {
+              dispatch(
+                addTask({
+                  description: task?.description,
+                  taskListIdentifier: listId,
+                  patientIdentifier,
+                  taskGroupIdentifier: taskGroupId,
+                }),
+              );
+              setTimeout(() => dispatch(getCurrentPatientTasks()), 1500);
+            },
+          }),
+        );
+      } else {
+        if (task?.description) {
+          const payload = {
+            ...task,
+            autoOpenDrawer: taskCounters?.incomplete === 0,
+          };
 
-        dispatch(createTask(payload));
+          dispatch(createTask(payload));
+        }
       }
     },
     [dispatch, taskCounters],
@@ -110,15 +148,35 @@ function VQuickAddTask(
 
   const isDragAndDropEnabled = !userSortingSupportDisabled;
 
-  const applyTemplate = useCallback(
-    (template) =>
-      dispatch(
-        applyTaskTemplate({
-          taskTemplateIdentifier: template?.identifier,
-          taskListIdentifier,
-          taskGroupIdentifier,
-        }),
-      ),
+  const addTemplate = useCallback(
+    (template: any) => {
+      if (originConfig[origin]?.showListPickerModal) {
+        dispatch(
+          openModal('ListPicker', {
+            enableSelectingGroupStep: true,
+            fetchMethod: getTaskListForUser,
+            confirm: (listId: any, taskGroupId: any) =>
+              dispatch(
+                applyTemplate({
+                  taskTemplateIdentifier: template?.identifier,
+                  taskListIdentifier: listId,
+                  patientIdentifier,
+                  taskGroupIdentifier: taskGroupId,
+                  profileIdentifier: undefined,
+                }),
+              ),
+          }),
+        );
+      } else {
+        dispatch(
+          applyTaskTemplate({
+            taskTemplateIdentifier: template?.identifier,
+            taskListIdentifier,
+            taskGroupIdentifier,
+          }),
+        );
+      }
+    },
     [dispatch, taskListIdentifier],
   );
 
@@ -127,12 +185,14 @@ function VQuickAddTask(
       <Sc.VQuickAddTaskContainer
         // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
         $width={percentage > 100 ? `${droppableHeaderWidth}px` : '100%'}
+        disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
       >
         <Sc.VQuickAddTask
           ref={ref}
           {...register}
-          $width={visibleWidth ? `${visibleWidth - 87}px` : '100%'}
+          $width={computedWidth}
           // $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
+          disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
         >
           <QuickAddTaskInput
             // @ts-ignore
@@ -143,7 +203,7 @@ function VQuickAddTask(
           />
           <Sc.TaskTemplateApplicatorContainer>
             <TaskTemplateApplicator
-              onTemplateSelect={applyTemplate}
+              onTemplateSelect={addTemplate}
               bulkApply={false}
               isWorkflowSearch
               origin={TaskOrigin.LIST}

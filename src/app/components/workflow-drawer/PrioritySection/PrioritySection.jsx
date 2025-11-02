@@ -92,7 +92,7 @@ const PrioritySection = ({ disabled }) => {
             variant="outlined"
             open={open}
             onChange={handleOptionChange}
-            value={priority}
+            value={priority || ''}
             disabled={disabled}
             renderValue={(selectedValue) =>
               PRIORITY_OPTIONS.find((option) => option.value === selectedValue)
