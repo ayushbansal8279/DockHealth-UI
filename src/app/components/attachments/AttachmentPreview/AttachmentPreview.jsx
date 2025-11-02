@@ -195,12 +195,6 @@ const AttachmentPreview = React.memo((props) => {
         '_original$1'
       );
 
-      dispatch(
-        updatePatientAttachment(attachment, {
-          fileName: renamedFileName,
-        })
-      );
-
       const file = new File([blob], originalFileName, { type: 'image/png' });
 
         saveEditedAttachment(
@@ -210,7 +204,7 @@ const AttachmentPreview = React.memo((props) => {
           originalFileName,
           contextIdentifier,
           hideAttachmentPreview,
-          hideAttachmentPreview
+          attachment
         );
       });
     }
