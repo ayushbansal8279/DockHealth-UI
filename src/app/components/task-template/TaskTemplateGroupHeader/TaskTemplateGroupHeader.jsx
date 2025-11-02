@@ -27,6 +27,7 @@ import {
   TaskStatus,
   TaskPriority,
   getPriorityColor,
+  limitColumnsForView,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -713,6 +714,10 @@ const TaskTemplateGroupHeader = ({
     },
     [dispatch, templateGroup],
   );
+
+  const filteredColumns = useMemo(() => {
+    return limitColumnsForView(selectedOrganization, columns, origin);
+  }, [selectedOrganization, columns, origin]);
 
   return (
     <>
@@ -1521,7 +1526,7 @@ const TaskTemplateGroupHeader = ({
             )}
           </>
         )}
-        {columns
+        {filteredColumns
           .filter(
             (f) =>
               f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
