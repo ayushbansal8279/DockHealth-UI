@@ -64,6 +64,7 @@ import {
   TaskOrigin,
   validateAssigneeCompleteDisabled,
   getDNDMetaData,
+  limitColumnsForView,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -1140,6 +1141,10 @@ const TaskItem = React.memo(
       ],
     );
 
+    const filteredColumns = useMemo(() => {
+      return limitColumnsForView(selectedOrganization, columns, origin);
+    }, [selectedOrganization, columns, origin]);
+
     if (task?.itemType !== TaskItemType.TASK) {
       const taskGroup = task;
       return (
@@ -1998,7 +2003,7 @@ const TaskItem = React.memo(
               </>
             )}
             <>
-              {columns
+              {filteredColumns
                 .filter(
                   (f) =>
                     f.isChecked &&
