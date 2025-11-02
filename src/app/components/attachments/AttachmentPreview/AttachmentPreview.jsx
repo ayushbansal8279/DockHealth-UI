@@ -89,7 +89,6 @@ const AttachmentPreview = React.memo((props) => {
   }, []);
 
   const handleCropperReady = useCallback(() => {
-    console.log('Cropper is ready');
     setIsCropperReady(true);
 
     if (cropperRef.current) {
@@ -97,7 +96,6 @@ const AttachmentPreview = React.memo((props) => {
       setTimeout(() => {
         try {
           const image = cropper.getImage();
-          console.log('Image element:', image);
 
           if (image) {
             const { width, height } = image;
@@ -385,12 +383,6 @@ const AttachmentPreview = React.memo((props) => {
                   <AttachmentPreviewImage
                     alt="Attachment"
                     src={croppedImage || fileSource}
-                    onLoad={() =>
-                      console.log(
-                        'Image loaded:',
-                        croppedImage ? 'cropped' : 'original',
-                      )
-                    }
                   />
                 </AttachmentPreviewFlexContainer>
                 {/* {croppedImage && (
