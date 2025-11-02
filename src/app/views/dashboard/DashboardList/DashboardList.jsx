@@ -52,7 +52,6 @@ import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import useActions from 'hooks/use-actions';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -62,16 +61,14 @@ import {
   DashboardTaskGroupsWrapper,
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
-import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { move } from 'ramda';
+import { updateMultipleSelectedQuickFilters } from 'actions/user-preference-actions';
 
 const DashboardList = ({
   currentUser,
   tourModalIsOpen,
   openTourModal,
   setClearSearch,
-  clearFilter,
-  setClearFilter,
   isAddTaskDrawer,
   setAddTaskDrawer,
 }) => {
@@ -196,7 +193,6 @@ const DashboardList = ({
         confirm: () => {
           if (isSortApplied) clearSort();
           if (isSearchApplied) setClearSearch(true);
-          if (areFiltersApplied) setClearFilter(true);
         },
         closeOnConfirm: true,
       });
@@ -206,7 +202,6 @@ const DashboardList = ({
     isSearchApplied,
     isSortApplied,
     openModal,
-    setClearFilter,
     setClearSearch,
     clearSort,
   ]);
@@ -291,10 +286,8 @@ const DashboardList = ({
         groupOrder,
       );
 
-      localStorageHelper.setItem(
-        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(newOrder),
-      );
+      dispatch(updateMultipleSelectedQuickFilters(newOrder));
+
       dispatch(
         reorderDashboardTaskGroups(
           elementToMoveWholeListIndex,
@@ -319,10 +312,8 @@ const DashboardList = ({
         groupOrder,
       );
 
-      localStorageHelper.setItem(
-        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(newOrder),
-      );
+      dispatch(updateMultipleSelectedQuickFilters(newOrder));
+
       dispatch(
         reorderDashboardTaskGroups(
           elementToMoveWholeListIndex,
@@ -359,7 +350,7 @@ const DashboardList = ({
         </StickyContainer>
         <Spacing vertical={1} />
         {viewType === ViewType.CALENDAR_VIEW && (
-          <DashboardCalendar clearFilter={clearFilter} />
+          <DashboardCalendar />
         )}
         {viewType === ViewType.LIST_VIEW && (
           <VerticalScrollContainer>

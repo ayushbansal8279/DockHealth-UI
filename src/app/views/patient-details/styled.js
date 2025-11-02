@@ -9,9 +9,14 @@ export const PatientDetailsTabsContainer = styled.div`
 `;
 
 export const PatientDetailsContainer = styled.div`
-  padding: ${spacing.huge} ${spacing.large};
+  padding-right: ${spacing.large} !important;
+  padding-left: 0 !important;
+  padding-top: ${spacing.huge} !important;
+  padding-bottom: ${spacing.huge} !important;
+  margin-bottom: 25px;
   background-color: ${palette.coolGrey4};
-  min-height: 100vh;
+  height: 100vh;
+  ${({ enableScroll }) => (enableScroll ? 'overflow-y: scroll' : '')};
 `;
 
 export const MainTab = styled(Tab)`

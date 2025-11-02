@@ -1,0 +1,7 @@
+export const UserPreferenceContextType = {
+  CUSTOM_OBJECT_LIST: 'CUSTOM_OBJECT_LIST',
+  HOME: 'HOME',
+  PATIENT_LIST: 'PATIENT_LIST',
+  PERSON_LIST: 'PERSON_LIST',
+  TASK_LIST: 'TASK_LIST',
+};

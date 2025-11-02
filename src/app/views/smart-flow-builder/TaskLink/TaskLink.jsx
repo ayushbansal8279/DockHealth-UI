@@ -51,6 +51,13 @@ const TaskLink = (props) => {
       updateTasksLink({
         ...link,
         isDependent: !isDependent,
+        delayPeriod: null,
+        delayPeriodUnit: null,
+        delayIsBusinessDays: null,
+        timeRelative: null,
+        timeReference: null,
+        customFieldIdentifier: null,
+        customFieldName: null
       }),
     );
   };
@@ -62,6 +69,10 @@ const TaskLink = (props) => {
         delayPeriod: null,
         delayPeriodUnit: null,
         delayIsBusinessDays: null,
+        timeRelative: null,
+        timeReference: null,
+        customFieldIdentifier: null,
+        customFieldName: null
       }),
     );
   };

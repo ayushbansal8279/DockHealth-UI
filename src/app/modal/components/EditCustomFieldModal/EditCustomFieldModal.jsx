@@ -80,6 +80,7 @@ const EditCustomFieldModal = ({
   profileTypeIdentifier,
   fetchUserCustomFields,
   fieldCategoryDisabled = false,
+  workspaceIdentifier,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -170,6 +171,8 @@ const EditCustomFieldModal = ({
                 ? Category.OTHER_INFO
                 : type === 'PROVIDER'
                 ? 'PROVIDER_OTHER'
+                : type === 'GLOBAL'
+                ? Category.GLOBAL
                 : '',
           }
         : {
@@ -402,7 +405,12 @@ const EditCustomFieldModal = ({
         },
       };
       delete updatedField.validationRegexSelector;
-      CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
+      CustomFieldsApi.updateCustomField(
+        updatedField,
+        type,
+        taskListIdentifier,
+        workspaceIdentifier,
+      )
         .then(() => {
           onUpdated({ ...updatedField, selectedProfileType });
           setIsSaving(false);
@@ -456,6 +464,7 @@ const EditCustomFieldModal = ({
         },
         type,
         taskListIdentifier,
+        workspaceIdentifier,
       )
         .then((addedField) => {
           onAdded(addedField);
@@ -710,7 +719,7 @@ const EditCustomFieldModal = ({
                                   <SelectOptionColor
                                     required
                                     name={`selectOptionColor[${identifier}]`}
-                                    value={color}
+                                    value={color || ''}
                                     onChange={handleOptionColorChange(
                                       identifier,
                                     )}
@@ -732,7 +741,7 @@ const EditCustomFieldModal = ({
                                   <SelectParentDropdown
                                     label="Parent Dropdown"
                                     name={`selectParentDropdown[${identifier}]`}
-                                    value={linkedCustomFieldIdentifier}
+                                    value={linkedCustomFieldIdentifier || ''}
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
@@ -749,7 +758,9 @@ const EditCustomFieldModal = ({
                                   <SelectParentOption
                                     label="Parent Option"
                                     name={`selectParentOption[${identifier}]`}
-                                    value={linkedCustomFieldOptionIdentifier}
+                                    value={
+                                      linkedCustomFieldOptionIdentifier || ''
+                                    }
                                     onChange={handleParentOptionChange(
                                       identifier,
                                     )}
@@ -834,6 +845,7 @@ const EditCustomFieldModal = ({
             uploadFunction={uploadCustomFieldOptions}
             identifier={customField?.identifier}
             type={type}
+            importFileTypeHint={"Drag & drop your CSV/Excel file here"}
           />
         </Dialog>
       </Box>

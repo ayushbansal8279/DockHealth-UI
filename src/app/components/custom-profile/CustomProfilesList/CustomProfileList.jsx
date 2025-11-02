@@ -87,8 +87,8 @@ import { DataGridWrapper, StyledLink } from './styled';
 import RelationshipLinks from '../RelationshipLinks';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import { BulkEditSectionContainer } from '@/app/views/user-group/styled';
-
-const DATASET_SIZE_THRESHOLD = 100;
+import { formatDateTooltip } from '@/app/helpers/date-intent-helpers';
+import TruncatedCell from '../../common/TruncatedCell/TruncatedCell';
 
 const CustomProfileListContent = ({
   profileTypeIdentifier,
@@ -138,9 +138,10 @@ const CustomProfileListContent = ({
     (state) => state.profile?.isFilteringProfiles || false,
   );
   const [searchPhrase, setSearchPhrase] = useState('');
-  const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
+  const [profileStatus, setProfileStatus] = useState(ProfileStatus.ACTIVE);
   const loading = isFetchingProfiles || isFilteringProfiles;
   const [useLocalFiltering, setUseLocalFiltering] = useState(true);
+  const [showStatusColumn, setShowStatusColumn] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
   const apiRef = useGridApiRef();
@@ -166,10 +167,10 @@ const CustomProfileListContent = ({
   );
 
   const fetchProfilesInternal = useCallback(
-    (status = ProfileStatus.ALL) => {
+    (status = profileStatus) => {
       dispatch(getProfiles(profileTypeIdentifier, status));
     },
-    [dispatch, profileTypeIdentifier],
+    [dispatch, profileTypeIdentifier, profileStatus],
   );
 
   const fetchProfileTypesInternal = useCallback(() => {
@@ -468,10 +469,18 @@ const CustomProfileListContent = ({
     );
   };
 
+  const handleStatusColumnToggle = () => {
+    setShowStatusColumn(!showStatusColumn);
+  };
+
   const handleDownloadProfileData = () => {
     const filename = `Dock ${currentProfileType?.name}.csv`;
     downloadProfileData(profileTypeIdentifier, filename);
   };
+
+  const renderTruncatedCell = (content, tooltipText) => (
+    <TruncatedCell content={content} tooltipText={tooltipText} />
+  );
 
   const columns = [
     ...(isGuestOrDockLite || isViewOnly
@@ -521,21 +530,32 @@ const CustomProfileListContent = ({
                 const value = params.row[field.name];
 
                 if (field.fieldType === FieldType.DATE && value) {
+                  const tooltipText = formatDateTooltip(
+                    value.date,
+                    value.intent,
+                  );
                   return (
-                    <DateLabel date={value.date} dueDateIntent={value.intent} />
+                    <DateLabel
+                      date={value.date}
+                      dueDateIntent={value.intent}
+                      tootipTitle={tooltipText}
+                    />
                   );
                 }
 
                 if (field.fieldType === FieldType.HYPERLINK) {
                   if (!value) return '';
-                  return (
+                  const href = value.startsWith('http') ? value : `//${value}`;
+
+                  return renderTruncatedCell(
                     <StyledLink
-                      href={value.startsWith('http') ? value : `//${value}`}
+                      href={href}
                       target="_blank"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {value}
-                    </StyledLink>
+                    </StyledLink>,
+                    value,
                   );
                 }
 
@@ -559,12 +579,39 @@ const CustomProfileListContent = ({
                   );
                 }
 
-                return value;
+                return renderTruncatedCell(value);
               },
             }
           : null;
       })
       .filter(Boolean),
+    ...(profileStatus === ProfileStatus.ALL && showStatusColumn
+      ? [
+          {
+            field: 'profileStatus',
+            headerName: 'Status',
+            flex: 0.2,
+            sortable: true,
+            filterable: true,
+            valueGetter: (params) => {
+              return params.row.profileStatus || '';
+            },
+            renderCell: ({ row }) => {
+              const status = row.profileStatus;
+              if (!status) return '';
+
+              const displayStatus =
+                status === 'ACTIVE'
+                  ? 'Active'
+                  : status === 'ARCHIVED'
+                  ? 'Archived'
+                  : status;
+
+              return renderTruncatedCell(displayStatus);
+            },
+          },
+        ]
+      : []),
   ];
 
   // TODO: fix filter
@@ -806,6 +853,13 @@ const CustomProfileListContent = ({
               >
                 <strong>Custom Columns</strong>
                 <FormGroup>
+                  {profileStatus === ProfileStatus.ALL && (
+                    <MenuItem onClick={handleStatusColumnToggle}>
+                      <Switch checked={showStatusColumn} />
+                      <Box mx={0.5} />
+                      <ListItemText>Status</ListItemText>
+                    </MenuItem>
+                  )}
                   {profileTypeFields.map((field) => {
                     return (
                       <MenuItem
@@ -859,7 +913,6 @@ const CustomProfileListContent = ({
             loading={loading}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
-            showSearch={false}
           />
         </DataGridWrapper>
       </ViewLayout>
@@ -886,6 +939,7 @@ const CustomProfileListContent = ({
           label="object"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
+          importFileTypeHint={'Drag & drop your CSV file here'}
         />
       </Dialog>
       <ProfileUndoAlert onUndo={handleUndo} />

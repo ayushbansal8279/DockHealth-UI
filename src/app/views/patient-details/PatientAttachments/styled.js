@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 export const PatientAttachmentsWrapper = styled.div`
   width: 100%;
   min-height: 300px;
-  padding: 0 ${spacing.huge};
+  padding: 0 ${spacing.huge} 0 56px;
   background-color: ${(props) =>
     props.isDragActive ? palette.coolGrey3 : 'transparent'};
   border: 1px solid

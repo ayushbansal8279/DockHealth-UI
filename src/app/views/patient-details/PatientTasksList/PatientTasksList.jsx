@@ -13,7 +13,6 @@ import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader'
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
-  setCurrentListTasksStatus,
 } from 'actions/patient-details-actions';
 import { openModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -31,7 +30,6 @@ import {
   selectedTasksSelector,
 } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
-// import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -69,14 +67,16 @@ import { ListViewType } from '../helpers';
 import {
   checkIfSelectedListIsPresent,
   groupTasks,
-  patientTaskViewStatusStorageKey,
   patientViewTypeStorageKey,
   searchTaskInPatientLists,
 } from './helpers';
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
+import VirtualTaskList from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
+import spacing from '@/app/styles/spacing';
 
 const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -90,7 +90,7 @@ const PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-const PatientTasksListView = () => {
+const PatientTasksListView = React.memo(() => {
   const {
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
@@ -123,15 +123,28 @@ const PatientTasksListView = () => {
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
   const [viewType, setViewType] = useState('SLIM_VIEW');
+  const [tasks, setTasks] = useState([]);
   const storageKey = patientViewTypeStorageKey;
-  const handlePatientView = (value) => {
-    setViewType(value);
-    if (value === 'FULL_VIEW') {
-      localStorageHelper.setItem(storageKey, value);
-    } else {
-      localStorageHelper.removeItem(storageKey);
-    }
-  };
+
+  const handlePatientView = useCallback(
+    (value) => {
+      setViewType(value);
+      if (value === 'FULL_VIEW') {
+        localStorageHelper.setItem(storageKey, value);
+      } else {
+        localStorageHelper.removeItem(storageKey);
+      }
+    },
+    [storageKey],
+  );
+
+  const handleAddTask = useCallback((newTask) => {
+    setTasks((oldTasks) => [...oldTasks, newTask]);
+  }, []);
+
+  const handleRemoveAllTasks = useCallback(() => {
+    setTasks([]);
+  }, []);
 
   useEffect(() => {
     const storedViewType = localStorageHelper.getItem(storageKey);
@@ -186,7 +199,8 @@ const PatientTasksListView = () => {
           ),
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
-  window.disabledVirtualTaskList = true;
+  // Enable virtualization for better performance
+  window.disabledVirtualTaskList = false;
   useEffect(() => {
     if (isAllTasksView) {
       setViewSpecificConfig(PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);
@@ -208,11 +222,6 @@ const PatientTasksListView = () => {
   }, [activeList, currentList, isAllTasksView, setCurrentList]);
   useEffect(() => {
     if (patientIdentifier) {
-      const savedStatus = localStorageHelper.getItem(
-        patientTaskViewStatusStorageKey,
-      );
-
-      dispatch(setCurrentListTasksStatus(savedStatus ?? TaskStatus.INCOMPLETE));
       initializeSavedFilters(patientIdentifier);
       dispatch(getCurrentPatientTasks());
     }
@@ -332,9 +341,17 @@ const PatientTasksListView = () => {
   // );
 
   const groupedTasks = useMemo(() => {
-    if (isAllTasksView) return;
-    return groupTasks(activeList?.tasks);
-  }, [activeList, isAllTasksView]);
+    if (isAllTasksView) return [];
+    return groupTasks(activeList?.tasks || []);
+  }, [activeList?.tasks, isAllTasksView]);
+
+  // Prepare data for VirtualTaskList
+  const virtualTaskListData = useMemo(() => {
+    if (isAllTasksView) {
+      return [{ tasks: activeList?.tasks || [] }];
+    }
+    return groupedTasks;
+  }, [isAllTasksView, activeList?.tasks, groupedTasks]);
 
   const groupHasMultipleAssignees = false;
 
@@ -351,110 +368,108 @@ const PatientTasksListView = () => {
     dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
   }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
 
-  const renderTasks = useCallback(
-    (tasks, { isFullView, taskGroupIdentifier }, patientViewType) => {
-      const taskIdentifiers = tasks.map((task) => task.identifier);
-      const isGroupSelected =
-        taskIdentifiers?.length > 0 &&
-        taskIdentifiers?.every((taskId) =>
-          selectedTaskIdentifiers?.includes(taskId),
-        );
+  // const renderTasks = useCallback(
+  //   (tasks, { isFullView, taskGroupIdentifier }, patientViewType) => {
+  //     const taskIdentifiers = tasks.map((task) => task.identifier);
+  //     const isGroupSelected =
+  //       taskIdentifiers?.length > 0 &&
+  //       taskIdentifiers?.every((taskId) =>
+  //         selectedTaskIdentifiers?.includes(taskId),
+  //       );
 
-      return (
-        <>
-          {!completeTasksVisible && (
-            <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
-              <TasksToolbar
-                taskListIdentifier={activeList?.taskListIdentifier}
-                taskGroupIdentifier={taskGroupIdentifier}
-                onQuickAddTask={quickAddTask}
-                iconColorActive={iconColorActiveItem?.value}
-              />
-            </StickyContainer>
-          )}
-          <div
-            className="IN"
-            style={{ width: 'fit-content', minWidth: '100%' }}
-          >
-            {tasks && tasks.length > 0 && (
-              <TasksHeader
-                bulkEditEnabled
-                sort={sort}
-                onSortChange={sortPatientTasks}
-                groupHasMultipleAssignees={groupHasMultipleAssignees}
-                isGroupSelected={isGroupSelected}
-                onGroupSelect={handleGroupSelect}
-              />
-            )}
-            {tasks?.map((task, index) => {
-              const isNextTaskItemTypeBundle =
-                index !== tasks?.length - 1
-                  ? tasks[index + 1]?.itemType === 'BUNDLE'
-                  : false;
-              return task.itemType === TaskItemType.TASK ? (
-                <StandardTaskItem
-                  key={task.identifier}
-                  isFullView={isFullView}
-                  taskIdentifier={task.identifier}
-                  taskGroupIdentifier={taskGroupIdentifier}
-                  patient={patient}
-                  isCompletedGroup={completeTasksVisible}
-                  onTaskUpdate={updatePatientTaskInList}
-                  updateWorkflowStatus={updatePatientTaskWorkflowStatus}
-                  dragAndDropDisabled
-                  addingNewSubtask={
-                    addingNewSubtaskParentId === task.identifier
-                  }
-                  multipleAssigneesContext={groupHasMultipleAssignees}
-                  iconColorActive={iconColorActiveItem?.value}
-                  origin={TaskOrigin.PATIENT}
-                  viewType={patientViewType}
-                  isTopLevelTaskOrWorkflowHeader
-                  taskItemDragAndDropDisabled
-                />
-              ) : (
-                <TaskTemplateGroup
-                  viewSetup={viewSetup}
-                  key={task.identifier}
-                  templateGroup={task}
-                  patient={patient}
-                  groupHasMultipleAssignees={groupHasMultipleAssignees}
-                  isFullView={isFullView}
-                  groupDragAndDropDisabled
-                  disablePatientAssignment
-                  iconColorActive={iconColorActiveItem?.value}
-                  isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
-                  origin={TaskOrigin.PATIENT}
-                  isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
-                  viewType={patientViewType}
-                />
-              );
-            })}
-          </div>
-        </>
-      );
-    },
-    [
-      completeTasksVisible,
-      activeList?.taskListIdentifier,
-      quickAddTask,
-      iconColorActiveItem?.value,
-      sort,
-      sortPatientTasks,
-      groupHasMultipleAssignees,
-      selectedTaskIdentifiers,
-      handleGroupSelect,
-      updatePatientTaskInList,
-      updatePatientTaskWorkflowStatus,
-      addingNewSubtaskParentId,
-      viewSetup,
-      tasksStatus,
-      patient,
-    ],
-  );
-
+  //     return (
+  //       <>
+  //         {!completeTasksVisible && (
+  //           <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
+  //             <TasksToolbar
+  //               taskListIdentifier={activeList?.taskListIdentifier}
+  //               taskGroupIdentifier={taskGroupIdentifier}
+  //               onQuickAddTask={quickAddTask}
+  //               iconColorActive={iconColorActiveItem?.value}
+  //             />
+  //           </StickyContainer>
+  //         )}
+  //         <div
+  //           className="IN"
+  //           style={{ width: 'fit-content', minWidth: '100%' }}
+  //         >
+  //           {tasks && tasks.length > 0 && (
+  //             <TasksHeader
+  //               bulkEditEnabled
+  //               sort={sort}
+  //               onSortChange={sortPatientTasks}
+  //               groupHasMultipleAssignees={groupHasMultipleAssignees}
+  //               isGroupSelected={isGroupSelected}
+  //               onGroupSelect={handleGroupSelect}
+  //             />
+  //           )}
+  //           {tasks?.map((task, index) => {
+  //             const isNextTaskItemTypeBundle =
+  //               index !== tasks?.length - 1
+  //                 ? tasks[index + 1]?.itemType === 'BUNDLE'
+  //                 : false;
+  //             return task.itemType === TaskItemType.TASK ? (
+  //               <StandardTaskItem
+  //                 key={task.identifier}
+  //                 isFullView={isFullView}
+  //                 taskIdentifier={task.identifier}
+  //                 taskGroupIdentifier={taskGroupIdentifier}
+  //                 patient={patient}
+  //                 isCompletedGroup={completeTasksVisible}
+  //                 onTaskUpdate={updatePatientTaskInList}
+  //                 updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+  //                 dragAndDropDisabled
+  //                 addingNewSubtask={
+  //                   addingNewSubtaskParentId === task.identifier
+  //                 }
+  //                 multipleAssigneesContext={groupHasMultipleAssignees}
+  //                 iconColorActive={iconColorActiveItem?.value}
+  //                 origin={TaskOrigin.PATIENT}
+  //                 viewType={patientViewType}
+  //                 isTopLevelTaskOrWorkflowHeader
+  //                 taskItemDragAndDropDisabled
+  //               />
+  //             ) : (
+  //               <TaskTemplateGroup
+  //                 viewSetup={viewSetup}
+  //                 key={task.identifier}
+  //                 templateGroup={task}
+  //                 patient={patient}
+  //                 groupHasMultipleAssignees={groupHasMultipleAssignees}
+  //                 isFullView={isFullView}
+  //                 groupDragAndDropDisabled
+  //                 disablePatientAssignment
+  //                 iconColorActive={iconColorActiveItem?.value}
+  //                 isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
+  //                 origin={TaskOrigin.PATIENT}
+  //                 isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+  //                 viewType={patientViewType}
+  //               />
+  //             );
+  //           })}
+  //         </div>
+  //       </>
+  //     );
+  //   },
+  //   [
+  //     completeTasksVisible,
+  //     activeList?.taskListIdentifier,
+  //     quickAddTask,
+  //     iconColorActiveItem?.value,
+  //     sort,
+  //     sortPatientTasks,
+  //     groupHasMultipleAssignees,
+  //     selectedTaskIdentifiers,
+  //     handleGroupSelect,
+  //     updatePatientTaskInList,
+  //     updatePatientTaskWorkflowStatus,
+  //     addingNewSubtaskParentId,
+  //     viewSetup,
+  //     tasksStatus,
+  //     patient,
+  //   ],
+  // );
   const bulkEditTasks = useSelector(selectedTasksSelector);
-
   const bulkEditIsDisabled = completeTasksVisible;
 
   return (
@@ -463,7 +478,7 @@ const PatientTasksListView = () => {
         <>
           {filteredLists?.length >= 0 ? (
             <>
-              <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
+              {/* <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                 <TaskListToolbar
                   lists={filteredLists}
                   currentList={activeList}
@@ -471,11 +486,12 @@ const PatientTasksListView = () => {
                   patientViewType={viewType}
                   handlePatientView={handlePatientView}
                 />
-              </StickyContainer>
-              <Box py={0.5} />
+              </StickyContainer> */}
+              {/* <Box py={0.5} /> */}
               {activeList ? (
-                <ListDetailsContainer>
-                  <BulkEditSection
+                <>
+                  {/* <ListDetailsContainer> */}
+                  {/* <BulkEditSection
                     allTasks={bulkEditTasks}
                     refreshTasks={handleTaskUpdate}
                     disabled={bulkEditIsDisabled}
@@ -491,29 +507,80 @@ const PatientTasksListView = () => {
                         viewSetup={viewSetup}
                         refreshView={compose(dispatch, getCurrentPatientTasks)}
                       />
-                    </StickyContainer>
-                    {isAllTasksView ? (
-                      renderTasks(
-                        activeList.tasks,
-                        { isFullView: false },
-                        viewType,
-                      )
-                    ) : (
-                      <>
-                        {groupedTasks.map((group) => (
-                          <TaskListGroupCollapse group={group} stickyHeader>
-                            {({ isFullView }) =>
-                              renderTasks(group.tasks, {
-                                isFullView,
-                                taskGroupIdentifier: group.taskGroupIdentifier,
-                              })
-                            }
-                          </TaskListGroupCollapse>
-                        ))}
-                      </>
-                    )}
-                  </BulkEditSection>
-                </ListDetailsContainer>
+                    </StickyContainer> */}
+                  {/* {isAllTasksView ? (
+                    renderTasks(
+                      activeList.tasks,
+                      { isFullView: false },
+                      viewType,
+                    )
+                  ) : (
+                    <>
+                      {groupedTasks.map((group) => (
+                        <TaskListGroupCollapse group={group} stickyHeader>
+                          {({ isFullView }) =>
+                            renderTasks(group.tasks, {
+                              isFullView,
+                              taskGroupIdentifier: group.taskGroupIdentifier,
+                            })
+                          }
+                        </TaskListGroupCollapse>
+                      ))}
+                    </>
+                  )} */}
+                  <div
+                    style={{
+                      paddingLeft: `${spacing.large}`,
+                    }}
+                  >
+                    <TaskListToolbar
+                      lists={filteredLists}
+                      currentList={activeList}
+                      isPatientView
+                      patientViewType={viewType}
+                      handlePatientView={handlePatientView}
+                      handleRemoveAllTasks={handleRemoveAllTasks}
+                    />
+                  </div>
+                  <Box py={0.5} />
+                  <ListDetailsContainer
+                    style={{
+                      height: '100%',
+                    }}
+                  >
+                    <BulkEditSection
+                      allTasks={bulkEditTasks}
+                      refreshTasks={handleTaskUpdate}
+                      disabled={bulkEditIsDisabled}
+                      searchValue={taskSearch}
+                    >
+                      <TaskViewContext.Provider
+                        value={{
+                          addNewGroup: false,
+                          handleAddNewGroup: () => {},
+                          changeViewType: viewType,
+                          handleSetChangeViewType: handlePatientView,
+                          showShadow: false,
+                          handleScroll: () => {},
+                          tasks: tasks,
+                          handleAddTask: handleAddTask,
+                          handleRemoveAllTasks: handleRemoveAllTasks,
+                          workflowPopoverOpen: false,
+                          handleWorkflowPopoverOpen: () => {},
+                          patientPopoverOpen: false,
+                          handlePatientPopoverOpen: () => {},
+                          handleScrollToAddGroupName: () => {},
+                        }}
+                      >
+                        <VirtualTaskList
+                          groupedTasks={virtualTaskListData}
+                          showClearSortFiltersModal={false}
+                          origin={TaskOrigin.PATIENT}
+                        />
+                      </TaskViewContext.Provider>
+                    </BulkEditSection>
+                  </ListDetailsContainer>
+                </>
               ) : (
                 renderEmptyListView()
               )}
@@ -536,6 +603,6 @@ const PatientTasksListView = () => {
       />
     </>
   );
-};
+});
 
 export default PatientTasksListView;

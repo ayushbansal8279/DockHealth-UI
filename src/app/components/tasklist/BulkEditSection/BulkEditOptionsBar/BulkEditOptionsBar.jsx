@@ -42,6 +42,7 @@ import {
   bulkEditDueDateSuccess,
   bulkEditDuplicateTasksSuccess,
   refreshTaskBundle,
+  bulkEditDueDateWorkflow,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
 import {
@@ -356,11 +357,12 @@ const BulkEditOptionsBar = ({
 
   const handleChangeDateTasks = useCallback(
     (dueDate) => {
-      const allSelectedIdentifiers = [
-        ...allSelectedTasksIdentifiers,
-        ...allSelectedWorkflowIdentifiers,
-      ];
-      bulkEditDueDate(allSelectedIdentifiers, dueDate, filters)(dispatch);
+      bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
+      bulkEditDueDateWorkflow(
+        allSelectedWorkflowIdentifiers,
+        dueDate,
+        filters,
+      )(dispatch);
 
       const dueDateIntent = checkDateTimeIntent(dueDate);
 
@@ -935,8 +937,7 @@ const BulkEditOptionsBar = ({
           ? 'Are you sure you want to delete these tasks? This action cannot be undone.'
           : 'Deleting these tasks will also delete related subtasks. This action cannot be undone.',
         confirm: () => {
-          bulkEditDelete(allSelectedTasksIdentifiers)(dispatch);
-
+          dispatch(bulkEditDelete(allSelectedTasksIdentifiers));
           bulkEditTasksApi({
             bulkEditType: 'DELETE',
             taskIdentifiers: allSelectedTasksIdentifiers,

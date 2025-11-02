@@ -27,6 +27,7 @@ import {
   TaskStatus,
   TaskPriority,
   getPriorityColor,
+  limitColumnsForView,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -91,7 +92,7 @@ import {
   AISummaryWrapper,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
-import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 import { TaskScrollVericleLine } from '../../task/styled';
 import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
@@ -103,7 +104,6 @@ import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useDropDirection } from '@/app/context-api/DropDirectionContext';
 import TaskItemProfile from '../../task/StandardTaskItem/TaskItemComponents/TaskItemProfile/TaskItemProfile';
-
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -169,7 +169,7 @@ const TaskTemplateGroupHeader = ({
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
   const dropDirectionRef = useDropDirection();
-  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
+  const { changeViewType, tasks, handleAddTask } = useContext(TaskViewContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
@@ -633,7 +633,7 @@ const TaskTemplateGroupHeader = ({
       return (
         <StickyMainTaskItemCell
           isTamplateGroup
-          isOpen={origin === 'PATIENT' ? isOpen : !isVirtualListWorkflowOpen}
+          isOpen={!isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
@@ -666,11 +666,7 @@ const TaskTemplateGroupHeader = ({
             <ChevronContainer>
               {showTasksWithGroup && origin !== 'DASHBOARD' && (
                 <RotatableChevron
-                  rotated={
-                    origin === 'PATIENT' || origin === 'DASHBOARD'
-                      ? isOpen
-                      : isWorkflowExpanded
-                  }
+                  rotated={origin === 'DASHBOARD' ? isOpen : isWorkflowExpanded}
                   onClick={handleOpen}
                   color={palette.crystalBlue}
                 />
@@ -719,12 +715,16 @@ const TaskTemplateGroupHeader = ({
     [dispatch, templateGroup],
   );
 
+  const filteredColumns = useMemo(() => {
+    return limitColumnsForView(selectedOrganization, columns, origin);
+  }, [selectedOrganization, columns, origin]);
+
   return (
     <>
       <TaskTemplateGroupHeaderContainer
         onContextMenu={handleTaskItemRightClick}
         isSelected={isBundleSelected}
-        isOpen={origin === 'PATIENT' ? isOpen : isWorkflowExpanded}
+        isOpen={isWorkflowExpanded}
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}
         origin={origin}
@@ -1050,7 +1050,7 @@ const TaskTemplateGroupHeader = ({
                 order={getColumnOrder(TaskItemColumn.PRIORITY)}
               >
                 <TaskItemDropdown
-                  value={taskPriority}
+                  value={taskPriority === TaskPriority.LOW ? '' : taskPriority}
                   onChange={handleUpdateTaskPriority}
                   field={{
                     options: [
@@ -1526,7 +1526,7 @@ const TaskTemplateGroupHeader = ({
             )}
           </>
         )}
-        {columns
+        {filteredColumns
           .filter(
             (f) =>
               f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,

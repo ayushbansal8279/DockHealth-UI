@@ -64,6 +64,7 @@ import {
   TaskOrigin,
   validateAssigneeCompleteDisabled,
   getDNDMetaData,
+  limitColumnsForView,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -433,7 +434,7 @@ const TaskItem = React.memo(
             name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
         ) || {};
       return customHighlightItem?.value || '';
-    }, [selectedOrganization, taskGroupIdentifier]);
+    }, [selectedOrganization?.themeSettings, taskGroupIdentifier]);
 
     const hasPriorityHighlight = useMemo(() => {
       const hasPriorityHighlightItem =
@@ -443,7 +444,7 @@ const TaskItem = React.memo(
       return (
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
-    }, [selectedOrganization]);
+    }, [selectedOrganization?.themeSettings]);
 
     const userSortingSupportDisabled = useMemo(() => {
       const disabledSettingItem =
@@ -451,7 +452,7 @@ const TaskItem = React.memo(
           ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
         ) || {};
       return disabledSettingItem && disabledSettingItem?.value === 'false';
-    }, [selectedOrganization]);
+    }, [selectedOrganization?.themeSettings]);
 
     const isDragAndDropEnabled =
       origin === 'LIST' ? !userSortingSupportDisabled : true;
@@ -883,7 +884,8 @@ const TaskItem = React.memo(
 
     const showSubtaskIcon =
       isSubtask &&
-      (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
+      (origin === TaskOrigin.DASHBOARD ||
+        origin === TaskOrigin.PERSON ||
         !!selectedFilters ||
         !!searchValue ||
         !!sort.key);
@@ -989,13 +991,14 @@ const TaskItem = React.memo(
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
-        const indentSubTask = !(
-          origin === TaskOrigin.DASHBOARD ||
-          origin === TaskOrigin.PERSON ||
-          (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
-          !!searchValue ||
-          !!sort.key
-        );
+        const indentSubTask =
+          !(
+            origin === TaskOrigin.DASHBOARD ||
+            origin === TaskOrigin.PERSON ||
+            (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
+            !!searchValue ||
+            !!sort.key
+          ) ?? false;
         return (
           <StickyMainTaskItemCell
             isLastChild={isLastChild}
@@ -1138,6 +1141,10 @@ const TaskItem = React.memo(
       ],
     );
 
+    const filteredColumns = useMemo(() => {
+      return limitColumnsForView(selectedOrganization, columns, origin);
+    }, [selectedOrganization, columns, origin]);
+
     if (task?.itemType !== TaskItemType.TASK) {
       const taskGroup = task;
       return (
@@ -1161,6 +1168,7 @@ const TaskItem = React.memo(
           isFirstTaskOfGroup={isFirstTaskOfGroup}
           viewType={viewType}
           taskGroupIdentifier={taskGroupIdentifier}
+          groupDragAndDropDisabled={taskItemDragAndDropDisabled}
         />
       );
     }
@@ -1398,7 +1406,11 @@ const TaskItem = React.memo(
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
                     <TaskItemDropdown
-                      value={task?.priority}
+                      value={
+                        task?.priority === TaskPriority.LOW
+                          ? ''
+                          : task?.priority
+                      }
                       onChange={handlePriorityChange}
                       field={{
                         options: [
@@ -1991,7 +2003,7 @@ const TaskItem = React.memo(
               </>
             )}
             <>
-              {columns
+              {filteredColumns
                 .filter(
                   (f) =>
                     f.isChecked &&

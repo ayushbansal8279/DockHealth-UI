@@ -1,7 +1,6 @@
 import React, { lazy } from 'react';
 import ErrorPage from 'views/ErrorPage';
 import PageNotFound from 'views/PageNotFound';
-import ChatView from 'views/chat/ChatView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
@@ -179,6 +178,13 @@ const UserActivity = lazy(() =>
 const Integrations = lazy(() =>
   import('views/Integrations/IntegrationsHeader'),
 );
+const DataManagement = lazy(() =>
+  import('views/data-management/DataManagement'),
+);
+
+const EscalationPolicies = lazy(() =>
+  import('views/EscalationPolicies/EscalationPolicies'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -188,10 +194,10 @@ const {
   CAN_ACCESS_MEMBER_LIST_PAGE,
   CAN_ACCESS_WORKFLOW_LIST_PAGE,
   CAN_ACCESS_ANALYTICS_PAGE,
-  CAN_ACCESS_CHAT_PAGE,
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_PROFILE_PAGE,
   CAN_ACCESS_WORKSPACE_PAGE,
+  CAN_ACCESS_DATA_MANAGEMENT_PAGE,
 } = PERMISSIONS;
 
 export const SETTINGS_ROUTES = [
@@ -292,6 +298,16 @@ export const SETTINGS_ROUTES = [
     path: '/integrations',
     RouteComponent: Integrations,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/escalation-policies',
+    RouteComponent: EscalationPolicies,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },   
+  {
+    path: '/data-management',
+    RouteComponent: DataManagement,
+    permissions: [CAN_ACCESS_DATA_MANAGEMENT_PAGE],
   },
 ];
 
@@ -424,11 +440,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     path: '/analytics',
     RouteComponent: AnalyticsView,
     permissions: [CAN_ACCESS_ANALYTICS_PAGE],
-  },
-  {
-    path: '/chat',
-    RouteComponent: ChatView,
-    permissions: [CAN_ACCESS_CHAT_PAGE],
   },
   {
     path: '/workspace/:workspaceIdentifier',

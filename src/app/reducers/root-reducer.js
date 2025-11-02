@@ -26,12 +26,12 @@ import PatientsReducer from './patients-reducer';
 import AnalyticsReducer from './analytics-reducer';
 import WorkflowDrawerReducer from './workflow-drawer-reducer';
 import CalendarTasksReducer from './calendar-tasks-reducer';
-import SendbirdReducer from './sendbird-reducer';
 import TaskItemsReducer from './task-items-reducer';
 import ProfileReducer from './profile-reducer';
 import WorkspaceReducer from './workspace-reducer';
 import workspaceListReducer from './workspace-list-reducer';
 import UIStateReducer from './ui-state-reducer';
+import UserPreferenceReducer from './user-preference-reducer';
 import AgentDrawerReducer from './agent-drawer-reducer';
 
 // function createNamedWrapperReducer(reducerFunction, reducerName) {
@@ -71,12 +71,12 @@ const appReducer = combineReducers({
   analytics: AnalyticsReducer,
   workflowDrawer: WorkflowDrawerReducer,
   calendarTasks: CalendarTasksReducer,
-  sendbird: SendbirdReducer,
   // taskItemList: createNamedWrapperReducer(TaskItemReducer, TaskOrigin.LIST),
   taskItems: TaskItemsReducer,
   workspace: WorkspaceReducer,
   workspaceList: workspaceListReducer,
   uiState: UIStateReducer,
+  userPreferenceState: UserPreferenceReducer,
   agentDrawer: AgentDrawerReducer,
 });
 

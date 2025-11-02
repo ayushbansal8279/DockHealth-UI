@@ -187,9 +187,13 @@ const Autocomplete = ({
       noOptionsText={noOptionsText}
       onChange={(_, value_, reason) => onChange(value_, reason)}
       onClose={onClose}
-      onInputChange={(event, value_, reason) =>
-        onInputChange(event, value_, reason)
-      }
+      onInputChange={(event, value_, reason) => {
+        if (onInputChange.length === 1) {
+          onInputChange(value_);
+        } else {
+          onInputChange(event, value_, reason);
+        }
+      }}
       onOpen={onOpen}
       open={isOpen}
       openOnFocus={autoFocus}

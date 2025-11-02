@@ -559,7 +559,7 @@ const PatientsView = () => {
               setSearchValue={setSearchValue}
               refreshPatientListOnUpload={refreshPatientListOnUpload}
               setImportPopoverOpen={setImportPopoverOpen}
-              placeholder="Search All Patients"
+              placeholder="Search all patients"
             />
             <PatientsListContainer>
               {listIdentifier && listIdentifier.length === 36 && (
@@ -646,6 +646,7 @@ const PatientsView = () => {
             step={1}
             label="patient"
             uploadFunction={uploadPatientData}
+            importFileTypeHint={"Drag & drop your CSV/Excel file here"}
           />
         </Dialog>
         {/* <FilterPopover open={filterOpen} onClose={closeFilter}>

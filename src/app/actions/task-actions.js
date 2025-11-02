@@ -846,6 +846,14 @@ export const bulkEditDueDate = (tasksToUpdate, dueDate) => (dispatch) => {
   });
 };
 
+export const bulkEditDueDateWorkflow = (tasksToUpdate, dueDateTime) => (dispatch) => {
+  dispatch({
+    type: ActionTypes.UPDATE_WORKFLOWS,
+    tasksToUpdate,
+    fields: { dueDateTime },
+  });
+};
+
 export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   return {
     type: ActionTypes.UPDATE_TASKS_SUCCESS,

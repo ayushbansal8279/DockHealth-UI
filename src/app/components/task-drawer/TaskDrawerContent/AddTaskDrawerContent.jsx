@@ -84,7 +84,7 @@ const AddTaskDrawerContent = (props) => {
   const [dueDate, setDueDate] = useState('');
   const [dueDateIntent, setDueDateIntent] = useState('');
   const [workflowStatusIdentifier, setWorkflowStatusIdentifier] = useState('');
-  const [patientIdentifier, setPatientIdentifier] = useState('');
+  const [patient, setPatient] = useState(null);
   const [searchedKeyword, setSearchedKeyword] = useState();
   const [searchedLists, setSearchedLists] = useState([]);
   const [lists, setLists] = useState([]);
@@ -164,7 +164,7 @@ const AddTaskDrawerContent = (props) => {
         assignedToIdentifiers: [
           ...new Set([...(assignedToIdentifiers || []), userIdentifier]),
         ],
-        patientIdentifier,
+        patientIdentifier: patient?.patientIdentifier,
         startDate,
         startDateIntent,
         dueDate,
@@ -268,7 +268,8 @@ const AddTaskDrawerContent = (props) => {
           <Grid item size={12} mb={1} style={styleLeftColumn(isMobile)}>
             <PatientSection
               addTaskDrawer
-              setPatientIdentifier={setPatientIdentifier}
+              setPatient={setPatient}
+              selectedPatient={patient}
               quickAddPatientEnabled={quickAddPatientEnabled}
             />
           </Grid>
@@ -293,7 +294,11 @@ const AddTaskDrawerContent = (props) => {
             </div>
           </Grid>
           <Grid item size={12} style={styleLeftColumn(isMobile)}>
-            <PrioritySection addTaskDrawer setPriority={setPriority} />
+            <PrioritySection
+              addTaskDrawer
+              priority={priority}
+              setPriority={setPriority}
+            />
           </Grid>
           <Grid item size={12} ml={3} style={styleRightColumn(isMobile)}>
             <div>

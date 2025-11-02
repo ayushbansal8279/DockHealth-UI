@@ -26,7 +26,6 @@ import {
 } from 'selectors/list-details-selectors';
 import {
   currentTaskListIdentifierSelector,
-  currentTaskListTasksStatusSelector,
   currentTaskListSelector,
   pendingTaskListsSelector,
   taskListMembersSelector,
@@ -53,7 +52,7 @@ const initializeListDetailsViewHooks = () => {
     currentTaskListIdentifierSelector,
   );
   const taskList = useSelector(currentTaskListSelector);
-  const currentStatus = useSelector(currentTaskListTasksStatusSelector);
+  const currentStatus = useSelector(userPreferenceStatusSelector);
   const { setCurrentList } = useTaskListColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};

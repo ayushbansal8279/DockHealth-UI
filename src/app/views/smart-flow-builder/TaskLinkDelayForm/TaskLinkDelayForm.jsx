@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
@@ -14,6 +14,10 @@ import {
   TIME_REFERENCE_OPTIONS,
 } from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
+import {
+  getPatientCustomField,
+  getWorkflowCustomField,
+} from '@/app/api/task-template-api';
 
 const TaskLinkDelayForm = (props) => {
   const { link, onSubmit, onClose, removeButtonVisible, onRemove } = props;
@@ -25,8 +29,10 @@ const TaskLinkDelayForm = (props) => {
       delayIsBusinessDays: link?.delayIsBusinessDays || false,
       timeRelative: link?.timeRelative || TIME_TYPE.AFTER,
       timeReference: link?.timeReference || Object.keys(TIME_REFERENCE)[0],
+      customFieldIdentifier: link?.customFieldIdentifier || null,
     },
   });
+
   const { watch, setValue, register, unregister, handleSubmit } = formMethods;
   useEffect(() => {
     register('delayPeriod');
@@ -34,6 +40,8 @@ const TaskLinkDelayForm = (props) => {
     register('delayIsBusinessDays');
     register('timeRelative');
     register('timeReference');
+    register('customFieldIdentifier');
+    register('customFieldName');
 
     return () => {
       unregister('delayPeriod');
@@ -41,14 +49,60 @@ const TaskLinkDelayForm = (props) => {
       unregister('delayIsBusinessDays');
       unregister('timeRelative');
       unregister('timeReference');
+      unregister('customFieldIdentifier');
+      unregister('customFieldName');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [delayPeriodValue, delayPeriodUnit, delayIsBusinessDaysValue] = watch([
+  const [
+    delayPeriodValue,
+    delayPeriodUnit,
+    delayIsBusinessDaysValue,
+    timeReferenceValue,
+  ] = watch([
     'delayPeriod',
     'delayPeriodUnit',
     'delayIsBusinessDays',
+    'timeReference',
   ]);
+  const [customFieldOptions, setCustomFieldOptions] = useState([]);
+
+  useEffect(() => {
+    async function fetchOptions() {
+      const isCustomDate =
+        timeReferenceValue === 'WORKFLOW_CUSTOM_FIELD_DATE' ||
+        timeReferenceValue === 'PATIENT_CUSTOM_FIELD_DATE';
+
+      if (!isCustomDate) {
+        setCustomFieldOptions([]);
+        setValue('customFieldIdentifier', null);
+        return;
+      }
+
+      const options =
+        timeReferenceValue === 'WORKFLOW_CUSTOM_FIELD_DATE'
+          ? await getWorkflowCustomField()
+          : await getPatientCustomField();
+
+      const filteredOptions = options
+        .filter((field) => field.fieldType === 'DATE')
+        .map((field) => ({
+          value: field.identifier,
+          label: field.name,
+        }));
+
+      setCustomFieldOptions(filteredOptions);
+
+      const currentValue = watch('customFieldIdentifier');
+
+      if (!currentValue && filteredOptions.length > 0) {
+        setValue('customFieldIdentifier', filteredOptions[0].value);
+      }
+    }
+
+    fetchOptions();
+  }, [timeReferenceValue, setValue, watch]);
+
   return (
     <FormProvider {...formMethods}>
       <DelayPeriodForm onSubmit={handleSubmit(onSubmit)}>
@@ -96,10 +150,32 @@ const TaskLinkDelayForm = (props) => {
               name="timeReference"
               width={275}
               value={watch('timeReference')}
-              onSelect={(newValue) => setValue('timeReference', newValue)}
+              onSelect={(newValue) => {
+                setValue('timeReference', newValue);
+                setValue('customFieldIdentifier', null);
+                setValue('customFieldName', null);
+              }}
               options={TIME_REFERENCE_OPTIONS}
             />
           </Box>
+          {['WORKFLOW_CUSTOM_FIELD_DATE', 'PATIENT_CUSTOM_FIELD_DATE'].includes(
+            timeReferenceValue,
+          ) && (
+            <>
+              <Box p={1} />
+              <Box width="100%">
+                <SecondaryDropdownInput
+                  name="customFieldIdentifier"
+                  width={275}
+                  value={watch('customFieldIdentifier')}
+                  onSelect={(newValue) =>
+                    setValue('customFieldIdentifier', newValue)
+                  }
+                  options={customFieldOptions}
+                />
+              </Box>
+            </>
+          )}
           <Box p={1} />
           {delayPeriodUnit === DelayPeriodUnit.DAY && (
             <Box width="100%" display="flex" alignItems="center">

@@ -14,7 +14,7 @@ export function DefaultToolbar({
   showSearch = true,
   showColumns = true,
   showFilter = true,
-  placeholder = 'Search',
+  placeholder,
 }) {
   return (
     <GridToolbarContainer
@@ -31,6 +31,7 @@ export function DefaultToolbar({
           size="small"
           placeholder={placeholder}
           sx={{
+            width: placeholder.length > 15 ? 240 : 200,
             '& .MuiInputBase-root': {
               fontSize: '0.8rem',
               paddingRight: 0,
@@ -81,7 +82,7 @@ const ReusableDataGrid = ({
   showSearch = true,
   showColumns = true,
   showFilter = true,
-  placeholder = 'Search',
+  placeholder = 'Search within results',
   ...props
 }) => {
   return (

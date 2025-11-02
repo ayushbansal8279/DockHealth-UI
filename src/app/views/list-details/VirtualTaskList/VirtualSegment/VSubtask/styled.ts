@@ -13,23 +13,33 @@ export const VSubtask = styled.div`
     searchValue,
     isFilterApply,
     isSortApplied,
-  }) =>
+    hasCustomOffset,
+  }: any) =>
     isWorkflowSubtask
-      ? searchValue || isFilterApply || isSortApplied
+      ? hasCustomOffset
+        ? '61px'
+        : searchValue || isFilterApply || isSortApplied
         ? '53.5px'
         : '87px'
       : searchValue || isFilterApply || isSortApplied
       ? '54.5px'
+      : hasCustomOffset
+      ? '60px'
       : '87px'};
   margin-bottom: -5px;
-  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
+  background: ${({ bgColor }: any) => (bgColor ? palette.aliceBlue : '')};
 `;
 
 export const QuickAddContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
-  width: ${({ $width }) => $width};
+  width: ${({ $width }: any) => $width};
   position: sticky;
-  left: 89.5px;
+  ${({ hasCustomOffset, isNarrowView }: any) =>
+    hasCustomOffset
+      ? isNarrowView
+        ? 'left: 62px'
+        : 'margin-left: 62px'
+      : 'left: 89.5px'};
 
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
@@ -39,9 +49,14 @@ export const QuickAddContainer = styled.div`
 export const WorkflowQuickAddTaskContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   // width: 90%;
-  width: ${({ $width }) => $width};
-  left: 54.5px;
-  margin-top: ${({ subtaskQuickAddOpen }) =>
+  width: ${({ $width }: any) => $width};
+  ${({ disableLeftOffset, isNarrowView }: any) =>
+    disableLeftOffset
+      ? isNarrowView
+        ? 'left: 24px'
+        : 'margin-left: 24px'
+      : 'left: 54.5px'};
+  margin-top: ${({ subtaskQuickAddOpen }: any) =>
     subtaskQuickAddOpen ? '1px' : ''};
   position: sticky;
   &:hover {

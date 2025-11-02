@@ -6,10 +6,7 @@ import {
   clearFiltersForMegaFilter,
   selectFiltersForMegaFilter,
 } from 'actions/mega-filter-actions';
-import {
-  getFiltersStorageKey,
-  getQuickFilterStorageKey,
-} from 'helpers/mega-filter-helper';
+import { cleanedSelectedFilters } from 'helpers/mega-filter-helper';
 import { showGlobalErrorAlert } from 'alert/actions';
 import {
   userIdentifierSelector,
@@ -19,35 +16,36 @@ import {
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { TaskStatus } from 'helpers/task-helpers';
 import isEmpty from 'ramda/src/isEmpty';
-import localStorageHelper from '../helpers/local-storage-helper';
-import sessionStorageHelper from '../helpers/session-storage-helper';
+import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
+import * as UserPreferenceApi from '../api/user-preference-api';
+import {
+  userPreferenceSelectedFiltersSelector,
+  userPreferenceSelectedQuickFilterSelector,
+} from '../selectors/user-preference-selectors';
 
 function* initializeUserTasks(status) {
   yield put(PersonDetailsActions.getUserTaskCounters());
 
   const userIdentifier = yield select(userIdentifierSelector);
-
-  let filters = localStorageHelper.getItem(
-    getFiltersStorageKey(userIdentifier, status),
+  const preferences = yield call(
+    UserPreferenceApi.getUserPreference,
+    UserPreferenceContextType.PERSON_LIST,
+    userIdentifier,
   );
-  if (!filters) {
-    filters = sessionStorageHelper.getItem(
-      getFiltersStorageKey(userIdentifier, status),
-    );
-  }
-  let selectedQuickFilter = localStorageHelper.getItem(
-    getQuickFilterStorageKey(userIdentifier, status),
-  );
-  if (!selectedQuickFilter) {
-    selectedQuickFilter = sessionStorageHelper.getItem(
-      getQuickFilterStorageKey(userIdentifier, status),
-    );
-  }
+  yield put({
+    type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+    preferences,
+  });
 
-  if (filters && !isEmpty(filters))
+  const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
+  const selectedQuickFilter = yield select(
+    userPreferenceSelectedQuickFilterSelector,
+  );
+
+  if (selectedFilters && !isEmpty(selectedFilters))
     yield put(
       selectFiltersForMegaFilter(
-        filters,
+        selectedFilters,
         userIdentifier,
         status,
         selectedQuickFilter,
@@ -57,6 +55,38 @@ function* initializeUserTasks(status) {
     yield put(clearFiltersForMegaFilter());
     yield put(PersonDetailsActions.getUserTasks(status));
   }
+}
+
+function* filterUserDetailsTasks(payload) {
+  const { filters, userIdentifier } = payload;
+  const selectedFilters = cleanedSelectedFilters(filters);
+
+  const partialDetails = {
+    selectedFilters,
+  };
+  const status = '';
+  const selectedQuickFilter = null;
+
+  const preferences = yield call(
+    UserPreferenceApi.updateUserPreference,
+    UserPreferenceContextType.PERSON_LIST,
+    userIdentifier,
+    partialDetails,
+  );
+
+  yield put({
+    type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+    preferences,
+  });
+
+  yield put(
+    MegaFilterActions.selectFiltersForMegaFilter(
+      selectedFilters,
+      userIdentifier,
+      status,
+      selectedQuickFilter,
+    ),
+  );
 }
 
 function* initializeUserDetailsState({ currentTasksStatus }) {
@@ -131,7 +161,11 @@ function* getUserTasks({ status }) {
   try {
     const taskStatus = status || TaskStatus.INCOMPLETE;
     const tasks = yield call(getTasks, taskStatus);
-    yield put({ type: ActionTypes.GET_USER_TASKS_SUCCESS, tasks, status: taskStatus });
+    yield put({
+      type: ActionTypes.GET_USER_TASKS_SUCCESS,
+      tasks,
+      status: taskStatus,
+    });
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_USER_TASKS_FAILURE });
@@ -208,5 +242,9 @@ export default function* watchUserDetails() {
   yield takeLatest(
     ActionTypes.GET_USER_TASK_FILTER_OPTIONS,
     getUserTaskFilterOptions,
+  );
+  yield takeLatest(
+    ActionTypes.FILTER_USER_DETAILS_TASKS,
+    filterUserDetailsTasks,
   );
 }

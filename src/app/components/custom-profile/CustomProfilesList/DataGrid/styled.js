@@ -80,7 +80,6 @@ export const StyledDataGrid = styled(DataGridPremium)`
     border: 1px solid #ccc;
     border-radius: 6px;
     background-color: white;
-    width: 180px;
     padding-right: 0;
   }
 

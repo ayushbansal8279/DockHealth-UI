@@ -135,6 +135,24 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.UPDATE_PATIENT_IN_CURRENT_PATIENTS_LIST: {
+      const { patientIdentifier, dataToUpdate } = action?.payload;
+
+      const updatedPatients = state.currentPatientsList.patients.map(
+        (patient) =>
+          patient.patientIdentifier === patientIdentifier
+            ? { ...patient, ...dataToUpdate }
+            : patient,
+      );
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: updatedPatients,
+        },
+      };
+    }
+
     case ActionTypes.SILENTLY_GET_CURRENT_PATIENTS_SUCCESS: {
       const patients = state.currentPatientsList.patients;
       const newPatients = action.patients;
@@ -350,7 +368,6 @@ const PatientsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_SUCCESS: {
-
       return {
         ...state,
         currentPatientsList: {
@@ -404,8 +421,8 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
-    case (ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS):
-    case (ActionTypes.PATIENT_BULK_UPDATE_PATIENTS_SUCCESS): {
+    case ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS:
+    case ActionTypes.PATIENT_BULK_UPDATE_PATIENTS_SUCCESS: {
       const { patientIdentifiers } = action;
 
       return {

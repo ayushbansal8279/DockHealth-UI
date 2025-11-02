@@ -46,7 +46,7 @@ export const SUBSCRIPTION_PLANS = [
     key: SubscriptionPlan.PREMIUM,
     label: 'Premium',
     description:
-      'For teams that need configurable functionality, secure chat and intelligent SmartFlows™ ',
+      'For teams that need configurable functionality, and intelligent SmartFlows™ ',
     annualMonthlyPrice: 30,
     monthlyPrice: 35,
     monthlyPlanDescriptions: ['Per user per month'],
@@ -63,7 +63,6 @@ export const SUBSCRIPTION_PLANS = [
       'Teams & multi-user groups',
       'Dock Analytics dashboard',
       'Calendar view',
-      'Dock Chat',
     ],
     issupportAndServicesAvailable: true,
     supportAndServices: [],
@@ -71,82 +70,81 @@ export const SUBSCRIPTION_PLANS = [
     disclaimers: [],
     minimumUsers: 0,
   },
-  {
-    key: SubscriptionPlan.PRO,
-    label: 'Pro',
-    description:
-      'For organizations needing advanced workflow automation, external collaboration and custom analytics',
-    annualMonthlyPrice: 40,
-    monthlyPrice: 50,
-    monthlyPlanDescriptions: [
-      'Per user per month',
-      'Starting at $500',
-      'Includes first 10 users',
-    ],
-    annualPlanDescriptions: [
-      'Per user per month billed annually',
-      'Starting at $400',
-      'Includes first 10 users',
-    ],
-    subscriptionPlan: SubscriptionPlan.PRO,
-    isFreeTrialPlan: true,
-    mostPopular: true,
-    featuresDescription: 'Everything in Premium, plus',
-    features: [
-      'Dock Chat',
-      'Advanced integrations and automations',
-      'Email from tasks',
-      'Fax from a task*',
-      'SMS from a task*',
-      'E-sign documents from task*',
-      'EHR-based event-triggers**',
-      'SFTP*',
-    ],
-    supportAndServices: [
-      'Enhanced support and implementation',
-      'Dock Health project management services',
-      'Dedicated customer success manager',
-      'Access to Dock Crew technical team',
-    ],
-    comingSoonFeatures: [],
-    disclaimers: [
-      '*Additional fees and subscription to a third-party service may be required',
-    ],
-    minimumUsers: 10,
-  },
-  {
-    key: SubscriptionPlan.ENTERPRISE,
-    label: 'Enterprise & API',
-    description:
-      'For teams with engineering resources requiring deep integrations and customization',
-    planDescriptions: ['Customized plan', 'Flexible pricing'],
-    subscriptionPlan: SubscriptionPlan.ENTERPRISE,
-    selectable: false,
-    isPlanTriisFreeTrialPlan: false,
-    mostPopular: false,
-    featuresDescription: 'Everything in Pro, plus',
-    features: [
-      'Custom integrations & automations',
-      'FHIR-based restful API access',
-      'Custom webhooks',
-      'White-label and iframes',
-      'Embedded widgets',
-      'Custom Tableau dashboard*',
-      'Real-time reporting*',
-    ],
-    supportAndServices: [
-      'Customized implementation',
-      'Dedicated Slack channel',
-      '24/7 support',
-      'Executive Sponsor',
-      'Implementation Launch Captain',
-    ],
-    comingSoonFeatures: [],
-    disclaimers: [
-      '*Additional fees and subscription to a third-party service may be required',
-    ],
-    minimumUsers: 0,
-  },
+  // {
+  //   key: SubscriptionPlan.PRO,
+  //   label: 'Pro',
+  //   description:
+  //     'For organizations needing advanced workflow automation, external collaboration and custom analytics',
+  //   annualMonthlyPrice: 40,
+  //   monthlyPrice: 50,
+  //   monthlyPlanDescriptions: [
+  //     'Per user per month',
+  //     'Starting at $500',
+  //     'Includes first 10 users',
+  //   ],
+  //   annualPlanDescriptions: [
+  //     'Per user per month billed annually',
+  //     'Starting at $400',
+  //     'Includes first 10 users',
+  //   ],
+  //   subscriptionPlan: SubscriptionPlan.PRO,
+  //   isFreeTrialPlan: true,
+  //   mostPopular: true,
+  //   featuresDescription: 'Everything in Premium, plus',
+  //   features: [
+  //     'Advanced integrations and automations',
+  //     'Email from tasks',
+  //     'Fax from a task*',
+  //     'SMS from a task*',
+  //     'E-sign documents from task*',
+  //     'EHR-based event-triggers**',
+  //     'SFTP*',
+  //   ],
+  //   supportAndServices: [
+  //     'Enhanced support and implementation',
+  //     'Dock Health project management services',
+  //     'Dedicated customer success manager',
+  //     'Access to Dock Crew technical team',
+  //   ],
+  //   comingSoonFeatures: [],
+  //   disclaimers: [
+  //     '*Additional fees and subscription to a third-party service may be required',
+  //   ],
+  //   minimumUsers: 10,
+  // },
+  // {
+  //   key: SubscriptionPlan.ENTERPRISE,
+  //   label: 'Enterprise & API',
+  //   description:
+  //     'For teams with engineering resources requiring deep integrations and customization',
+  //   planDescriptions: ['Customized plan', 'Flexible pricing'],
+  //   subscriptionPlan: SubscriptionPlan.ENTERPRISE,
+  //   selectable: false,
+  //   isPlanTriisFreeTrialPlan: false,
+  //   mostPopular: false,
+  //   featuresDescription: 'Everything in Pro, plus',
+  //   features: [
+  //     'Custom integrations & automations',
+  //     'FHIR-based restful API access',
+  //     'Custom webhooks',
+  //     'White-label and iframes',
+  //     'Embedded widgets',
+  //     'Custom Tableau dashboard*',
+  //     'Real-time reporting*',
+  //   ],
+  //   supportAndServices: [
+  //     'Customized implementation',
+  //     'Dedicated Slack channel',
+  //     '24/7 support',
+  //     'Executive Sponsor',
+  //     'Implementation Launch Captain',
+  //   ],
+  //   comingSoonFeatures: [],
+  //   disclaimers: [
+  //     '*Additional fees and subscription to a third-party service may be required',
+  //   ],
+  //   minimumUsers: 0,
+  // },
 ];
 
 export const DockLite = {
@@ -166,7 +164,6 @@ export const DockLite = {
     'HIPAA-compliant task-management for outside collaborators and limited-use colleagues',
     'Limited experience for organization members and outside collaborators who are not full members of Dock',
     'Access to a single shared list and a personal task list',
-    'Complete with Dock Chat for Pro users on web and iOS',
   ],
 };
 
@@ -258,4 +255,12 @@ export function isPlanFree(subscription) {
 
 export function isPlanPro(subscription) {
   return subscription?.subscriptionPlan === 'PLAN_PRO';
+}
+
+export function isPlanStandard(subscription) {
+  return subscription?.subscriptionPlan === 'PLAN_STANDARD';
+}
+
+export function isPlanPremium(subscription) {
+  return subscription?.subscriptionPlan === 'PLAN_PREMIUM';
 }

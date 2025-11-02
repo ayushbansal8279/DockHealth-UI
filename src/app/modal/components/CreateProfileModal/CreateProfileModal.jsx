@@ -28,6 +28,7 @@ const CreateProfileModal = ({
   onAdded,
   onUpdated,
   isCreatingNewField,
+  workspaceIdentifier,
 }) => {
   // const isCreatingNewField = !template;
   const [, setIsSaving] = useState(false);
@@ -78,7 +79,7 @@ const CreateProfileModal = ({
 
   const handleAddSubmit = (data) => {
     setIsSaving(true);
-    createProfileType(data)
+    createProfileType(data, workspaceIdentifier)
       .then((addedField) => {
         dispatch(showGlobalAlert(AlertMessages.CREATED));
         if (typeof onAdded === 'function') onAdded(addedField);

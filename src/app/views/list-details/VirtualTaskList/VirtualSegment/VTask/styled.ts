@@ -75,21 +75,26 @@ export const VTask = styled.div`
         ? 'padding-bottom: 0px'
         : 'padding-bottom: 10px'
       : ''};
-  width: ${({ $width }) => $width};
+  width: ${({ $width }: any) => $width};
   border-left: 1px solid rgb(229, 233, 242);
-  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
+  background: ${({ bgColor }: any) => (bgColor ? palette.aliceBlue : '')};
 
   & > * > * > * > * {
-    left: ${({ isTaskTemplate }: boolean) =>
-      isTaskTemplate ? ' 50.4px' : '51px'};
+    left: ${({ isTaskTemplate, disableLeftOffset }: any) =>
+      disableLeftOffset ? '24px' : isTaskTemplate ? ' 50.4px' : '51px'};
   }
 `;
 
 export const QuickAddContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
-  ${({ $width }) => (isNil($width) ? '' : `width: ${$width};`)}
-  left: 89.5px;
-  padding-bottom: ${({ addWorkflowTask, isTaskTemplate }) =>
+  ${({ $width }: any) => (isNil($width) ? '' : `width: ${$width};`)}
+  ${({ hasCustomOffset, isNarrowView }: any) =>
+    hasCustomOffset
+      ? isNarrowView
+        ? 'left: 60px'
+        : 'margin-left: 60px'
+      : 'left: 89.5px'};
+  padding-bottom: ${({ addWorkflowTask, isTaskTemplate }: any) =>
     addWorkflowTask || isTaskTemplate ? '0px' : '2px'};
   position: sticky;
   ${({ $template }: any) => ($template ? 'margin-bottom: 10px' : '')};
@@ -100,8 +105,13 @@ export const QuickAddContainer = styled.div`
 
 export const WorkflowQuickAddTaskContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
-  width: ${({ $width }) => $width};
-  left: 54.5px;
+  width: ${({ $width }: any) => $width};
+  ${({ disableLeftOffset, isNarrowView }: any) =>
+    disableLeftOffset
+      ? isNarrowView
+        ? 'left: 24px'
+        : 'margin-left: 24px'
+      : 'left: 54.5px'};
   margin-top: 1px;
   position: sticky;
   &:hover {

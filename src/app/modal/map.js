@@ -1,4 +1,3 @@
-import InviteUsersToChannelModal from 'views/chat/add-channel/CustomInviteUsers';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import CompleteAllFieldsModal from './components/ComplateAllFieldsModal/CompleteAllFieldsModal';
 import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
@@ -94,7 +93,10 @@ import PatientAttachmentReferenceModal from './components/PatientAttachmentRefer
 import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWorkspaceModal';
 import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
+import ScopeChangeModal from './components/ScopeChangeModal/ScopeChangeModal';
 import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
+import CreateEscalationPolicyModal from './components/CreateEscalationPolicyModal/CreateEscalationPolicyModal';
+import EditIntegrationModal from './components/EditIntegrationModal/EditIntegrationModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -183,7 +185,6 @@ const MODAL_MAP = {
   EditContact: EditContactModal,
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
-  InviteUsersToChannel: InviteUsersToChannelModal,
   AISummary: AISummaryModal,
   DateWarning: DateWarningModal,
   Alert: AlertModal,
@@ -194,6 +195,9 @@ const MODAL_MAP = {
   DeveloperScopeList: DeveloperScopeModal,
   DockIntegrations: DockIntegrationsModal,
   ClearDueDateConfirmation: ClearDueDateConfirmationModal,
+  CreateEscalationPolicy: CreateEscalationPolicyModal,
+  EditIntegration: EditIntegrationModal,
+  ScopeChange: ScopeChangeModal,
 };
 
 export default MODAL_MAP;
