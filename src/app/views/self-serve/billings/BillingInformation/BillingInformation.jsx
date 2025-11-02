@@ -170,6 +170,10 @@ const BillingInformation = ({ setUpdatingBilling }) => {
       </InformationInnerContainer>
       <InformationInnerContainer>
         <MontserratTypography variant="h4">
+          Plan:{' '}
+          {currentSubscriptionPlan?.subscriptionDetails?.subscriptionPlanName}
+        </MontserratTypography>
+        <MontserratTypography variant="h4">
           Next payment due {billingDateLabel}
         </MontserratTypography>
         <Spacing vertical={3} />
