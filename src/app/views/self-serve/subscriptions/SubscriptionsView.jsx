@@ -235,7 +235,7 @@ const SubscriptionsView = () => {
           </Box>
           <Box p={1} />
           <SubscriptionPlansContainer>
-            <Box display="flex" justifyContent="space-between">
+            <Box display="flex" justifyContent="space-between" width="50%">
               {SUBSCRIPTION_PLANS.map((plan) => (
                 <SubscriptionPlanTail
                   key={plan.key}
@@ -281,7 +281,7 @@ const SubscriptionsView = () => {
                 />
               </>
             )} */}
-            {subscriptionPlan !== SubscriptionPlanEnum.STANDARD && (
+            {/* {subscriptionPlan !== SubscriptionPlanEnum.STANDARD && (
               <Box p={2} width="100%" alignItems="center">
                 <DockLiteFeature
                   key={DockLite.key}
@@ -292,7 +292,7 @@ const SubscriptionsView = () => {
                   billingFrequency={selectedBillingFrequency}
                 />
               </Box>
-            )}
+            )} */}
             <Box p={1} />
             <Title>
               Billing <SubTitleDescription>Est</SubTitleDescription>
