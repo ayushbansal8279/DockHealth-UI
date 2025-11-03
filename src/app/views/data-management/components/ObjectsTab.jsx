@@ -184,11 +184,7 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         renderCell: (data) => {
           const contextMenuOptions = [];
 
-          if (
-            profileBuilderFeatureAvailable
-            // profileBuilderFeatureAvailable &&
-            // data.row.contextType !== ContextType.PREDEFINED
-          ) {
+          if (profileBuilderFeatureAvailable) {
             contextMenuOptions.push({
               name: 'Open Object Builder',
               onClick: () => onOpenProfileBuilder(data),

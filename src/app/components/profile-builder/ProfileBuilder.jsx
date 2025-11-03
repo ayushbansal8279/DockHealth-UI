@@ -201,7 +201,6 @@ const ProfileBuilder = () => {
     };
 
     fetchProfileType();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identifier]);
 
   useEffect(() => {
@@ -229,7 +228,6 @@ const ProfileBuilder = () => {
     } else {
       initializeCustomProfileData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileType, context]);
 
   const [isAddCategoryDrop, setAddCategoryDrop, unsetAddCategoryDrop] =
