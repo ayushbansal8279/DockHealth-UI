@@ -90,7 +90,7 @@ const PatientsFilter = ({
               };
               return foundOption;
             }
-            if (item.includes('DATE_SINGLE')) {
+            if (item.includes('DATE_SINGLE') || item.includes('SINGLE_DATE')) {
               let foundOption = users.find((user) => user.key === item);
               foundOption = {
                 ...foundOption,
@@ -146,7 +146,12 @@ const PatientsFilter = ({
       // dispatch(selectQuickFilter(id));
       // dispatch(filterListDetailsTasks(filtersSetup));
       dispatch(selectQuickFilter(id));
-      dispatch(PatientsActions.setPatientsSelectedFilters(filtersSetup, workspaceIdentifier));
+      dispatch(
+        PatientsActions.setPatientsSelectedFilters(
+          filtersSetup,
+          workspaceIdentifier,
+        ),
+      );
     },
     [dispatch, workspaceIdentifier],
   );

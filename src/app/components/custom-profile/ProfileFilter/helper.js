@@ -15,7 +15,10 @@ export function convertToPayload(filteredData) {
       customField.dateOption = 'DATE_RANGE';
     }
 
-    if (data.options.includes('DATE_SINGLE')) {
+    if (
+      data.options.includes('DATE_SINGLE') ||
+      data.options.includes('SINGLE_DATE')
+    ) {
       customField.date = data.date || null;
     }
 

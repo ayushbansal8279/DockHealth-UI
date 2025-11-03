@@ -90,7 +90,10 @@ const NewFilterContainer = ({
             dateStart = item?.dateStart;
             dateEnd = item?.dateEnd;
             options.push(item?.key);
-          } else if (item?.key?.includes('DATE_SINGLE')) {
+          } else if (
+            item?.key?.includes('DATE_SINGLE') ||
+            item?.key?.includes('SINGLE_DATE')
+          ) {
             date = item?.date;
             options.push(item?.key);
           } else if (item?.key?.includes('NUMBER_RANGE')) {

@@ -43,7 +43,6 @@ const MegaFilter = ({
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
-
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
 
   useEffect(() => {
@@ -65,7 +64,10 @@ const MegaFilter = ({
               };
               return foundOption;
             }
-            if (item?.includes('DATE_SINGLE')) {
+            if (
+              item?.includes('DATE_SINGLE') ||
+              item?.includes('SINGLE_DATE')
+            ) {
               let foundOption = users.find((user) => user.key === item);
               foundOption = {
                 ...foundOption,
@@ -104,7 +106,6 @@ const MegaFilter = ({
     setFinalFilter({});
     setSelectedQuickFilter('');
   }, [selectQuickFilter]);
-
 
   useEffect(() => {
     setSelectedQuickFilter(initialQuickFilter);

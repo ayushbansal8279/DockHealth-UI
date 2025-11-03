@@ -103,7 +103,10 @@ const CustomFilterOption = (props) => {
               };
               return dateOption;
             }
-            if (item.includes('DATE_SINGLE')) {
+            if (
+              item.includes('DATE_SINGLE') ||
+              item.includes('SINGLE_DATE')
+            ) {
               let dateOption = users.find((user) => user.key === item);
               dateOption = {
                 ...dateOption,
