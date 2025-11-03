@@ -57,6 +57,18 @@ const FilterSelect = ({
       : `Search ${customerTypeLabel} (first last or last, first)`;
   const isPatient = filter === `${customerTypeLabel}s`;
 
+  const isSpecialFilterType = React.useMemo(() => {
+    if (!filterOptions || filterOptions.length === 0) return false;
+    return filterOptions.some(
+      (option) =>
+        option?.key?.includes('DATE_RANGE') ||
+        option?.key?.includes('DATE_SINGLE') ||
+        option?.key?.includes('SINGLE_DATE') ||
+        option?.key?.includes('NUMBER_RANGE') ||
+        option?.key?.includes('SINGLE_NUMBER'),
+    );
+  }, [filterOptions]);
+
   useEffect(() => {
     if (!isPatient) {
       setOptions([
@@ -88,7 +100,10 @@ const FilterSelect = ({
         }
       }
 
-      if (item?.key?.includes('DATE_SINGLE')) {
+      if (
+        item?.key?.includes('DATE_SINGLE') ||
+        item?.key?.includes('SINGLE_DATE')
+      ) {
         foundSingleDate = true;
         if (item?.date) {
           setDateValue(item?.date);
@@ -160,7 +175,10 @@ const FilterSelect = ({
     if (date !== null) {
       let currentFinalFilter = { ...finalFilter };
       currentFinalFilter[filter]?.map((item, index) => {
-        if (item?.key?.includes('DATE_SINGLE')) {
+        if (
+          item?.key?.includes('DATE_SINGLE') ||
+          item?.key?.includes('SINGLE_DATE')
+        ) {
           currentFinalFilter[filter][index] = {
             ...currentFinalFilter[filter][index],
             date: date,
@@ -206,10 +224,18 @@ const FilterSelect = ({
     setOptions((v) => v.filter((option) => option?.key !== item?.key));
     let currentFilter = { ...finalFilter };
     const allFilterOptions = isPatient ? options : filterOptions;
-    currentFilter[filter] = [
-      ...currentFilter[filter],
-      ...allFilterOptions.filter((option) => option?.key === item?.key),
-    ];
+    const selectedOption = allFilterOptions.find(
+      (option) => option?.key === item?.key,
+    );
+
+    if (isSpecialFilterType) {
+      currentFilter[filter] = selectedOption ? [selectedOption] : [];
+    } else {
+      currentFilter[filter] = [
+        ...currentFilter[filter],
+        ...allFilterOptions.filter((option) => option?.key === item?.key),
+      ];
+    }
     setFinalFilter({ ...currentFilter });
   };
 
@@ -231,7 +257,7 @@ const FilterSelect = ({
   };
 
   const fetchPatientsWithDebounce = debounce((mentionString) => {
-    if (mentionString) {
+    if (mentionString && mentionString.length > 1) {
       getPatientsByCriteria(mentionString).then((fetchedPatients) => {
         const formattedPatients = mapPatientsToOptions(fetchedPatients);
         setOptions(formattedPatients);
@@ -284,7 +310,9 @@ const FilterSelect = ({
             renderTags={(value, getTagProps) =>
               value.map((item, index) => {
                 const isDateRangeItem = item?.key?.includes('DATE_RANGE');
-                const isSingleDateItem = item?.key?.includes('DATE_SINGLE');
+                const isSingleDateItem =
+                  item?.key?.includes('DATE_SINGLE') ||
+                  item?.key?.includes('SINGLE_DATE');
                 const isNumberRangeItem = item?.key?.includes('NUMBER_RANGE');
                 const isSingleNumberItem = item?.key?.includes('SINGLE_NUMBER');
                 const isDateItem = isDateRangeItem || isSingleDateItem;
@@ -373,13 +401,13 @@ const FilterSelect = ({
               })
             }
             style={{ width: '517' }}
-            value={finalFilter[filter]}
+            value={finalFilter[filter] || []}
             onChange={(event, newValue, action, option) => {
               if (action === 'selectOption') {
-                handleSelectOption(option.option);
+                handleSelectOption(option?.option || newValue);
               }
               if (action === 'removeOption') {
-                handleRemoveSelectedOption(option.option);
+                handleRemoveSelectedOption(option?.option);
               }
               if (action === 'clear') {
                 handleRemoveOption();

@@ -25,7 +25,7 @@ const FilterNumberInput = ({
 
   useEffect(() => {
     const numericValue = inputValue === '' ? null : parseFloat(inputValue);
-    
+
     if (isMax) {
       setMaxNumber(numericValue);
     }
@@ -35,13 +35,21 @@ const FilterNumberInput = ({
     if (singleNumber) {
       setSingleNumberInput(numericValue);
     }
-  }, [inputValue, isMax, isMin, singleNumber, setMaxNumber, setMinNumber, setSingleNumberInput]);
+  }, [
+    inputValue,
+    isMax,
+    isMin,
+    singleNumber,
+    setMaxNumber,
+    setMinNumber,
+    setSingleNumberInput,
+  ]);
 
   const hasError = useMemo(() => {
     if (inputValue === '') return false;
-    
+
     const numericValue = parseFloat(inputValue);
-    
+
     if (isNaN(numericValue)) return true;
 
     if (minValue !== null && minValue !== undefined && isMax) {
@@ -62,10 +70,17 @@ const FilterNumberInput = ({
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Backspace') {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <NumberInput
       value={inputValue}
       onChange={handleInputChange}
+      onKeyDown={handleKeyDown}
       placeholder={placeholder}
       hasError={hasError}
     />
@@ -73,4 +88,3 @@ const FilterNumberInput = ({
 };
 
 export default FilterNumberInput;
-
