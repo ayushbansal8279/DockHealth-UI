@@ -193,7 +193,7 @@ const UserRoleStep = ({
           </>
         )}
       </RoleSelectionWrapper>
-      <Grid container item direction="row" justifyContent="center" spacing={2}>
+      <Grid container item direction="row" justifyContent="center" spacing={2} sx={{ paddingTop: '20px' }}>
         <Grid item>
           <CancelButton
             fullWidth
