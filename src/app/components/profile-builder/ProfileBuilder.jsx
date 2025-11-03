@@ -21,7 +21,8 @@ import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import {    
+import {
+  createProfileFieldType,
   getAllProfileFieldTypes,
 } from '@/app/api/profile-type-field-api';
 import {
@@ -63,8 +64,6 @@ const ProfileBuilder = () => {
   const [profileName, setProfileName] = useState('');
   const [context, setContext] = useState(null);
   const [profileType, setProfileType] = useState(null);
-  const currentUser = useSelector(userProfileSelector);
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const getContextFromProfileType = (profile) => {
     if (!profile) return null;
@@ -83,11 +82,18 @@ const ProfileBuilder = () => {
     return 'PROFILETYPE';
   };
 
+  useEffect(() => {
+    const fetchAllCustomFields = async () => {
+      const allCustomFields = await CustomFieldApi.getAllCustomFields();
+      setAllCustomFields(allCustomFields);
+    };
+    fetchAllCustomFields();
+  }, []);
+
   const initializePredefinedData = async (
     profileContext,
     profileIdentifier,
   ) => {
-    console.log('profileContext', profileContext, profileIdentifier);
     try {
       const [customGroups, allCustomFields, defaultFields] = await Promise.all([
         CustomFieldApi.searchCustomFiledGroups(profileContext),
@@ -95,7 +101,6 @@ const ProfileBuilder = () => {
         CustomFieldApi.getDefauldFields(profileContext),
       ]);
 
-      setAllCustomFields(allCustomFields);
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
@@ -115,8 +120,13 @@ const ProfileBuilder = () => {
         const savedDefault = await CustomFieldApi.saveCustomFiledGroup(
           defaultCategory,
         );
-        setSelectedCategories((prev) => [...prev, savedDefault]);
+        customGroups.push(savedDefault);
       }
+      customGroups.sort((a, b) => {
+        if (a.name === 'Default Group') return -1;
+        if (b.name === 'Default Group') return 1;
+        return a.displayOrder - b.displayOrder;
+      });
 
       const processedGroups = customGroups.map((category) => {
         if (!category.fields) {
@@ -145,10 +155,6 @@ const ProfileBuilder = () => {
         CustomFieldApi.searchCustomFiledGroups(context, identifier),
         getAllProfileFieldTypes(identifier),
       ]);
-
-      const profileTypeFields = await getAllProfileFieldTypes(identifier);
-
-      setAllCustomFields([...allCustomFields, ...profileTypeFields]);
 
       const processedGroups = customGroups.map((category) => {
         if (!category.fields) {
@@ -273,10 +279,10 @@ const ProfileBuilder = () => {
     }
   };
 
-  const handleExistingFieldDrop = (e, destination) => {
+  const handleExistingFieldDrop = async (e, destination) => {
     const draggableId = e?.active?.id.split('#')[0];
-    setSelectedCategories((prevCategories) =>
-      prevCategories.map((category) => {
+    const updatedCategories = await Promise.all(
+      selectedCategories.map(async (category) => {
         if (category?.identifier !== destination) return category;
 
         const fieldExists = category.fields.some(
@@ -291,9 +297,16 @@ const ProfileBuilder = () => {
           .filter((field) => field.identifier)
           .map((field) => ({ fieldReferenceId: field.identifier }));
 
+        const newProfileField = await createProfileFieldType({
+          customFieldIdentifier: draggableId,
+          profileType: {
+            identifier: identifier,
+          },
+        });
+
         const updatedSavedFields = [
           ...savedFields,
-          { fieldReferenceId: draggableId },
+          { fieldReferenceId: newProfileField.identifier },
         ];
 
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
@@ -311,6 +324,7 @@ const ProfileBuilder = () => {
         };
       }),
     );
+    setSelectedCategories(updatedCategories);
   };
 
   const handleAddFieldDrop = (e, destination) => {
