@@ -77,16 +77,21 @@ const ProfileBuilder = () => {
       if (name.includes('provider') || name.includes('user'))
         return TargetType.PROVIDER;
       if (name.includes('task')) return TargetType.TASK;
+      if (name.includes('workflow')) return 'WORKFLOW';
     }
 
     return 'PROFILETYPE';
   };
 
-  const initializePredefinedData = async (profileContext) => {
+  const initializePredefinedData = async (
+    profileContext,
+    profileIdentifier,
+  ) => {
+    console.log('profileContext', profileContext, profileIdentifier);
     try {
       const [customGroups, allCustomFields, defaultFields] = await Promise.all([
         CustomFieldApi.searchCustomFiledGroups(profileContext),
-        CustomFieldApi.getAllCustomFields(),
+        getAllProfileFieldTypes(profileIdentifier),
         CustomFieldApi.getDefauldFields(profileContext),
       ]);
 
@@ -212,7 +217,7 @@ const ProfileBuilder = () => {
 
     const isPredefinedType = profileType.contextType === 'PREDEFINED';
     if (isPredefinedType) {
-      initializePredefinedData(context);
+      initializePredefinedData(context, profileType.identifier);
     } else {
       initializeCustomProfileData();
     }
