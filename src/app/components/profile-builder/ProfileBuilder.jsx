@@ -163,7 +163,9 @@ const ProfileBuilder = () => {
 
         const enrichedFields = category.fields.map((field) => {
           const matchingField = allCustomFields?.find(
-            (customField) => customField.identifier === field.fieldReferenceId,
+            (customField) =>
+              customField.identifier === field.fieldReferenceId ||
+              customField.customFieldIdentifier === field.fieldReferenceId,
           );
 
           return matchingField ? { ...field, ...matchingField } : field;
