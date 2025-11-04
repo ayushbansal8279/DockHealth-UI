@@ -92,6 +92,7 @@ const PatientDetailsHeader = () => {
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
   const [cameFrom, setCameFrom] = useState();
+  const [showAll, setShowAll] = useState(false);
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const genderIdentityDisabled =
@@ -265,37 +266,71 @@ const PatientDetailsHeader = () => {
                   <PatientInfoDivider />
                 </>
               )}
-              {patient?.patientMetaData
-                ?.filter(
-                  (meta) =>
-                    meta.displayOptions?.includes('PATIENT_HEADER') &&
-                    (meta.value || meta.displayNames),
-                )
-                .map(
-                  ({
-                    customFieldName,
-                    displayName,
-                    value,
-                    displayNames,
-                    fieldType,
-                    customFieldIdentifier,
-                    dateTimeIntent,
-                  }) => {
-                    return (
-                      <React.Fragment key={customFieldIdentifier}>
-                        <PatientMetaDataField
-                          fieldType={fieldType}
-                          customFieldName={customFieldName}
-                          value={value}
-                          displayNames={displayNames}
-                          displayName={displayName}
-                          dueDateIntent={dateTimeIntent}
-                        />
-                        <PatientInfoDivider />
-                      </React.Fragment>
-                    );
-                  },
-                )}
+              {(() => {
+                const headerFields =
+                  patient?.patientMetaData?.filter(
+                    (meta) =>
+                      meta.displayOptions?.includes('PATIENT_HEADER') &&
+                      (meta.value || meta.displayNames),
+                  ) || [];
+                const fieldsToShow =
+                  showAll || headerFields.length <= 10
+                    ? headerFields
+                    : headerFields.slice(0, 10);
+
+                return (
+                  <>
+                    {fieldsToShow.map(
+                      (
+                        {
+                          customFieldName,
+                          displayName,
+                          value,
+                          displayNames,
+                          fieldType,
+                          customFieldIdentifier,
+                          dateTimeIntent,
+                        },
+                        index,
+                      ) => (
+                        <React.Fragment key={customFieldIdentifier}>
+                          <PatientMetaDataField
+                            fieldType={fieldType}
+                            customFieldName={customFieldName}
+                            value={value}
+                            displayNames={displayNames}
+                            displayName={displayName}
+                            dueDateIntent={dateTimeIntent}
+                          />
+                          {index !== fieldsToShow.length - 1 && (
+                            <PatientInfoDivider />
+                          )}
+                        </React.Fragment>
+                      ),
+                    )}
+                    {headerFields.length > 10 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowAll((prev) => !prev)}
+                        style={{
+                          marginLeft: 'auto',
+                          alignSelf: 'flex-start',
+                          background: 'none',
+                          border: 'none',
+                          color: '#1976d2',
+                          cursor: 'pointer',
+                          paddingRight: '10px',
+                          fontSize: '1rem',
+                          fontWeight: 'bold',
+                          fontFamily: 'inherit',
+                        }}
+                      >
+                        {showAll ? 'Show Less' : 'Show More'}
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
             </PatientDetailsInformation>
           </PatientDetails>
           <PatientDetails>
