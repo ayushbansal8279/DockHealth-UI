@@ -195,7 +195,7 @@ const TaskNodeHandles = (props) => {
         position="bottom"
         style={{
           left: '50%',
-          bottom: -nodeHandleSize / 2,
+          bottom: 0,
           ...sourceHandleStyles,
         }}
         isValidConnection={validateConnection}
@@ -209,7 +209,7 @@ const TaskNodeHandles = (props) => {
         position="left"
         style={{
           top: '50%',
-          left: -nodeHandleSize / 2,
+          left: 0,
           ...sourceHandleStyles,
         }}
         isValidConnection={validateConnection}
@@ -223,7 +223,7 @@ const TaskNodeHandles = (props) => {
         position="right"
         style={{
           top: '50%',
-          right: -nodeHandleSize / 2,
+          right: 0,
           ...sourceHandleStyles,
         }}
         isValidConnection={validateConnection}

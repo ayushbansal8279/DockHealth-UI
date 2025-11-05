@@ -1071,6 +1071,23 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   };
 }
 
+export function deleteTasksLinkWithoutAlert(
+  sourceTaskIdentifier,
+  targetTaskIdentifier,
+) {
+  if (sourceTaskIdentifier === 'START_INDICATOR') {
+    sourceTaskIdentifier = targetTaskIdentifier;
+  }
+  if (targetTaskIdentifier === 'END_INDICATOR') {
+    targetTaskIdentifier = sourceTaskIdentifier;
+  }
+  return {
+    type: ActionTypes.DELETE_TASKS_LINK_WITHOUT_ALERT,
+    sourceTaskIdentifier,
+    targetTaskIdentifier,
+  };
+}
+
 export function sendFaxForTask(communicationDetails) {
   return {
     type: ActionTypes.SEND_FAX_FOR_TASK,
