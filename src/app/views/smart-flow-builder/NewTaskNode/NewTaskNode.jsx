@@ -20,7 +20,15 @@ import { DecisionTaskIconWrapper } from '../TaskNode/styled';
 import { TaskElementIcon } from '../styled';
 
 const NewTaskNode = React.memo((props) => {
-  const { id, type, data, selected, xPos, yPos, isConnectable } = props;
+  const {
+    id,
+    type,
+    data,
+    selected,
+    positionAbsoluteX,
+    positionAbsoluteY,
+    isConnectable,
+  } = props;
 
   const { taskTemplateIdentifier } = data;
   const [inputValue, setInputValue] = useState('');
@@ -40,7 +48,7 @@ const NewTaskNode = React.memo((props) => {
           intentType: getTargetNodeType(type),
         },
         id,
-        { x: xPos, y: yPos },
+        { x: positionAbsoluteX, y: positionAbsoluteY },
       ),
     );
   };

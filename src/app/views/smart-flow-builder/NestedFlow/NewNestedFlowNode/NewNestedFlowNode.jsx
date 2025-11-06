@@ -28,7 +28,15 @@ import { DecisionTaskIconWrapper } from '../../TaskNode/styled';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const NewNestedFlowNode = React.memo((props) => {
-  const { id, type, data, selected, xPos, yPos, isConnectable } = props;
+  const {
+    id,
+    type,
+    data,
+    selected,
+    positionAbsoluteX,
+    positionAbsoluteY,
+    isConnectable,
+  } = props;
   const [workflow, setWorkflow] = useState({});
   const { taskTemplateIdentifier } = data;
   const [taskList, setTaskList] = useState(null);
@@ -79,7 +87,7 @@ const NewNestedFlowNode = React.memo((props) => {
             linkedWorkflowTaskGroupIdentifier: taskGroup?.taskGroupIdentifier,
           },
           id,
-          { x: xPos, y: yPos },
+          { x: positionAbsoluteX, y: positionAbsoluteY },
         ),
       );
     }
@@ -90,8 +98,8 @@ const NewNestedFlowNode = React.memo((props) => {
     taskList,
     taskTemplateIdentifier,
     workflow,
-    xPos,
-    yPos,
+    positionAbsoluteX,
+    positionAbsoluteY,
   ]);
 
   return (
