@@ -388,8 +388,16 @@ export function updateComment(task, comment) {
 }
 
 export function deleteTask(task) {
-  return (dispatch) =>
-    TaskApi.deleteTask(task.taskIdentifier)
+  return (dispatch, getState) => {
+    const state = getState();
+    const dashboardGroups = state.dashboardTasks?.tasksList;
+    const containingGroup = dashboardGroups?.find((group) =>
+      group.tasks?.some((taskItem) => taskItem === task.taskIdentifier),
+    );
+    const groupType =
+      containingGroup?.groupIdentifier || containingGroup?.groupType;
+
+    return TaskApi.deleteTask(task.taskIdentifier)
       .then((response) => {
         dispatch({
           type: ActionTypes.DELETE_TASK,
@@ -409,6 +417,7 @@ export function deleteTask(task) {
               dispatch({
                 type: ActionTypes.ADD_TASK_SUCCESS,
                 task,
+                groupType,
               });
             },
           ),
@@ -419,6 +428,7 @@ export function deleteTask(task) {
       .catch((error) => {
         throw error;
       });
+  };
 }
 
 export function duplicateTask(task, includeAttachments = false) {
@@ -846,13 +856,14 @@ export const bulkEditDueDate = (tasksToUpdate, dueDate) => (dispatch) => {
   });
 };
 
-export const bulkEditDueDateWorkflow = (tasksToUpdate, dueDateTime) => (dispatch) => {
-  dispatch({
-    type: ActionTypes.UPDATE_WORKFLOWS,
-    tasksToUpdate,
-    fields: { dueDateTime },
-  });
-};
+export const bulkEditDueDateWorkflow =
+  (tasksToUpdate, dueDateTime) => (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_WORKFLOWS,
+      tasksToUpdate,
+      fields: { dueDateTime },
+    });
+  };
 
 export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   return {
