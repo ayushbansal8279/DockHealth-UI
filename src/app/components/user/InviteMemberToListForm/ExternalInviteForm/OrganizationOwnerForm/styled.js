@@ -136,3 +136,45 @@ export const RoleOptionDescription = styled.p`
   font-family: inherit;
   color: ${palette.coolGrey1};
 `;
+
+export const RoleItem = styled.div`
+  font-family: inherit;
+  display: flex;
+  padding: 18px ${spacing.smallPlus};
+  border: 1px solid ${palette.coolGrey3};
+  border-radius: 9px;
+  width: calc(100% - ${spacing.large} * 2);
+  margin: ${spacing.smallPlus} ${spacing.large};
+  cursor: pointer;
+  background-color: ${(props) =>
+    props.isSelected ? palette.coolGrey4 : 'transparent'};
+  position: relative;
+
+  & > img {
+    position: absolute;
+  }
+
+  & > div {
+    margin-left: ${spacing.giga};
+  }
+`;
+
+export const RoleItemLabel = styled.div`
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.bold};
+  color: ${(props) =>
+    props.isSelected ? palette.brightBlue : palette.mediumGrey};
+`;
+
+export const RoleItemDescription = styled.div`
+  color: ${palette.coolGrey1};
+  font-size: ${fontSizes.smallPlus};
+`;
+
+export const LimitedAccessLabel = styled.span`
+  font-family: inherit;
+  color: ${palette.orange};
+  font-style: italic;
+  font-weight: normal;
+  margin-left: ${spacing.small};
+`;
