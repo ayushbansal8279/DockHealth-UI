@@ -91,7 +91,7 @@ export const DROPTYPE = {
   ExistingField: 'add-existing-fields-area-source',
 };
 
-const desiredDefaultFieldsOrder = [
+const desiredPatientFieldsOrder = [
   'FIRST_NAME',
   'MIDDLE_NAME',
   'LAST_NAME',
@@ -103,8 +103,61 @@ const desiredDefaultFieldsOrder = [
   'PHONE_HOME',
 ];
 
-export const getDefaultsRefrenceIds = (defaulFields) => {
-  const rearrangedArray = desiredDefaultFieldsOrder.map((columnName) => {
+const desiredTaskFieldsOrder = [
+  'DESCRIPTION',
+  'DETAILS',
+  'DUE_DATE',
+  'START_DT',
+];
+
+const desiredProviderFieldsOrder = [
+  'ACCOUNT_PHONE',
+  'CREDENTIALS',
+  'DEPARTMENT',
+  'EMAIL',
+  'FAX_NUMBER',
+  'FIRST_NAME',
+  'LAST_NAME',
+  'NOTES',
+  'USERNAME',
+  'WORK_PHONE_NUMBER',
+];
+
+const desiredWorkflowFieldsOrder = [
+  'ANCHOR_DT',
+  'DESCRIPTION',
+  'DUE_DATE',
+  'GROUP_NAME',
+  'PATIENT_ID',
+  'PRIORITY',
+  'START_DT',
+  'STATUS',
+];
+
+const getFieldOrderForContext = (context) => {
+  if (context === 'PATIENT') {
+    return desiredPatientFieldsOrder;
+  }
+  if (context === 'TASK') {
+    return desiredTaskFieldsOrder;
+  }
+  if (context === 'PROVIDER') {
+    return desiredProviderFieldsOrder;
+  }
+  if (context === 'WORKFLOW') {
+    return desiredWorkflowFieldsOrder;
+  }
+  return [];
+};
+
+export const getDefaultsRefrenceIds = (defaulFields, context) => {
+  const desiredOrder = getFieldOrderForContext(context);
+
+  if (desiredOrder.length === 0) {
+    return [];
+  }
+
+  const rearrangedArray = desiredOrder.map((columnName) => {
     const field = defaulFields.find((f) => f.columnName === columnName);
     return field ? { fieldReferenceId: field.identifier } : null;
   });
@@ -124,6 +177,24 @@ const toCamelCaseWithSpaces = (fieldName) => {
     mrn: 'MRN',
     phoneMobile: 'Mobile Phone',
     phoneHome: 'Home Phone',
+    description: 'Description',
+    details: 'Details',
+    dueDate: 'Due Date',
+    startDate: 'Start Date',
+    mobileNumber: 'Mobile Number',
+    credentials: 'Credentials',
+    department: 'Department',
+    email: 'Email',
+    faxNumber: 'Fax Number',
+    notes: 'Notes',
+    username: 'Username',
+    workNumber: 'Work Number',
+    anchorDate: 'Anchor Date',
+    AnchorDate: 'Anchor Date',
+    name: 'Name',
+    patient: 'Patient',
+    priority: 'Priority',
+    status: 'Status',
   };
 
   if (nameMap[fieldName]) {
@@ -141,6 +212,20 @@ export const convertDefaultFields = (defaultFields) => {
       field.fieldName === 'genderIdentity' ||
       field.fieldName === 'gender'
     ) {
+      fieldType = FieldType.DROPDOWN;
+    }
+
+    if (
+      field.fieldName === 'dueDate' ||
+      field.fieldName === 'startDt' ||
+      field.fieldName === 'startDate' ||
+      field.fieldName === 'anchorDate' ||
+      field.fieldName === 'AnchorDate'
+    ) {
+      fieldType = FieldType.DATE;
+    }
+
+    if (field.fieldName === 'status' || field.fieldName === 'priority') {
       fieldType = FieldType.DROPDOWN;
     }
 

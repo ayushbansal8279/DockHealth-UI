@@ -107,14 +107,11 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   );
 
   const onOpenProfileBuilder = useCallback(
-    ({ row: { id, name, identifier } }) => {
-      if (id.toLowerCase() === `${customerTypeLabel}s`) {
-        history.push(`/settings/object-builder/${id.toLowerCase()}`);
-        return;
-      }
-      history.push(`/settings/object-builder/objects/${identifier}`);
+    ({ row: { identifier } }) => {
+      const profileTypePath = `/settings/object-builder/objects/${identifier}`;
+      history.push(profileTypePath);
     },
-    [history, customerTypeLabel],
+    [history],
   );
 
   const onDeleteProfile = useCallback(
@@ -187,10 +184,7 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         renderCell: (data) => {
           const contextMenuOptions = [];
 
-          if (
-            profileBuilderFeatureAvailable &&
-            data.row.contextType !== ContextType.PREDEFINED
-          ) {
+          if (profileBuilderFeatureAvailable) {
             contextMenuOptions.push({
               name: 'Open Object Builder',
               onClick: () => onOpenProfileBuilder(data),
