@@ -139,21 +139,27 @@ const PatientForm = forwardRef(
 
     const formReference = useRef(null);
 
+    const validateForm = useCallback(async () => {
+      const hasCustomFieldErrors = validateCustomFields();
+
+      await formMethods.trigger();
+
+      if (hasCustomFieldErrors) {
+        validateCustomFields();
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      const hasErrors =
+        hasCustomFieldErrors ||
+        Object.keys(formMethods.formState.errors).length > 0;
+
+      return hasErrors;
+    }, [validateCustomFields, formMethods]);
+
     useImperativeHandle(reference, () => ({
       validateAndSubmit: async () => {
-        const hasCustomFieldErrors = validateCustomFields();
-
-        const isValid = await formMethods.trigger();
-
-        if (hasCustomFieldErrors) {
-          validateCustomFields();
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, 0));
-
-        const hasErrors =
-          hasCustomFieldErrors ||
-          Object.keys(formMethods.formState.errors).length > 0;
+        const hasErrors = await validateForm();
 
         if (hasErrors) {
           scrollToError(formMethods.formState.errors);
@@ -213,20 +219,9 @@ const PatientForm = forwardRef(
     return (
       <form
         onSubmit={handleSubmit(async (data, e) => {
-          const hasCustomFieldErrors = validateCustomFields();
+          const hasErrors = await validateForm();
 
-          const isValid = await formMethods.trigger();
-
-          if (hasCustomFieldErrors) {
-            validateCustomFields();
-          }
-
-          await new Promise((resolve) => setTimeout(resolve, 0));
-
-          const hasFormErrors =
-            Object.keys(formMethods.formState.errors).length > 0;
-
-          if (!isValid || hasCustomFieldErrors || hasFormErrors) {
+          if (hasErrors) {
             scrollToError(formMethods.formState.errors);
             e.preventDefault();
             e.stopPropagation();
@@ -381,19 +376,7 @@ const PatientForm = forwardRef(
               style={{ width: 'auto' }}
               disabled={!customFields}
               onClick={async (event) => {
-                const hasCustomFieldErrors = validateCustomFields();
-
-                await formMethods.trigger();
-
-                if (hasCustomFieldErrors) {
-                  validateCustomFields();
-                }
-
-                await new Promise((resolve) => setTimeout(resolve, 0));
-
-                const hasErrors =
-                  hasCustomFieldErrors ||
-                  Object.keys(formMethods.formState.errors).length > 0;
+                const hasErrors = await validateForm();
 
                 if (hasErrors) {
                   scrollToError(formMethods.formState.errors);
