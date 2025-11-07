@@ -14,10 +14,8 @@ import {
   Refresh as ResetIcon,
   RotateLeft as RotateLeftIcon,
   RotateRight as RotateRightIcon,
-  Edit as EditIcon,
   ZoomIn as ZoomInIcon,
   ZoomOut as ZoomOutIcon,
-  Cancel as CancelIcon,
   Save as SaveIcon,
 } from '@mui/icons-material';
 import {
@@ -40,6 +38,8 @@ import {
   CropperControlsContainer,
   CropperButton,
   SaveButton,
+  StyledEditIcon,
+  StyledCancelIcon,
 } from './styled';
 import { useDispatch } from 'react-redux';
 import saveEditedAttachment from './helper';
@@ -91,39 +91,21 @@ const AttachmentPreview = React.memo((props) => {
   const handleCropperReady = useCallback(() => {
     setIsCropperReady(true);
 
-    if (cropperRef.current) {
-      const cropper = cropperRef.current;
-      setTimeout(() => {
-        try {
-          const image = cropper.getImage();
+    const cropper = cropperRef.current;
+    if (!cropper) return;
 
-          if (image) {
-            const { width, height } = image;
-
-            cropper.setCoordinates({
-              left: 0,
-              top: 0,
-              width,
-              height,
-            });
-          }
-        } catch (error) {
-          console.error('Error setting full image coordinates:', error);
-          try {
-            const currentCoords = cropper.getCoordinates();
-            if (currentCoords) {
-              cropper.setCoordinates({
-                left: 0,
-                top: 0,
-                width: currentCoords.width * 2, 
-                height: currentCoords.height * 2,
-              });
-            }
-          } catch (fallbackError) {
-          }
+    setTimeout(() => {
+      try {
+        const image = cropper.getImage();
+        if (image) {
+          const { width, height } = image;
+          cropper.setCoordinates({ left: 0, top: 0, width, height });
         }
-      }, 100);
-    }
+      } catch (error) {
+        const coords = cropper.getCoordinates?.();
+        if (coords) cropper.setCoordinates(coords);
+      }
+    }, 50);
   }, []);
 
   const handleCrop = useCallback(() => {
@@ -188,12 +170,12 @@ const AttachmentPreview = React.memo((props) => {
       const canvas = cropperRef.current.getCanvas();
       canvas.toBlob((blob) => {
         const originalFileName = fileName || 'edited.png';
-         const renamedFileName = originalFileName.replace(
-        /(\.[\w\d_-]+)$/i,
-        '_original$1'
-      );
+        const renamedFileName = originalFileName.replace(
+          /(\.[\w\d_-]+)$/i,
+          '_original$1',
+        );
 
-      const file = new File([blob], originalFileName, { type: 'image/png' });
+        const file = new File([blob], originalFileName, { type: 'image/png' });
 
         saveEditedAttachment(
           dispatch,
@@ -202,7 +184,7 @@ const AttachmentPreview = React.memo((props) => {
           originalFileName,
           contextIdentifier,
           hideAttachmentPreview,
-          attachment
+          attachment,
         );
       });
     }
@@ -265,16 +247,10 @@ const AttachmentPreview = React.memo((props) => {
           {displayType === PREVIEW_DISPLAY_TYPES.IMAGE && (
             <>
               <CropperButton onClick={handleCropperToggle}>
-                {!isCropperMode && (
-                  <EditIcon
-                    style={{ marginRight: '0.5rem', fontSize: '16px' }}
-                  />
-                )}
+                {!isCropperMode && <StyledEditIcon />}
                 {isCropperMode ? (
                   <>
-                    <CancelIcon
-                      style={{ marginRight: '0.4rem', fontSize: '16px' }}
-                    />
+                    <StyledCancelIcon />
                     Cancel
                   </>
                 ) : (
@@ -282,15 +258,7 @@ const AttachmentPreview = React.memo((props) => {
                 )}
               </CropperButton>
               {isCropperMode && (
-                <SaveButton
-                  style={{
-                    marginLeft: '0.75rem',
-                    fontSize: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                  onClick={handleEditSave}
-                >
+                <SaveButton onClick={handleEditSave}>
                   <SaveIcon
                     style={{ marginRight: '0.4rem', fontSize: '16px' }}
                   />
@@ -385,13 +353,6 @@ const AttachmentPreview = React.memo((props) => {
                     src={croppedImage || fileSource}
                   />
                 </AttachmentPreviewFlexContainer>
-                {/* {croppedImage && (
-                  <CropperControlsContainer>
-                    <CropperButton onClick={handleDownloadCropped}>
-                      Download Cropped Image
-                    </CropperButton>
-                  </CropperControlsContainer>
-                )} */}
               </>
             )}
           </>

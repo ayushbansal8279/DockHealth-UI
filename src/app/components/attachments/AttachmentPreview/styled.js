@@ -2,6 +2,9 @@ import { Dialog } from '@mui/material';
 import { Document, Page } from 'react-pdf';
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import EditIcon from '@mui/icons-material/Edit';
+import CancelIcon from '@mui/icons-material/Cancel';
+
 
 export const AttachmentPreviewDialog = styled(Dialog)`
   .MuiDialog-paper {
@@ -206,9 +209,12 @@ export const SaveButton = styled.button`
   border-radius: 4px;
   color: ${palette.white};
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 16px;
   padding: 0.5rem 1.5rem;
   transition: background-color 0.25s ease-out;
+  margin-left: 0.75rem;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background-color: ${palette.primaryBlueDark || palette.primaryBlue};
@@ -221,4 +227,14 @@ export const SaveButton = styled.button`
       background-color: ${palette.unknownGrey5 || palette.unknownGrey6};
     }
   }
+`;
+
+export const StyledEditIcon = styled(EditIcon)`
+  margin-right: 0.5rem;
+  font-size: 16px;
+`;
+
+export const StyledCancelIcon = styled(CancelIcon)`
+  margin-right: 0.5rem;
+  font-size: 16px;
 `;
