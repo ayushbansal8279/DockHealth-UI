@@ -84,23 +84,24 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const close = () => {
     unsetActive();
     closeDetails();
-    clearErrors(Object.keys(patientValues));
+    clearErrors();
+    setCustomFieldErrors({});
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
     if (isActive) {
       dispatch(
         openModal('InterruptEdit', {
           isWorkflowModal: true,
-          confirm: () => {
-            if (Object.keys(customFieldErrors).length > 0) {
-              scrollToError(customFieldErrors);
+          confirm: async () => {
+            dispatch(closeModal());
+            if (formReference.current?.validateAndSubmit) {
+              await formReference.current.validateAndSubmit();
             } else {
-              formReference.current.dispatchEvent(
+              formReference.current?.dispatchEvent(
                 new Event('submit', { cancelable: true, bubbles: true }),
               );
             }
-            dispatch(closeModal());
           },
           onClose: close,
         }),
@@ -113,7 +114,8 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   useEffect(() => {
     if (isOpenedDetails) {
       reset({ ...patientValues });
-      clearErrors(Object.keys(patientValues));
+      clearErrors();
+      setCustomFieldErrors({});
     } else {
       unsetActive();
     }

@@ -5,6 +5,8 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useImperativeHandle,
+  useRef,
 } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
@@ -104,6 +106,69 @@ const PatientForm = forwardRef(
       setCustomFieldErrors?.(errors);
     }, [errors]);
 
+    const validateCustomFields = useCallback(() => {
+      let hasErrors = false;
+      if (customFields) {
+        Object.values(customFields)
+          .flat()
+          .forEach((field) => {
+            const fieldName = `patientMetaData.${field.identifier}`;
+            const isRequired = field.displayOptions?.includes('TASK_REQUIRED');
+
+            if (isRequired) {
+              const fieldValue = formMethods.getValues(fieldName);
+
+              if (
+                !fieldValue ||
+                (Array.isArray(fieldValue) && fieldValue.length === 0)
+              ) {
+                formMethods.setError(fieldName, {
+                  type: 'required',
+                  message: 'This field is required',
+                  shouldFocus: false,
+                });
+                hasErrors = true;
+              } else {
+                formMethods.clearErrors(fieldName);
+              }
+            }
+          });
+      }
+      return hasErrors;
+    }, [customFields, formMethods]);
+
+    const formReference = useRef(null);
+
+    useImperativeHandle(reference, () => ({
+      validateAndSubmit: async () => {
+        const hasCustomFieldErrors = validateCustomFields();
+
+        const isValid = await formMethods.trigger();
+
+        if (hasCustomFieldErrors) {
+          validateCustomFields();
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        const hasErrors =
+          hasCustomFieldErrors ||
+          Object.keys(formMethods.formState.errors).length > 0;
+
+        if (hasErrors) {
+          scrollToError(formMethods.formState.errors);
+          return false;
+        }
+
+        if (formReference.current) {
+          formReference.current.dispatchEvent(
+            new Event('submit', { cancelable: true, bubbles: true }),
+          );
+        }
+        return true;
+      },
+    }));
+
     const renderCustomField = useCallback(
       (field, index, showEmpty = true) => {
         const patientCustomField = patient?.patientMetaData?.find(
@@ -148,19 +213,29 @@ const PatientForm = forwardRef(
     return (
       <form
         onSubmit={handleSubmit(async (data, e) => {
-          await formMethods.trigger();
+          const hasCustomFieldErrors = validateCustomFields();
 
-          const hasErrors =
+          const isValid = await formMethods.trigger();
+
+          if (hasCustomFieldErrors) {
+            validateCustomFields();
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 0));
+
+          const hasFormErrors =
             Object.keys(formMethods.formState.errors).length > 0;
 
-          if (hasErrors) {
+          if (!isValid || hasCustomFieldErrors || hasFormErrors) {
             scrollToError(formMethods.formState.errors);
+            e.preventDefault();
+            e.stopPropagation();
             return false;
           }
 
           return compose(onSubmit, formatMetaDataOutput)(data, e);
         }, scrollToError)}
-        ref={reference}
+        ref={formReference}
         noValidate
       >
         <LabeledCollapse
@@ -306,29 +381,30 @@ const PatientForm = forwardRef(
               style={{ width: 'auto' }}
               disabled={!customFields}
               onClick={async (event) => {
-                if (customFields) {
-                  Object.values(customFields)
-                    .flat()
-                    .forEach((field) => {
-                      const fieldName = `patientMetaData.${field.identifier}`;
-                      const isRequired =
-                        field.displayOptions?.includes('TASK_REQUIRED');
+                const hasCustomFieldErrors = validateCustomFields();
 
-                      if (isRequired) {
-                        const fieldValue = formMethods.getValues(fieldName);
+                await formMethods.trigger();
 
-                        if (
-                          !fieldValue ||
-                          (Array.isArray(fieldValue) && fieldValue.length === 0)
-                        ) {
-                          formMethods.setError(fieldName, {
-                            type: 'required',
-                            message: 'This field is required',
-                          });
-                        }
-                      }
-                    });
+                if (hasCustomFieldErrors) {
+                  validateCustomFields();
                 }
+
+                await new Promise((resolve) => setTimeout(resolve, 0));
+
+                const hasErrors =
+                  hasCustomFieldErrors ||
+                  Object.keys(formMethods.formState.errors).length > 0;
+
+                if (hasErrors) {
+                  scrollToError(formMethods.formState.errors);
+                  return;
+                }
+
+                event.target
+                  .closest('form')
+                  .dispatchEvent(
+                    new Event('submit', { cancelable: true, bubbles: true }),
+                  );
               }}
             >
               {buttonLabel || `Save Edits`}
