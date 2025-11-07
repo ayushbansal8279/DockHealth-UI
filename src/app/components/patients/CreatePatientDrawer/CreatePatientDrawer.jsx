@@ -76,11 +76,15 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
       dispatch(
         openModal('InterruptEdit', {
           isWorkflowModal: true,
-          confirm: () => {
-            formReference.current.dispatchEvent(
-              new Event('submit', { cancelable: true, bubbles: true }),
-            );
+          confirm: async () => {
             dispatch(closeModal());
+            if (formReference.current?.validateAndSubmit) {
+              await formReference.current.validateAndSubmit();
+            } else {
+              formReference.current?.dispatchEvent(
+                new Event('submit', { cancelable: true, bubbles: true }),
+              );
+            }
           },
           onClose: close,
         }),
