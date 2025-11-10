@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import {
   ReactFlow,
   applyEdgeChanges,
@@ -10,6 +10,9 @@ import {
   getMiniMapNodeColor,
   NodeType,
 } from 'helpers/smart-flow-builder-helpers';
+import { deleteTasksLinkWithoutAlert } from '@/app/actions/task-actions';
+import { useDispatch } from 'react-redux';
+import { linkTasks } from '@/app/actions/task-template-actions';
 
 const ReactFlowAdapter = ({
   elements,
@@ -19,10 +22,12 @@ const ReactFlowAdapter = ({
   isCurrentUserEditor,
   ...props
 }) => {
+  const dispatch = useDispatch();
   const isNode = useCallback(
     (element) => Object.values(NodeType).includes(element.type),
     [],
   );
+  const reconnectRef = useRef(false);
 
   const [nodes, edges] = useMemo(() => {
     const nodesArray = [];
@@ -31,7 +36,8 @@ const ReactFlowAdapter = ({
       if (isNode(element)) {
         nodesArray.push(element);
       } else {
-        edgesArray.push(element);
+        const reconnectable = element.selected ? 'target' : false;
+        edgesArray.push({ ...element, reconnectable });
       }
     }
     return [nodesArray, edgesArray];
@@ -54,6 +60,65 @@ const ReactFlowAdapter = ({
     [onElementsChange, edges, isNode],
   );
 
+  const onReconnect = useCallback(
+    (oldEdge, newConnection) => {
+      const {
+        source: oldEdgeSourceTaskIdentifier,
+        target: oldEdgeTargetTaskIdentifier,
+      } = oldEdge;
+      const {
+        source: newEdgeSourceTaskIdentifier,
+        target: newEdgeTargetTaskIdentifier,
+        sourceHandle: newEdgeSourceHandle,
+        targetHandle: newEdgeTargetHandle,
+      } = newConnection;
+
+      if (
+        oldEdgeSourceTaskIdentifier === newEdgeSourceTaskIdentifier &&
+        oldEdgeTargetTaskIdentifier === newEdgeTargetTaskIdentifier
+      ) {
+        return;
+      }
+      reconnectRef.current = true;
+      dispatch(
+        linkTasks(
+          { id: newEdgeSourceTaskIdentifier, handle: newEdgeSourceHandle },
+          { id: newEdgeTargetTaskIdentifier, handle: newEdgeTargetHandle },
+        ),
+      );
+    },
+    [dispatch],
+  );
+
+  const onReconnectStart = useCallback(
+    (event, edge, handleType) => {
+      const { source: sourceTaskIdentifier, target: targetTaskIdentifier } =
+        edge;
+      dispatch(
+        deleteTasksLinkWithoutAlert(sourceTaskIdentifier, targetTaskIdentifier),
+      );
+    },
+    [dispatch],
+  );
+
+  const onReconnectEnd = useCallback(
+    (event, edge, handleType, connectionState) => {
+      const { source, target, sourceHandle, targetHandle } = edge;
+
+      if (reconnectRef.current) {
+        reconnectRef.current = false;
+      } else {
+        dispatch(
+          linkTasks(
+            { id: source, handle: sourceHandle },
+            { id: target, handle: targetHandle },
+          ),
+        );
+      }
+    },
+    [dispatch],
+  );
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -63,6 +128,11 @@ const ReactFlowAdapter = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onPaneClick={onPanelClick}
+      onReconnect={onReconnect}
+      onReconnectStart={onReconnectStart}
+      onReconnectEnd={onReconnectEnd}
+      edgesReconnectable={true}
+      reconnectRadius={20}
     >
       <Controls showInteractive={isCurrentUserEditor} />
       <MiniMap

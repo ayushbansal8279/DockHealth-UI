@@ -44,12 +44,12 @@ const LinkPath = (props) => {
   // }
 
   const [edgePath] = getSmoothStepPath({
-    sourceX: sx,
-    sourceY: sy,
-    sourcePosition: sourcePos,
-    targetX: tx,
-    targetY: ty,
-    targetPosition: targetPos,
+    sourceX: selected ? sourceX : sx,
+    sourceY: selected ? sourceY : sy,
+    sourcePosition: selected ? sourcePosition : sourcePos,
+    targetX: selected ? targetX : tx,
+    targetY: selected ? targetY : ty,
+    targetPosition: selected ? targetPosition : targetPos,
   });
   // const markerEnd = getMarkerEnd('arrowclosed', markerEndId);
 
