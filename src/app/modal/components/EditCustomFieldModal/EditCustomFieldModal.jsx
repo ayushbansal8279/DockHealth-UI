@@ -65,8 +65,17 @@ const filterAdditionalOptionsByFieldType = (
   fieldTypeValue,
 ) => {
   return additionalOptions.filter((option) => {
-    if (option.key !== DisplayOption.SINGLE_SELECT) return true;
-    return fieldTypeValue === FieldType.RELATIONSHIP;
+    if (option.key === DisplayOption.SINGLE_SELECT) {
+      return fieldTypeValue === FieldType.RELATIONSHIP;
+    }
+
+    if (option.key === DisplayOption.PROFILE_NAME) {
+      return (
+        fieldTypeValue === FieldType.TEXT || fieldTypeValue === FieldType.NUMBER
+      );
+    }
+
+    return true;
   });
 };
 

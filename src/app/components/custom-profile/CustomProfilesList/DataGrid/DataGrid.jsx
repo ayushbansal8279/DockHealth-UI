@@ -130,7 +130,6 @@ const ReusableDataGrid = ({
       disableColumnMenu
       disableSelectionOnClick
       disableRowSelectionOnClick
-      disableColumnResize
       disableColumnFilter={false}
       disableDensitySelector
       loading={loading}

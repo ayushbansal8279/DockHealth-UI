@@ -88,6 +88,12 @@ const FilterDateInput = ({
     // onDateChange,
   ]);
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Backspace') {
+      e.stopPropagation();
+    }
+  };
+
   return (
     <ClickAwayListener onClickAway={handleClickOutside}>
       <div>
@@ -100,6 +106,7 @@ const FilterDateInput = ({
             const { value: v } = event.target;
             setInputValue(v ?? '');
           }}
+          onKeyDown={handleKeyDown}
           mask="99/99/9999"
           value={inputValue}
           placeholder="00/00/0000"

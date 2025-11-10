@@ -213,7 +213,12 @@ export function deleteCustomFiledGroup(customFiledGroupIdentifier) {
 }
 
 export function searchCustomFiledGroups(context, profileTypeIdentifier) {
-  if (context === 'PATIENT') {
+  if (
+    context === 'PATIENT' ||
+    context === 'PROVIDER' ||
+    context === 'TASK' ||
+    context === 'WORKFLOW'
+  ) {
     return axios
       .get(`/customFieldGroup/search?context=${context}`)
       .then(({ data }) => data)

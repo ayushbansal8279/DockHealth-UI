@@ -82,16 +82,40 @@ const PatientsFilter = ({
 
           let options = selectedFilters[key].options.map((item) => {
             if (item.includes('DATE_RANGE')) {
-              let aa = users.find((user) => user.key === item);
-              aa = {
-                ...aa,
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
                 dateStart: selectedFilters[key].dateStart,
                 dateEnd: selectedFilters[key].dateEnd,
               };
-              return aa;
-            } else {
-              return users.find((user) => user.key === item);
+              return foundOption;
             }
+            if (item.includes('DATE_SINGLE') || item.includes('SINGLE_DATE')) {
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
+                date: selectedFilters[key].date,
+              };
+              return foundOption;
+            }
+            if (item.includes('NUMBER_RANGE')) {
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
+                numberStart: selectedFilters[key].numberStart,
+                numberEnd: selectedFilters[key].numberEnd,
+              };
+              return foundOption;
+            }
+            if (item.includes('SINGLE_NUMBER')) {
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
+                singleNumber: selectedFilters[key].singleNumber,
+              };
+              return foundOption;
+            }
+            return users.find((user) => user.key === item);
           });
           data[key] = options;
         }
@@ -122,7 +146,12 @@ const PatientsFilter = ({
       // dispatch(selectQuickFilter(id));
       // dispatch(filterListDetailsTasks(filtersSetup));
       dispatch(selectQuickFilter(id));
-      dispatch(PatientsActions.setPatientsSelectedFilters(filtersSetup, workspaceIdentifier));
+      dispatch(
+        PatientsActions.setPatientsSelectedFilters(
+          filtersSetup,
+          workspaceIdentifier,
+        ),
+      );
     },
     [dispatch, workspaceIdentifier],
   );

@@ -22,6 +22,8 @@ import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
 import { useSelector } from 'react-redux';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
 import SingleDateOption from '../DateRangeOptions/SingleDateOption';
+import NumberRangeOptions from '../NumberRangeOptions/NumberRangeOptions';
+import SingleNumberOption from '../NumberRangeOptions/SingleNumberOption';
 
 const FilterSelect = ({
   finalFilter,
@@ -40,6 +42,12 @@ const FilterSelect = ({
   const [dateEnd, setDateEnd] = useState('');
   const [date, setDate] = useState('');
   const [dateValue, setDateValue] = useState('');
+  const [numberStart, setNumberStart] = useState(null);
+  const [numberEnd, setNumberEnd] = useState(null);
+  const [numberStartValue, setNumberStartValue] = useState(null);
+  const [numberEndValue, setNumberEndValue] = useState(null);
+  const [singleNumber, setSingleNumber] = useState(null);
+  const [singleNumberValue, setSingleNumberValue] = useState(null);
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
@@ -48,6 +56,18 @@ const FilterSelect = ({
       ? `Search ${customerTypeLabel} (MRN #)`
       : `Search ${customerTypeLabel} (first last or last, first)`;
   const isPatient = filter === `${customerTypeLabel}s`;
+
+  const isSpecialFilterType = React.useMemo(() => {
+    if (!filterOptions || filterOptions.length === 0) return false;
+    return filterOptions.some(
+      (option) =>
+        option?.key?.includes('DATE_RANGE') ||
+        option?.key?.includes('DATE_SINGLE') ||
+        option?.key?.includes('SINGLE_DATE') ||
+        option?.key?.includes('NUMBER_RANGE') ||
+        option?.key?.includes('SINGLE_NUMBER'),
+    );
+  }, [filterOptions]);
 
   useEffect(() => {
     if (!isPatient) {
@@ -80,7 +100,10 @@ const FilterSelect = ({
         }
       }
 
-      if (item?.key?.includes('DATE_SINGLE')) {
+      if (
+        item?.key?.includes('DATE_SINGLE') ||
+        item?.key?.includes('SINGLE_DATE')
+      ) {
         foundSingleDate = true;
         if (item?.date) {
           setDateValue(item?.date);
@@ -96,6 +119,38 @@ const FilterSelect = ({
     }
     if (!foundSingleDate) {
       setDateValue('');
+    }
+  }, [finalFilter, filter]);
+
+  useEffect(() => {
+    let foundNumberRange = false;
+    let foundSingleNumber = false;
+
+    finalFilter[filter].forEach((item) => {
+      if (item?.key?.includes('NUMBER_RANGE')) {
+        foundNumberRange = true;
+        if (item?.numberStart !== undefined && item?.numberEnd !== undefined) {
+          setNumberStartValue(item?.numberStart);
+          setNumberEndValue(item?.numberEnd);
+        }
+      }
+
+      if (item?.key?.includes('SINGLE_NUMBER')) {
+        foundSingleNumber = true;
+        if (item?.singleNumber !== undefined) {
+          setSingleNumberValue(item?.singleNumber);
+        } else {
+          setSingleNumberValue(null);
+        }
+      }
+    });
+
+    if (!foundNumberRange) {
+      setNumberStartValue(null);
+      setNumberEndValue(null);
+    }
+    if (!foundSingleNumber) {
+      setSingleNumberValue(null);
     }
   }, [finalFilter, filter]);
 
@@ -120,7 +175,10 @@ const FilterSelect = ({
     if (date !== null) {
       let currentFinalFilter = { ...finalFilter };
       currentFinalFilter[filter]?.map((item, index) => {
-        if (item?.key?.includes('DATE_SINGLE')) {
+        if (
+          item?.key?.includes('DATE_SINGLE') ||
+          item?.key?.includes('SINGLE_DATE')
+        ) {
           currentFinalFilter[filter][index] = {
             ...currentFinalFilter[filter][index],
             date: date,
@@ -131,14 +189,53 @@ const FilterSelect = ({
     }
   }, [date, setDate]);
 
+  useEffect(() => {
+    if (numberStart !== null || numberEnd !== null) {
+      let currentFinalFilter = { ...finalFilter };
+      currentFinalFilter[filter]?.map((item, index) => {
+        if (item?.key?.includes('NUMBER_RANGE')) {
+          currentFinalFilter[filter][index] = {
+            ...currentFinalFilter[filter][index],
+            numberStart: numberStart,
+            numberEnd: numberEnd,
+          };
+        }
+      });
+      setFinalFilter({ ...currentFinalFilter });
+    }
+  }, [numberStart, numberEnd, setNumberStart, setNumberEnd]);
+
+  useEffect(() => {
+    if (singleNumber !== null) {
+      let currentFinalFilter = { ...finalFilter };
+      currentFinalFilter[filter]?.map((item, index) => {
+        if (item?.key?.includes('SINGLE_NUMBER')) {
+          currentFinalFilter[filter][index] = {
+            ...currentFinalFilter[filter][index],
+            singleNumber: singleNumber,
+          };
+        }
+      });
+      setFinalFilter({ ...currentFinalFilter });
+    }
+  }, [singleNumber, setSingleNumber]);
+
   const handleSelectOption = (item) => {
     setOptions((v) => v.filter((option) => option?.key !== item?.key));
     let currentFilter = { ...finalFilter };
     const allFilterOptions = isPatient ? options : filterOptions;
-    currentFilter[filter] = [
-      ...currentFilter[filter],
-      ...allFilterOptions.filter((option) => option?.key === item?.key),
-    ];
+    const selectedOption = allFilterOptions.find(
+      (option) => option?.key === item?.key,
+    );
+
+    if (isSpecialFilterType) {
+      currentFilter[filter] = selectedOption ? [selectedOption] : [];
+    } else {
+      currentFilter[filter] = [
+        ...currentFilter[filter],
+        ...allFilterOptions.filter((option) => option?.key === item?.key),
+      ];
+    }
     setFinalFilter({ ...currentFilter });
   };
 
@@ -160,7 +257,7 @@ const FilterSelect = ({
   };
 
   const fetchPatientsWithDebounce = debounce((mentionString) => {
-    if (mentionString) {
+    if (mentionString && mentionString.length > 1) {
       getPatientsByCriteria(mentionString).then((fetchedPatients) => {
         const formattedPatients = mapPatientsToOptions(fetchedPatients);
         setOptions(formattedPatients);
@@ -213,11 +310,17 @@ const FilterSelect = ({
             renderTags={(value, getTagProps) =>
               value.map((item, index) => {
                 const isDateRangeItem = item?.key?.includes('DATE_RANGE');
-                const isSingleDateItem = item?.key?.includes('DATE_SINGLE');
+                const isSingleDateItem =
+                  item?.key?.includes('DATE_SINGLE') ||
+                  item?.key?.includes('SINGLE_DATE');
+                const isNumberRangeItem = item?.key?.includes('NUMBER_RANGE');
+                const isSingleNumberItem = item?.key?.includes('SINGLE_NUMBER');
                 const isDateItem = isDateRangeItem || isSingleDateItem;
+                const isNumberItem = isNumberRangeItem || isSingleNumberItem;
+                const isSpecialItem = isDateItem || isNumberItem;
                 const tagProps = getTagProps({ index });
 
-                const itemProps = isDateItem
+                const itemProps = isSpecialItem
                   ? {
                       key: tagProps.key,
                       onMouseDown: (e) => {
@@ -250,6 +353,24 @@ const FilterSelect = ({
                             setDate={setDate}
                           />
                         </div>
+                      ) : isNumberRangeItem ? (
+                        <div style={{ paddingLeft: '15px' }}>
+                          <NumberRangeOptions
+                            minNumber={numberStart}
+                            setMinNumber={setNumberStart}
+                            maxNumber={numberEnd}
+                            setMaxNumber={setNumberEnd}
+                            minValue={numberStartValue}
+                            maxValue={numberEndValue}
+                          />
+                        </div>
+                      ) : isSingleNumberItem ? (
+                        <div style={{ paddingLeft: '15px' }}>
+                          <SingleNumberOption
+                            value={singleNumberValue}
+                            setNumber={setSingleNumber}
+                          />
+                        </div>
                       ) : (
                         <>
                           <AvatarContainer>
@@ -280,13 +401,13 @@ const FilterSelect = ({
               })
             }
             style={{ width: '517' }}
-            value={finalFilter[filter]}
+            value={finalFilter[filter] || []}
             onChange={(event, newValue, action, option) => {
               if (action === 'selectOption') {
-                handleSelectOption(option.option);
+                handleSelectOption(option?.option || newValue);
               }
               if (action === 'removeOption') {
-                handleRemoveSelectedOption(option.option);
+                handleRemoveSelectedOption(option?.option);
               }
               if (action === 'clear') {
                 handleRemoveOption();
