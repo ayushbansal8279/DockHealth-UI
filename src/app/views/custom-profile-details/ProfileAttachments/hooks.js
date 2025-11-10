@@ -3,6 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { showGlobalErrorAlert } from 'alert/actions';
+import {
+  acceptedFileTypes,
+  isValidFileType,
+  errorMessage,
+} from '@/app/components/task-drawer/AttachmentsSection/helpers';
 import memoizeWith from 'ramda/src/memoizeWith';
 import identity from 'ramda/src/identity';
 import isEmpty from 'ramda/src/isEmpty';
@@ -104,7 +109,19 @@ const useInitializeAttachmentsSectionHooks = () => {
   const onAttachmentFileInputChange = useCallback(
     (files) => {
       if (files && !isEmpty(files)) {
-        const [newAttachment, ...restAttachments] = files;
+        const validFiles = files.filter((file) => {
+          if (!isValidFileType(file)) {
+            dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+            return false;
+          }
+          return true;
+        });
+
+        if (validFiles.length === 0) {
+          return;
+        }
+
+        const [newAttachment, ...restAttachments] = validFiles;
 
         setCurrentlyUploadedAttachment(newAttachment);
         setUploadProgress(0);
@@ -126,11 +143,22 @@ const useInitializeAttachmentsSectionHooks = () => {
         );
       }
     },
-    [dispatch, profile, folderIdentifier],
+    [dispatch, profileIdentifier, folderIdentifier],
+  );
+
+  const handleDropRejected = useCallback(
+    (fileRejections) => {
+      fileRejections.forEach(({ file }) => {
+        dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+      });
+    },
+    [dispatch],
   );
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: onAttachmentFileInputChange,
+    onDropRejected: handleDropRejected,
+    accept: acceptedFileTypes,
   });
 
   const loadAttachmentsContent = useCallback(

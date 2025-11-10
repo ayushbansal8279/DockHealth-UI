@@ -4,23 +4,72 @@ import identity from 'ramda/src/identity';
 import { getTaskAttachment } from 'api/task-api';
 import { Image, Movie, Description, Audiotrack } from '@mui/icons-material';
 
-export const acceptedFileFormats = [
-  'application/pdf',
-  'application/zip',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'audio/*',
-  'image/*',
-  'video/*',
-  'text/html',
-  'text/plain',
-  'text/xml',
-  'text/csv',
-].join(', ');
+export const acceptedFileTypes = {
+  'image/png': ['.png'],
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/jpg': ['.jpg'],
+  'image/heic': ['.heic'],
+  'image/tiff': ['.tiff'],
+  'application/pdf': ['.pdf'],
+  'text/plain': ['.txt'],
+  'text/csv': ['.csv'],
+  'application/vnd.ms-excel': ['.xls'],
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
+    '.xlsx',
+  ],
+  'application/vnd.ms-excel.sheet.macroEnabled.12': ['.xlsm'],
+  'application/vnd.ms-excel.sheet.binary.macroEnabled.12': ['.xlsb'],
+  'application/msword': ['.doc'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [
+    '.docx',
+  ],
+  'application/vnd.ms-powerpoint': ['.ppt'],
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': [
+    '.pptx',
+  ],
+  'application/vnd.apple.numbers': ['.numbers'],
+  'application/vnd.apple.pages': ['.pages'],
+};
+
+export const allowedExtensions = [
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.heic',
+  '.tiff',
+  '.pdf',
+  '.txt',
+  '.csv',
+  '.xlsx',
+  '.xlsm',
+  '.xlsb',
+  '.xls',
+  '.doc',
+  '.docx',
+  '.ppt',
+  '.pptx',
+  '.numbers',
+  '.pages',
+];
+
+export const isValidFileType = (file) => {
+  if (!file) return false;
+
+  if (file.type) {
+    const mimeTypeKeys = Object.keys(acceptedFileTypes);
+    if (mimeTypeKeys.includes(file.type)) {
+      return true;
+    }
+  }
+
+  const fileName = file.name || '';
+  const fileExtension = fileName
+    .substring(fileName.lastIndexOf('.'))
+    .toLowerCase();
+  return allowedExtensions.includes(fileExtension);
+};
+
+export const errorMessage = `Invalid file type.`;
 
 export const getMemoTaskAttachment = memoizeWith(
   identity,
