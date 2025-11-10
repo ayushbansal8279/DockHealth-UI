@@ -3,6 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { showGlobalErrorAlert } from 'alert/actions';
+import {
+  acceptedFileTypes,
+  isValidFileType,
+  errorMessage,
+} from '@/app/components/task-drawer/AttachmentsSection/helpers';
 import memoizeWith from 'ramda/src/memoizeWith';
 import identity from 'ramda/src/identity';
 import isEmpty from 'ramda/src/isEmpty';
@@ -57,7 +62,8 @@ const useInitializeAttachmentsSectionHooks = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const attachments = useSelector(patientAttachmentsSelector) || [];
   const folders = useSelector(patientFoldersSelector) || [];
-  const patientTaskAttachments = useSelector(patientTaskAttachementSelector) || []
+  const patientTaskAttachments =
+    useSelector(patientTaskAttachementSelector) || [];
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [attachmentsLoading, setAttachmentsLoading, unsetAttachmentsLoading] =
@@ -77,7 +83,19 @@ const useInitializeAttachmentsSectionHooks = () => {
   const onAttachmentFileInputChange = useCallback(
     (files) => {
       if (files && !isEmpty(files)) {
-        const [newAttachment, ...restAttachments] = files;
+        const validFiles = files.filter((file) => {
+          if (!isValidFileType(file)) {
+            dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+            return false;
+          }
+          return true;
+        });
+
+        if (validFiles.length === 0) {
+          return;
+        }
+
+        const [newAttachment, ...restAttachments] = validFiles;
 
         setCurrentlyUploadedAttachment(newAttachment);
         setUploadProgress(0);
@@ -102,8 +120,19 @@ const useInitializeAttachmentsSectionHooks = () => {
     [dispatch, patient, folderIdentifier],
   );
 
+  const handleDropRejected = useCallback(
+    (fileRejections) => {
+      fileRejections.forEach(({ file }) => {
+        dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+      });
+    },
+    [dispatch],
+  );
+
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: onAttachmentFileInputChange,
+    onDropRejected: handleDropRejected,
+    accept: acceptedFileTypes,
   });
 
   const loadAttachmentsContent = useCallback(
@@ -113,9 +142,7 @@ const useInitializeAttachmentsSectionHooks = () => {
       Promise.all(
         attachmentsToReload.map(
           async ({ attachmentIdentifier, fileName, contentType }) => {
-            const { data } = await getAttachement(
-              attachmentIdentifier,
-            );
+            const { data } = await getAttachement(attachmentIdentifier);
 
             const fileSource = await new Promise((resolve, reject) => {
               const reader = new FileReader();
@@ -153,18 +180,21 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const deleteAttachment = useCallback(
     (identifier) => {
-      dispatch(openModal('DeleteConfirmation', {
-        title: 'Delete Attachment',
-        description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
-        confirm: () => {
-          dispatch(
-            PatientDetailsActions.deletePatientAttachment(
-              patientIdentifier,
-              identifier,
-            ),
-          );
-        }
-      }))
+      dispatch(
+        openModal('DeleteConfirmation', {
+          title: 'Delete Attachment',
+          description:
+            'Are you sure you want to delete this attachment? This action cannot be undone.',
+          confirm: () => {
+            dispatch(
+              PatientDetailsActions.deletePatientAttachment(
+                patientIdentifier,
+                identifier,
+              ),
+            );
+          },
+        }),
+      );
     },
     [dispatch, patientIdentifier],
   );
@@ -173,7 +203,10 @@ const useInitializeAttachmentsSectionHooks = () => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
     try {
       const { data } = await getMemoPatientAttachment(attachmentIdentifier);
-      blobFileDownload(new Blob([data], { type: contentType }), fileName || 'download');
+      blobFileDownload(
+        new Blob([data], { type: contentType }),
+        fileName || 'download',
+      );
     } catch (error) {
       console.error('Error downloading attachment:', error);
     }
@@ -183,20 +216,22 @@ const useInitializeAttachmentsSectionHooks = () => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
     try {
       const response = await getTaskAttachment(attachmentIdentifier);
-      blobFileDownload(new Blob([response.data], { type: contentType }), fileName || 'download');
-
+      blobFileDownload(
+        new Blob([response.data], { type: contentType }),
+        fileName || 'download',
+      );
     } catch (error) {
       console.error('Error downloading attachment:', error);
     }
   };
-
 
   const openAttachmentPreview = useCallback(
     (attachment, type) => {
       setPreviewedAttachment(attachment);
       loadAttachmentsContent({
         attachmentsToReload: [attachment],
-        getAttachement: type === 'patient' ? getMemoPatientAttachment : getMemoTaskAttachment
+        getAttachement:
+          type === 'patient' ? getMemoPatientAttachment : getMemoTaskAttachment,
       });
       showAttachmentPreview();
     },
@@ -224,10 +259,12 @@ const useInitializeAttachmentsSectionHooks = () => {
   const renameAttachment = (fileOrFolder) => {
     dispatch(
       openModal('PatientFolder', {
-        title: `Rename ${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
-          }`,
-        inputLabel: `${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
-          } name`,
+        title: `Rename ${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+        }`,
+        inputLabel: `${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+        } name`,
         currentName: fileOrFolder.fileName,
         onChange: (name) => {
           dispatch(
@@ -243,14 +280,17 @@ const useInitializeAttachmentsSectionHooks = () => {
   const renamePatientTaskAttachment = (fileOrFolder) => {
     dispatch(
       openModal('PatientFolder', {
-        title: `Rename ${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
-          }`,
-        inputLabel: `${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
-          } name`,
+        title: `Rename ${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+        }`,
+        inputLabel: `${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+        } name`,
         currentName: fileOrFolder.fileName,
         onChange: (name) => {
           dispatch(
-            PatientDetailsActions.updatePatientTaskAttachment(fileOrFolder.attachmentIdentifier,
+            PatientDetailsActions.updatePatientTaskAttachment(
+              fileOrFolder.attachmentIdentifier,
               name,
             ),
           );
@@ -261,17 +301,18 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const deletePatientTaskAttachment = useCallback(
     (identifier) => {
-      dispatch(openModal('DeleteConfirmation', {
-        title: 'Delete Attachment',
-        description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
-        confirm: () => {
-          dispatch(
-            PatientDetailsActions.deletePatientTaskAttachement(
-              identifier,
-            ),
-          );
-        }
-      }))
+      dispatch(
+        openModal('DeleteConfirmation', {
+          title: 'Delete Attachment',
+          description:
+            'Are you sure you want to delete this attachment? This action cannot be undone.',
+          confirm: () => {
+            dispatch(
+              PatientDetailsActions.deletePatientTaskAttachement(identifier),
+            );
+          },
+        }),
+      );
     },
     [dispatch],
   );

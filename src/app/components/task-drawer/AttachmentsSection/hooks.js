@@ -6,7 +6,13 @@ import isEmpty from 'ramda/src/isEmpty';
 import { removeTaskAttachment, addTaskAttachment } from 'actions/task-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { userProfileSelector } from 'selectors/user-selectors';
-import { getMemoTaskAttachment } from './helpers';
+import { showGlobalErrorAlert } from 'alert/actions';
+import {
+  getMemoTaskAttachment,
+  acceptedFileTypes,
+  isValidFileType,
+  errorMessage,
+} from './helpers';
 
 const initializeAttachmentsSectionHooks = (selectedTask) => {
   const attachmentFileInputReference = useRef(null);
@@ -31,7 +37,9 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
         }
         case 'RENAME_ATTACHMENT': {
           return state.map((attachment) => {
-            if (attachment.attachmentIdentifier === action.attachmentIdentifier) {
+            if (
+              attachment.attachmentIdentifier === action.attachmentIdentifier
+            ) {
               return { ...attachment, fileName: action.newFileName };
             }
             return attachment;
@@ -65,7 +73,19 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
   const onAttachmentFileInputChange = useCallback(
     (files) => {
       if (files && !isEmpty(files)) {
-        const [newAttachment, ...restAttachments] = files;
+        const validFiles = files.filter((file) => {
+          if (!isValidFileType(file)) {
+            dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+            return false;
+          }
+          return true;
+        });
+
+        if (validFiles.length === 0) {
+          return;
+        }
+
+        const [newAttachment, ...restAttachments] = validFiles;
 
         setCurrentlyUploadedAttachment(newAttachment);
         setUploadProgress(0);
@@ -91,8 +111,19 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
     [selectedTaskIdentifier, dispatch, currentTaskAttachmentsDispatch],
   );
 
+  const handleDropRejected = useCallback(
+    (fileRejections) => {
+      fileRejections.forEach(({ file }) => {
+        dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+      });
+    },
+    [dispatch],
+  );
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onAttachmentFileInputChange,
+    onDropRejected: handleDropRejected,
+    accept: acceptedFileTypes,
   });
 
   const loadAttachmentsContent = useCallback(
@@ -212,7 +243,7 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
       isDragActive,
     },
     downloadAllFiles,
-    currentTaskAttachmentsDispatch
+    currentTaskAttachmentsDispatch,
   };
 };
 

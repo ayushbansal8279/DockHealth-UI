@@ -28,6 +28,9 @@ import palette from 'styles/palette';
 import {
   ScanStatusText,
   UNSUPPORTED_WARNING_MESSAGE,
+  acceptedFileTypes,
+  isValidFileType,
+  errorMessage,
 } from '../../task-drawer/AttachmentsSection/helpers';
 import { ScanStatus } from '@/app/views/patient-details/PatientAttachments/helpers';
 import { AttachmentFileInput } from './styled';
@@ -72,7 +75,23 @@ const AttachmentSection = ({ disabled }) => {
   const addAttachment = useCallback(
     (files) => {
       if (files && !isEmpty(files)) {
-        const [newAttachment, ...restAttachments] = files;
+        const validFiles = files.filter((file) => {
+          if (!isValidFileType(file)) {
+            dispatch(
+              showGlobalErrorAlert(
+                `${file.name}: ${errorMessage}`,
+              ),
+            );
+            return false;
+          }
+          return true;
+        });
+
+        if (validFiles.length === 0) {
+          return;
+        }
+
+        const [newAttachment, ...restAttachments] = validFiles;
 
         setUploadingAttachments();
         setUploadProgress(0);
@@ -105,8 +124,19 @@ const AttachmentSection = ({ disabled }) => {
     ],
   );
 
+  const handleDropRejected = useCallback(
+    (fileRejections) => {
+      fileRejections.forEach(({ file }) => {
+        dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+      });
+    },
+    [dispatch],
+  );
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: addAttachment,
+    onDropRejected: handleDropRejected,
+    accept: acceptedFileTypes,
   });
 
   const handleDeleteAttachment = (attachmentIdentifier) => {
