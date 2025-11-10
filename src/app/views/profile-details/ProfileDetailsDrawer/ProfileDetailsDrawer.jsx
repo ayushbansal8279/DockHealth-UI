@@ -17,12 +17,7 @@ import {
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { convertDefaultFields } from '@/app/components/profile-builder/helper';
-import {
-  getProfileDetails,
-  editProfileDetails,
-  archiveProfile,
-  deleteProfile,
-} from '@/app/api/profile-api';
+import { getProfileDetails, editProfileDetails } from '@/app/api/profile-api';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileName } from '../../custom-profile-details/helpers';
 import ProfileDrawerLoader from './ProfileDrawerLoader';
@@ -38,7 +33,7 @@ import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { mergeDeepRight } from 'ramda';
 import { updatePatientDetails } from '@/app/actions/patient-details-actions';
 import { ProfileStatus } from 'helpers/profile-helpers';
-import { closeModal, openModal } from 'modal/actions';
+import { createProfileMenuOptions } from './profile-drawer-helper';
 import {
   addFieldOptionsInDefaultCategory,
   enrichCategoryGroups,
@@ -249,93 +244,27 @@ const ProfileDetailsDrawer = ({
     }
 
     if (context === 'PROFILETYPE') {
-      const openArchiveModal = (
-        title,
-        nextStatus,
-        confirmText,
-        successMessage,
-      ) => {
-        dispatch(
-          openModal('DeleteConfirmation', {
-            title,
-            description: `Are you sure you want to ${confirmText.toLowerCase()} this object?`,
-            confirm: () => {
-              archiveProfile(profile?.identifier, nextStatus).then(() => {
-                dispatch(showGlobalAlert(successMessage));
-                history.push(`/custom-objects/${profileTypeIdentifier}`);
-              });
-              dispatch(closeModal());
-            },
-            confirmButtonText: confirmText,
-          }),
-        );
-      };
-
-      return [
-        { name: 'Edit', onClick: () => setEditMode(true) },
-        {
-          name: 'Merge',
-          onClick: () => {
-            dispatch(
-              openModal('ProfilePicker', {
-                profileTypeIdentifier: profileTypeIdentifier,
-                profile: profile,
-              }),
-            );
-            onClose();
-          },
-        },
-        ...(profile?.profileStatus === ProfileStatus.ACTIVE
-          ? [
-              {
-                name: 'Archive',
-                onClick: () =>
-                  openArchiveModal(
-                    'Archive Object',
-                    ProfileStatus.ARCHIVED,
-                    'Archive',
-                    AlertMessages.ARCHIVED,
-                  ),
-              },
-            ]
-          : profile?.profileStatus === ProfileStatus.ARCHIVED
-          ? [
-              {
-                name: 'Restore',
-                onClick: () =>
-                  openArchiveModal(
-                    'Restore Object',
-                    ProfileStatus.ACTIVE,
-                    'Restore',
-                    AlertMessages.UNARCHIVED,
-                  ),
-              },
-            ]
-          : []),
-        {
-          name: 'Delete',
-          onClick: () => {
-            dispatch(
-              openModal('DeleteConfirmation', {
-                description: 'Are you sure to delete this object?',
-                confirm: () => {
-                  deleteProfile(profile?.identifier).then(() => {
-                    dispatch(showGlobalAlert(AlertMessages.DELETED));
-                    history.push(`/custom-objects/${profileTypeIdentifier}`);
-                  });
-                  dispatch(closeModal());
-                },
-              }),
-            );
-          },
-        },
-      ];
+      return createProfileMenuOptions({
+        dispatch,
+        history,
+        profile,
+        profileTypeIdentifier,
+        setEditMode,
+        onClose,
+      });
     }
 
     return [];
-  }, [context, dispatch, history, profile, profileTypeIdentifier]);
-
-  const options = menu;
+  }, [
+    context,
+    dispatch,
+    history,
+    profile,
+    profileTypeIdentifier,
+    setEditMode,
+    onClose,
+    handleEditButtonClick,
+  ]);
 
   return (
     <DrawerWrapper open={isOpenedDetails} anchor="left" onClose={onClose}>
@@ -347,9 +276,9 @@ const ProfileDetailsDrawer = ({
             <StickyHeader>
               <TitleName>{title}</TitleName>
               <MoreActinsWrapper>
-                {options && (
+                {menu && (
                   <OptionsMenu
-                    options={options}
+                    options={menu}
                     customButtonComponent={IconButton}
                   >
                     <MoreVert />
