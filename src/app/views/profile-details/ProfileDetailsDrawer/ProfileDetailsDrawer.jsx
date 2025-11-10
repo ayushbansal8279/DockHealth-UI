@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import moment from 'moment';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import ProfileGroup from './ProfileGroup';
 import { IconButton } from '@mui/material';
 import { ArrowBack, MoreVert } from '@mui/icons-material';
@@ -16,7 +17,12 @@ import {
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { convertDefaultFields } from '@/app/components/profile-builder/helper';
-import { getProfileDetails } from '@/app/api/profile-api';
+import {
+  getProfileDetails,
+  editProfileDetails,
+  archiveProfile,
+  deleteProfile,
+} from '@/app/api/profile-api';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileName } from '../../custom-profile-details/helpers';
 import ProfileDrawerLoader from './ProfileDrawerLoader';
@@ -27,11 +33,12 @@ import {
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { editProfileDetails } from 'api/profile-api';
 import { useDispatch } from 'react-redux';
 import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { mergeDeepRight } from 'ramda';
 import { updatePatientDetails } from '@/app/actions/patient-details-actions';
+import { ProfileStatus } from 'helpers/profile-helpers';
+import { closeModal, openModal } from 'modal/actions';
 import {
   addFieldOptionsInDefaultCategory,
   enrichCategoryGroups,
@@ -58,7 +65,9 @@ const ProfileDetailsDrawer = ({
   const [profileTypeFields, setProfileTypeFields] = useState([]);
   const [defaultFields, setDefaultFields] = useState([]);
   const [allCustomFields, setAllCustomFields] = useState([]);
+  const [profile, setProfile] = useState(null);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const fetchPatientCustomGroups = async () => {
     try {
@@ -102,19 +111,20 @@ const ProfileDetailsDrawer = ({
 
   const fetchProfileCustomGroups = async () => {
     try {
-      const [customGroups, profileTypeFields, profile] = await Promise.all([
+      const [customGroups, profileTypeFields, profileData] = await Promise.all([
         CustomFieldApi.searchCustomFiledGroups(context, profileTypeIdentifier),
         getAllProfileFieldTypes(profileTypeIdentifier),
         getProfileDetails(profileIdentifier),
       ]);
       setProfileTypeFields(profileTypeFields);
+      setProfile(profileData);
 
-      const profileName = getProfileName(profileTypeFields, profile);
+      const profileName = getProfileName(profileTypeFields, profileData);
 
       const title = formatProfileTitle(profileName);
       setTitle(title);
 
-      setProfileValues(profile?.fields);
+      setProfileValues(profileData?.fields);
 
       const enrichedGroups = enrichCategoryGroups(
         customGroups,
@@ -221,12 +231,104 @@ const ProfileDetailsDrawer = ({
     setEditMode(false);
   };
 
-  const options = [
-    {
-      name: 'Edit Object Details',
-      onClick: handleEditButtonClick,
-    },
-  ];
+  const menu = useMemo(() => {
+    if (context === 'PATIENT') {
+      return [
+        {
+          name: 'Edit Object Details',
+          onClick: handleEditButtonClick,
+        },
+      ];
+    }
+
+    if (context === 'PROFILETYPE') {
+      const openArchiveModal = (
+        title,
+        nextStatus,
+        confirmText,
+        successMessage,
+      ) => {
+        dispatch(
+          openModal('DeleteConfirmation', {
+            title,
+            description: `Are you sure you want to ${confirmText.toLowerCase()} this object?`,
+            confirm: () => {
+              archiveProfile(profile?.identifier, nextStatus).then(() => {
+                dispatch(showGlobalAlert(successMessage));
+                history.push(`/custom-objects/${profileTypeIdentifier}`);
+              });
+              dispatch(closeModal());
+            },
+            confirmButtonText: confirmText,
+          }),
+        );
+      };
+
+      return [
+        { name: 'Edit', onClick: () => setEditMode(true) },
+        {
+          name: 'Merge',
+          onClick: () => {
+            dispatch(
+              openModal('ProfilePicker', {
+                profileTypeIdentifier: profileTypeIdentifier,
+                profile: profile,
+              }),
+            );
+            onClose();
+          },
+        },
+        ...(profile?.profileStatus === ProfileStatus.ACTIVE
+          ? [
+              {
+                name: 'Archive',
+                onClick: () =>
+                  openArchiveModal(
+                    'Archive Object',
+                    ProfileStatus.ARCHIVED,
+                    'Archive',
+                    AlertMessages.ARCHIVED,
+                  ),
+              },
+            ]
+          : profile?.profileStatus === ProfileStatus.ARCHIVED
+          ? [
+              {
+                name: 'Restore',
+                onClick: () =>
+                  openArchiveModal(
+                    'Restore Object',
+                    ProfileStatus.ACTIVE,
+                    'Restore',
+                    AlertMessages.UNARCHIVED,
+                  ),
+              },
+            ]
+          : []),
+        {
+          name: 'Delete',
+          onClick: () => {
+            dispatch(
+              openModal('DeleteConfirmation', {
+                description: 'Are you sure to delete this object?',
+                confirm: () => {
+                  deleteProfile(profile?.identifier).then(() => {
+                    dispatch(showGlobalAlert(AlertMessages.DELETED));
+                    history.push(`/custom-objects/${profileTypeIdentifier}`);
+                  });
+                  dispatch(closeModal());
+                },
+              }),
+            );
+          },
+        },
+      ];
+    }
+
+    return [];
+  }, [context, dispatch, history, profile, profileTypeIdentifier]);
+
+  const options = menu;
 
   return (
     <DrawerWrapper open={isOpenedDetails} anchor="left" onClose={onClose}>
