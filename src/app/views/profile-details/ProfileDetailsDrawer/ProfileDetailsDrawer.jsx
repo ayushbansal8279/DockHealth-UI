@@ -139,13 +139,17 @@ const ProfileDetailsDrawer = ({
   };
 
   useEffect(() => {
-    if (context === 'PATIENT') {
+    if (context === 'PATIENT' && patient) {
       fetchPatientCustomGroups();
     }
-    if (context === 'PROFILETYPE') {
+    if (
+      context === 'PROFILETYPE' &&
+      profileTypeIdentifier &&
+      profileIdentifier
+    ) {
       fetchProfileCustomGroups();
     }
-  }, [context]);
+  }, [context, profileTypeIdentifier, profileIdentifier, patient]);
 
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
@@ -153,24 +157,27 @@ const ProfileDetailsDrawer = ({
   const { register, handleSubmit, getValues } = formMethods;
   const formReference = useRef(null);
 
-  const updateProfile = useCallback((data) => {
-    editProfileDetails(
-      profileIdentifier,
-      data?.profileMetaData,
-      profileTypeFields,
-    )
-      .then(async () => {
-        setEditMode(false);
-        dispatch(showGlobalAlert(AlertMessages.SAVED));
-        const profile = await getProfileDetails(profileIdentifier);
-        setProfileValues(profile?.fields);
-      })
-      .catch((error) => {
-        dispatch(
-          showGlobalErrorAlert(error?.message ?? 'Error saving details!'),
-        );
-      });
-  }, []);
+  const updateProfile = useCallback(
+    (data) => {
+      editProfileDetails(
+        profileIdentifier,
+        data?.profileMetaData,
+        profileTypeFields,
+      )
+        .then(async () => {
+          setEditMode(false);
+          dispatch(showGlobalAlert(AlertMessages.SAVED));
+          const profile = await getProfileDetails(profileIdentifier);
+          setProfileValues(profile?.fields);
+        })
+        .catch((error) => {
+          dispatch(
+            showGlobalErrorAlert(error?.message ?? 'Error saving details!'),
+          );
+        });
+    },
+    [profileIdentifier, profileTypeFields, dispatch],
+  );
 
   const updatePatient = (data) => {
     data.phoneHome = data.phoneHome ?? '';
