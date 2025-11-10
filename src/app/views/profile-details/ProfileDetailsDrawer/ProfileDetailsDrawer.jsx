@@ -28,12 +28,27 @@ import {
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { mergeDeepRight } from 'ramda';
 import { updatePatientDetails } from '@/app/actions/patient-details-actions';
 import { ProfileStatus } from 'helpers/profile-helpers';
 import { createProfileMenuOptions } from './profile-drawer-helper';
+import {
+  createPatientMenuOptions,
+  useArchivePatient,
+  useUnarchivePatient,
+  useDeletePatient,
+  useHandleAddButtonClick,
+  useHandleChangeScopeClick,
+} from './patient-drawer-helper';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+  userHasPatientCustomFieldsFeatureSelector,
+} from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { useBoolean } from 'hooks/useBoolean';
 import {
   addFieldOptionsInDefaultCategory,
   enrichCategoryGroups,
@@ -63,6 +78,31 @@ const ProfileDetailsDrawer = ({
   const [profile, setProfile] = useState(null);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const patientCustomFieldsAvailable = useSelector(
+    userHasPatientCustomFieldsFeatureSelector,
+  );
+  const isAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+  const [isActive, setActive, unsetActive] = useBoolean(false);
+
+  const isWorkspaceScoped =
+    patient?.organizationIdentifier &&
+    patient.organizationIdentifier !==
+      currentOrganization?.organizationIdentifier;
+  const workspaceId = isWorkspaceScoped
+    ? patient?.organizationIdentifier
+    : null;
+
+  const { emrIntegrationEnabled } = currentOrganization || {};
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
 
   const fetchPatientCustomGroups = async () => {
     try {
@@ -220,10 +260,6 @@ const ProfileDetailsDrawer = ({
     }
   };
 
-  const handleEditButtonClick = () => {
-    setEditMode(true);
-  };
-
   const onClose = () => {
     closeDrawer();
     if (context === 'PATIENT' && editMode) {
@@ -231,16 +267,41 @@ const ProfileDetailsDrawer = ({
       setProfileValues(finalProfileValues);
     }
     setEditMode(false);
+    if (context === 'PATIENT') {
+      unsetActive();
+    }
   };
 
+  const archivePatient = useArchivePatient(patient?.patientIdentifier);
+  const unarchivePatient = useUnarchivePatient(patient?.patientIdentifier);
+  const deletePatient = useDeletePatient(patient?.patientIdentifier);
+  const handleAddButtonClick = useHandleAddButtonClick();
+  const handleChangeScopeClick = useHandleChangeScopeClick(
+    patient,
+    workspaceId,
+  );
+
   const menu = useMemo(() => {
-    if (context === 'PATIENT') {
-      return [
-        {
-          name: 'Edit Object Details',
-          onClick: handleEditButtonClick,
+    if (context === 'PATIENT' && patient) {
+      return createPatientMenuOptions({
+        dispatch,
+        history,
+        patient,
+        isActive: editMode || isActive,
+        setActive: () => {
+          setEditMode(true);
+          setActive();
         },
-      ];
+        patientAddEnabled,
+        archivePatient,
+        unarchivePatient,
+        deletePatient,
+        onClose,
+        isAdmin,
+        patientCustomFieldsAvailable,
+        handleAddButtonClick,
+        handleChangeScopeClick,
+      });
     }
 
     if (context === 'PROFILETYPE') {
@@ -263,7 +324,17 @@ const ProfileDetailsDrawer = ({
     profileTypeIdentifier,
     setEditMode,
     onClose,
-    handleEditButtonClick,
+    patient,
+    editMode,
+    isActive,
+    patientAddEnabled,
+    archivePatient,
+    unarchivePatient,
+    deletePatient,
+    isAdmin,
+    patientCustomFieldsAvailable,
+    handleAddButtonClick,
+    handleChangeScopeClick,
   ]);
 
   return (

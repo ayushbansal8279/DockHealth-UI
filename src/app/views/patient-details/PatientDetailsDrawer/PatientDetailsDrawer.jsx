@@ -20,12 +20,14 @@ import {
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
-import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
-  archivePatient as archivePatientAction,
-  unarchivePatient as unarchivePatientAction,
-  deletePatientArchive as deletePatientArchiveAction,
-} from 'sagas/patient-details-saga';
+  createPatientMenuOptions,
+  useArchivePatient,
+  useUnarchivePatient,
+  useDeletePatient,
+  useHandleAddButtonClick,
+  useHandleChangeScopeClick,
+} from '@/app/views/profile-details/ProfileDetailsDrawer/patient-drawer-helper';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
@@ -55,8 +57,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     userHasPatientCustomFieldsFeatureSelector,
   );
 
-  const isWorkspaceScoped = patient?.organizationIdentifier && 
-    patient.organizationIdentifier !== currentOrganization?.organizationIdentifier;
+  const isWorkspaceScoped =
+    patient?.organizationIdentifier &&
+    patient.organizationIdentifier !==
+      currentOrganization?.organizationIdentifier;
   const workspaceId = isWorkspaceScoped ? patient.organizationIdentifier : null;
 
   const [isActive, setActive, unsetActive] = useBoolean(false);
@@ -125,28 +129,9 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     currentOrganization,
   );
 
-  const archivePatient = useCallback(() => {
-    const modalProps = {
-      confirm: () => dispatch(archivePatientAction(patientIdentifier, history)),
-    };
-    dispatch(openModal('ArchivePatient', modalProps));
-  }, [dispatch, patientIdentifier, history]);
-
-  const unarchivePatient = useCallback(() => {
-    const modalProps = {
-      confirm: () =>
-        dispatch(unarchivePatientAction(patientIdentifier, history)),
-    };
-    dispatch(openModal('UnarchivePatient', modalProps));
-  }, [dispatch, history, patientIdentifier]);
-
-  const deletePatient = useCallback(() => {
-    const modalProps = {
-      confirm: () =>
-        dispatch(deletePatientArchiveAction(patientIdentifier, history)),
-    };
-    dispatch(openModal('DeletePatient', modalProps));
-  }, [dispatch, history, patientIdentifier]);
+  const archivePatient = useArchivePatient(patientIdentifier);
+  const unarchivePatient = useUnarchivePatient(patientIdentifier);
+  const deletePatient = useDeletePatient(patientIdentifier);
 
   const handleFormSubmit = (data) => {
     if (data.phoneHome === undefined) {
@@ -165,87 +150,45 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     dispatch(updatePatientDetails(patientIdentifier, updateData));
   };
 
-  const handleAddButtonClick = useCallback(() => {
-    history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patients`);
-  }, [history]);
-
-  const handleChangeScopeClick = useCallback(() => {
-    dispatch(
-      openModal('ScopeChange', {
-        customField: {
-          ...patient,
-          patientIdentifier: patient.patientIdentifier,
-        },
-        workspaceIdentifier: workspaceId,
-        onScopeChanged: () => {
-          if (workspaceId) {
-            history.push(`/core/workspace/${workspaceId}/patients/list/all`);
-          } else {
-            history.push('/core/patients/list/all');
-          }
-        },
-      }),
-    );
-  }, [dispatch, patient, workspaceId]);
+  const handleAddButtonClick = useHandleAddButtonClick();
+  const handleChangeScopeClick = useHandleChangeScopeClick(
+    patient,
+    workspaceId,
+  );
 
   const contextMenuOptions = useMemo(
-    () => [
-      !isActive && {
-        name: 'Edit',
-        onClick: setActive,
-      },
-      patientAddEnabled &&
-        !isActive && {
-          name: 'Merge',
-          onClick: () => {
-            dispatch(
-              openModal('PatientPicker', {
-                patientIdentifiersToExclude: [patient.patientIdentifier],
-                patient: patient,
-              }),
-            );
-            closeDetails();
-          },
-        },
-      patientAddEnabled &&
-        patientStatus === 'ACTIVE' && {
-          name: 'Archive',
-          onClick: archivePatient,
-        },
-      patientStatus === 'ARCHIVED' && {
-        name: 'Restore',
-        onClick: unarchivePatient,
-      },
-      patientStatus === 'ARCHIVED' && {
-        name: 'Delete',
-        onClick: deletePatient,
-      },
-      isAdmin &&
-        patientCustomFieldsAvailable && {
-          name: 'Edit Object Details',
-          onClick: handleAddButtonClick,
-        },
-      isAdmin && {
-        name: 'Change Scope',
-        onClick: handleChangeScopeClick,
-      },
-    ],
+    () =>
+      createPatientMenuOptions({
+        dispatch,
+        history,
+        patient,
+        isActive,
+        setActive,
+        patientAddEnabled,
+        archivePatient,
+        unarchivePatient,
+        deletePatient,
+        onClose: closeDetails,
+        isAdmin,
+        patientCustomFieldsAvailable,
+        handleAddButtonClick,
+        handleChangeScopeClick,
+      }),
     [
+      dispatch,
+      history,
+      patient,
       isActive,
       setActive,
       patientAddEnabled,
-      patient,
       archivePatient,
       unarchivePatient,
-      patientStatus,
       deletePatient,
-      dispatch,
       closeDetails,
-      history,
-      handleAddButtonClick,
-      handleChangeScopeClick,
       isAdmin,
       patientCustomFieldsAvailable,
+      handleAddButtonClick,
+      handleChangeScopeClick,
     ],
   );
 
