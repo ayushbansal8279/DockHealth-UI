@@ -4,17 +4,6 @@ import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
 
-/**
- * Creates menu options for profile drawer
- * @param {Object} params - Configuration object
- * @param {Function} params.dispatch - Redux dispatch function
- * @param {Function} params.history - React Router history object
- * @param {Object} params.profile - Profile object with identifier and profileStatus
- * @param {string} params.profileTypeIdentifier - Profile type identifier
- * @param {Function} params.setEditMode - Function to set edit mode
- * @param {Function} params.onClose - Function to close the drawer
- * @returns {Array} Array of menu option objects
- */
 export const createProfileMenuOptions = ({
   dispatch,
   history,
