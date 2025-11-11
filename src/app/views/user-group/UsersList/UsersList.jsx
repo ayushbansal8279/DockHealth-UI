@@ -90,7 +90,7 @@ const UsersList = (props) => {
       renderCell: (params) => (
         <div
           className="people-cell-container"
-          style={{ display: 'flex' }}
+          style={{ display: 'flex', alignItems: 'center' }}
           onClick={() =>
             history.push(
               `/core/assignedToPerson/${encodeURIComponent(
@@ -109,13 +109,13 @@ const UsersList = (props) => {
       field: 'email',
       headerName: 'EMAIL',
       flex: 2,
-      valueGetter: (params) => params.row.email,
+      valueGetter: (params) => params?.value ?? '',
     },
     {
       field: 'orgUserRole',
       headerName: 'USER STATUS',
       flex: 0.75,
-      valueGetter: (params) => params.row.orgUserRole,
+      valueGetter: (params) => params?.value ?? '',
     },
   ];
 

@@ -524,9 +524,15 @@ const CustomProfileListContent = ({
               filterable: true,
               sortable: true,
               valueGetter: (params) => {
+                if (!params || !params.row) {
+                  return '';
+                }
                 return params.row[field.name] ?? '';
               },
               renderCell: (params) => {
+                if (!params || !params.row) {
+                  return '';
+                }
                 const value = params.row[field.name];
 
                 if (field.fieldType === FieldType.DATE && value) {
@@ -594,6 +600,9 @@ const CustomProfileListContent = ({
             sortable: true,
             filterable: true,
             valueGetter: (params) => {
+              if (!params || !params.row) {
+                return '';
+              }
               return params.row.profileStatus || '';
             },
             renderCell: ({ row }) => {
