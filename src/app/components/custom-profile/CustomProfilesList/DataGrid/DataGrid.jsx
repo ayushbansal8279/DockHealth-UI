@@ -85,6 +85,7 @@ const ReusableDataGrid = ({
   placeholder = 'Search within results',
   ...props
 }) => {
+  const paginationMode = props.paginationMode ?? 'client';
   return (
     <StyledDataGrid
       sx={{
@@ -95,12 +96,13 @@ const ReusableDataGrid = ({
       columns={columns}
       rows={rows}
       getRowId={getRowId}
-      rowCount={rowCount ?? rows?.length}
+      rowCount={paginationMode === 'server' ? rowCount : undefined}
+      paginationMode={paginationMode}
       headerHeight={35}
       pagination
       showColumnRightBorder
       showCellRightBorders
-      filterMode="client"
+      filterMode={props.filterMode ?? 'client'}
       slots={{
         noRowsOverlay: () => (
           <Box

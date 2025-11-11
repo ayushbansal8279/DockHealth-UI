@@ -7,18 +7,26 @@ export const StyledDataGrid = styled(DataGridPremium)`
   flex: 1;
   min-height: 200px;
 
-  &.MuiDataGrid-cell {
+  & .MuiDataGrid-cell {
     font-family: inherit;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
 
   & .MuiDataGrid-cellContent {
+    display: flex;
+    align-items: center;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    display: block;
-    width: 100%;
   }
 
   & .MuiDataGrid-columnHeaders {
@@ -42,9 +50,8 @@ export const StyledDataGrid = styled(DataGridPremium)`
     visibility: hidden;
   }
 
-  &.MuiDataGrid-root--densityStandard .MuiDataGrid-cell {
-    padding-top: 5px;
-    padding-bottom: 5px;
+  &.MuiDataGrid-root--densityStandard .MuiDataGrid-cell,
+  & .MuiDataGrid-row {
   }
 
   & .MuiDataGrid-filterFormDeleteIcon {
