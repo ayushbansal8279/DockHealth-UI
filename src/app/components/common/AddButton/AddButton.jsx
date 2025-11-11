@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import { StyledAddButton } from './styled';
 
 const AddButton = ({ onClick, children, buttonRef }) => (
@@ -9,7 +9,15 @@ const AddButton = ({ onClick, children, buttonRef }) => (
 );
 
 export const AddEntitiesContainer = ({ ...props }) => (
-  <Grid container justifyContent="flex-end" alignItems="center" {...props} />
+  <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      width: '100%',
+    }}
+    {...props}
+  />
 );
 
 export default AddButton;
