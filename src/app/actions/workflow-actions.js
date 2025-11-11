@@ -15,6 +15,13 @@ export function deleteWorkflow(identifier) {
   };
 }
 
+export function suspendWorkflow(taskWorkflowIdentifier) {
+  return {
+    type: ActionTypes.SUSPEND_WORKFLOW,
+    taskWorkflowIdentifier,
+  };
+}
+
 export function addWorkflowComment(workflowIdentifier, commentText) {
   return {
     type: ActionTypes.ADD_WORKFLOW_COMMENT,

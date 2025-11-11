@@ -24,6 +24,7 @@ const TaskTemplateContextMenu = ({
   handleMoveToList,
   handleMoveGroupTask,
   handleDuplicate,
+  handleSuspend,
   handleDelete,
   showCompletedTasks,
   showIncompleteTasks,
@@ -182,6 +183,17 @@ const TaskTemplateContextMenu = ({
           <div>
             <MenuItemButton type="button" onClick={handleDuplicate}>
               Duplicate
+            </MenuItemButton>
+          </div>
+        )}
+        {handleSuspend && (
+          <div>
+            <MenuItemButton
+              tabIndex="0"
+              type="button"
+              onClick={handleSuspend}
+            >
+              Suspend
             </MenuItemButton>
           </div>
         )}

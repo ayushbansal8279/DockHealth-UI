@@ -48,6 +48,25 @@ function* deleteWorkflow({ identifier }) {
   }
 }
 
+function* suspendWorkflow({ taskWorkflowIdentifier }) {
+  try {
+    yield call(WorkflowApi.suspendWorkflow, taskWorkflowIdentifier);
+    yield put({
+      type: ActionTypes.SUSPEND_WORKFLOW_SUCCESS,
+      taskWorkflowIdentifier,
+    });
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.SUSPEND_WORKFLOW_FAILURE,
+        taskWorkflowIdentifier,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 function* addWorkflowComment({ workflowIdentifier, commentText }) {
   try {
     const currentUser = yield select(userProfileSelector);
@@ -265,6 +284,7 @@ function* reorderWorkflowTasks(payload) {
 export default function* watchWorkflow() {
   yield takeEvery(ActionTypes.DUPLICATE_WORKFLOW, duplicateWorkflow);
   yield takeEvery(ActionTypes.DELETE_WORKFLOW, deleteWorkflow);
+  yield takeEvery(ActionTypes.SUSPEND_WORKFLOW, suspendWorkflow);
   yield takeEvery(ActionTypes.ADD_WORKFLOW_COMMENT, addWorkflowComment);
   yield takeEvery(ActionTypes.UPDATE_WORKFLOW_COMMENT, updateWorkflowComment);
   yield takeEvery(ActionTypes.DELETE_WORKFLOW_COMMENT, deleteWorkflowComment);
