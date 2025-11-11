@@ -123,6 +123,8 @@ export const FormContainer = styled(Grid)`
     display: ${(props) => (props.visible ? 'flex' : 'none')};
     background-color: ${palette.coolGrey3};
     padding-right: 30px;
+    padding-left: 15px;
+    width: 100%;
   }
 `;
 
