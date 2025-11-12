@@ -43,6 +43,8 @@ const DueDateSection = ({
   setDueDate,
   defaultDueDateIntent,
   setDueDateIntent,
+  addTaskDrawerRecurringSchedule,
+  setAddTaskDrawerRecurringSchedule,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -169,7 +171,7 @@ const DueDateSection = ({
           </DateViewText>
         </DateViewContainer>
       )}
-      {hasRecurringSchedule && (
+      {(hasRecurringSchedule || !!addTaskDrawerRecurringSchedule) && (
         <RecurringIconContainer isOverdue={isOverdue}>
           <Spacing horizontal={2} />
           <RecurringIcon />
@@ -211,7 +213,9 @@ const DueDateSection = ({
                     : defaultDueDateIntent,
                 )}
                 onDateChange={handleDueDateSave}
-                recurring={hasRecurringSchedule}
+                recurring={
+                  hasRecurringSchedule || !!addTaskDrawerRecurringSchedule
+                }
                 onCloseClick={closePopover}
                 dueDateIntent={
                   selectedTask?.dueDateIntent
@@ -220,6 +224,11 @@ const DueDateSection = ({
                 }
                 dateType="dueDate"
                 onClearDateClick={handleClearDateClick}
+                addTaskDrawer={addTaskDrawer}
+                addTaskDrawerRecurringSchedule={addTaskDrawerRecurringSchedule}
+                setAddTaskDrawerRecurringSchedule={
+                  setAddTaskDrawerRecurringSchedule
+                }
               />
             </Box>
           </PopoverCard>

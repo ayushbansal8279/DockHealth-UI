@@ -49,6 +49,9 @@ const RecurringSection = ({
   allSelectedTasksIdentifiers,
   allSelectedWorkflowIdentifiers,
   bulkEditDueDate,
+  addTaskDrawer,
+  addTaskDrawerRecurringSchedule,
+  setAddTaskDrawerRecurringSchedule,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [endDateError, setEndDateError] = useState(false);
@@ -107,7 +110,10 @@ const RecurringSection = ({
   };
 
   useEffect(() => {
-    if (recurring) {
+    if (addTaskDrawer && addTaskDrawerRecurringSchedule) {
+      fillFormWithData(addTaskDrawerRecurringSchedule);
+    }
+    if (!addTaskDrawer && recurring) {
       getTaskRecurringSchedule(taskIdentifier)
         .then((data) => {
           fillFormWithData(data);
@@ -194,6 +200,11 @@ const RecurringSection = ({
             dispatch(showGlobalErrorAlert());
           });
       } else {
+        if (addTaskDrawer) {
+          setAddTaskDrawerRecurringSchedule(requestData);
+          onClose();
+          return;
+        }
         saveTaskRecurringSchedule(taskIdentifier, requestData)
           .then(() => {
             setIsSaving(false);
