@@ -69,7 +69,7 @@ export const isValidFileType = (file) => {
   return allowedExtensions.includes(fileExtension);
 };
 
-export const errorMessage = `Invalid file type.`;
+export const ERROR_INVALID_FILE_TYPE = `Invalid file type `;
 
 export const getMemoTaskAttachment = memoizeWith(
   identity,

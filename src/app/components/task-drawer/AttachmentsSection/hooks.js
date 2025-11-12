@@ -11,7 +11,7 @@ import {
   getMemoTaskAttachment,
   acceptedFileTypes,
   isValidFileType,
-  errorMessage,
+  ERROR_INVALID_FILE_TYPE,
 } from './helpers';
 
 const initializeAttachmentsSectionHooks = (selectedTask) => {
@@ -75,7 +75,9 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
       if (files && !isEmpty(files)) {
         const validFiles = files.filter((file) => {
           if (!isValidFileType(file)) {
-            dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+            dispatch(
+              showGlobalErrorAlert(`${ERROR_INVALID_FILE_TYPE}: ${file.name}`),
+            );
             return false;
           }
           return true;
@@ -114,7 +116,9 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
   const handleDropRejected = useCallback(
     (fileRejections) => {
       fileRejections.forEach(({ file }) => {
-        dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+        dispatch(
+          showGlobalErrorAlert(`${ERROR_INVALID_FILE_TYPE}: ${file.name}`),
+        );
       });
     },
     [dispatch],
