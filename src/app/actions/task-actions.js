@@ -12,6 +12,7 @@ import {
 } from 'helpers/task-helpers';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
+import { saveTaskRecurringSchedule } from '../api/task-api';
 
 export function storeAsCurrentTask(task) {
   return (dispatch) => {
@@ -121,7 +122,11 @@ const shapeTask = (task) => {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export function saveTask(newTask, shouldReloadGroups = false) {
+export function saveTask(
+  newTask,
+  shouldReloadGroups = false,
+  addTaskDrawerRecurringSchedule = false,
+) {
   if (newTask.taskIdentifier) {
     return (dispatch) =>
       TaskApi.updateTask(newTask)
@@ -145,8 +150,18 @@ export function saveTask(newTask, shouldReloadGroups = false) {
         addingNewTask: true,
       });
     }
+    if (addTaskDrawerRecurringSchedule) {
+      newTask.hasRecurringSchedule = true;
+    }
     return TaskApi.addTask(newTask)
       .then((task) => {
+        if (addTaskDrawerRecurringSchedule) {
+          saveTaskRecurringSchedule(
+            task.taskIdentifier,
+            addTaskDrawerRecurringSchedule,
+          );
+          return;
+        }
         if (task.taskList) {
           dispatch({ type: ActionTypes.ADD_TASK_SUCCESS, task });
           dispatch({
@@ -846,13 +861,14 @@ export const bulkEditDueDate = (tasksToUpdate, dueDate) => (dispatch) => {
   });
 };
 
-export const bulkEditDueDateWorkflow = (tasksToUpdate, dueDateTime) => (dispatch) => {
-  dispatch({
-    type: ActionTypes.UPDATE_WORKFLOWS,
-    tasksToUpdate,
-    fields: { dueDateTime },
-  });
-};
+export const bulkEditDueDateWorkflow =
+  (tasksToUpdate, dueDateTime) => (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_WORKFLOWS,
+      tasksToUpdate,
+      fields: { dueDateTime },
+    });
+  };
 
 export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   return {
