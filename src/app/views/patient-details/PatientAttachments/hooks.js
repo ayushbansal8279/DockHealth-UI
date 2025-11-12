@@ -3,11 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { showGlobalErrorAlert } from 'alert/actions';
-import {
-  acceptedFileTypes,
-  isValidFileType,
-  errorMessage,
-} from '@/app/components/task-drawer/AttachmentsSection/helpers';
 import memoizeWith from 'ramda/src/memoizeWith';
 import identity from 'ramda/src/identity';
 import isEmpty from 'ramda/src/isEmpty';
@@ -23,6 +18,11 @@ import { useBoolean } from 'hooks/useBoolean';
 import { openModal } from 'modal/actions';
 import { createPatientAttachmentsPath } from 'routing/helpers/paths';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
+import {
+  acceptedFileTypes,
+  isValidFileType,
+  ERROR_INVALID_FILE_TYPE,
+} from '@/app/components/task-drawer/AttachmentsSection/helpers';
 import { getTaskAttachment } from '@/app/api/task-api';
 import { blobFileDownload } from '@/app/helpers/blob-file-download';
 
@@ -85,7 +85,9 @@ const useInitializeAttachmentsSectionHooks = () => {
       if (files && !isEmpty(files)) {
         const validFiles = files.filter((file) => {
           if (!isValidFileType(file)) {
-            dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+            dispatch(
+              showGlobalErrorAlert(`${ERROR_INVALID_FILE_TYPE}: ${file.name}`),
+            );
             return false;
           }
           return true;
@@ -123,7 +125,9 @@ const useInitializeAttachmentsSectionHooks = () => {
   const handleDropRejected = useCallback(
     (fileRejections) => {
       fileRejections.forEach(({ file }) => {
-        dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+        dispatch(
+          showGlobalErrorAlert(`${ERROR_INVALID_FILE_TYPE}: ${file.name}`),
+        );
       });
     },
     [dispatch],

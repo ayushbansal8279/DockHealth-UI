@@ -30,7 +30,7 @@ import {
   UNSUPPORTED_WARNING_MESSAGE,
   acceptedFileTypes,
   isValidFileType,
-  errorMessage,
+  ERROR_INVALID_FILE_TYPE,
 } from '../../task-drawer/AttachmentsSection/helpers';
 import { ScanStatus } from '@/app/views/patient-details/PatientAttachments/helpers';
 import { AttachmentFileInput } from './styled';
@@ -79,7 +79,7 @@ const AttachmentSection = ({ disabled }) => {
           if (!isValidFileType(file)) {
             dispatch(
               showGlobalErrorAlert(
-                `${file.name}: ${errorMessage}`,
+                `${ERROR_INVALID_FILE_TYPE}: ${file.name}`,
               ),
             );
             return false;
@@ -127,7 +127,7 @@ const AttachmentSection = ({ disabled }) => {
   const handleDropRejected = useCallback(
     (fileRejections) => {
       fileRejections.forEach(({ file }) => {
-        dispatch(showGlobalErrorAlert(`${file.name}: ${errorMessage}`));
+        dispatch(showGlobalErrorAlert(`${ERROR_INVALID_FILE_TYPE}: ${file.name}`));
       });
     },
     [dispatch],
