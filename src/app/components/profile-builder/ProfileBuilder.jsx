@@ -64,6 +64,7 @@ const ProfileBuilder = () => {
   const [profileName, setProfileName] = useState('');
   const [context, setContext] = useState(null);
   const [profileType, setProfileType] = useState(null);
+  const [customGroups, setCustomGroups] = useState([]);
 
   const getContextFromProfileType = (profile) => {
     if (!profile) return null;
@@ -145,6 +146,7 @@ const ProfileBuilder = () => {
 
         return { ...category, fields: enrichedFields };
       });
+      setCustomGroups(customGroups);
       setSelectedCategories(processedGroups);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -165,9 +167,7 @@ const ProfileBuilder = () => {
 
         const enrichedFields = category.fields.map((field) => {
           const matchingField = allCustomFields?.find(
-            (customField) =>
-              customField.identifier === field.fieldReferenceId ||
-              customField.customFieldIdentifier === field.fieldReferenceId,
+            (customField) => customField.identifier === field.fieldReferenceId,
           );
 
           return matchingField ? { ...field, ...matchingField } : field;
@@ -175,6 +175,7 @@ const ProfileBuilder = () => {
 
         return { ...category, fields: enrichedFields };
       });
+      setCustomGroups(customGroups);
       setSelectedCategories(processedGroups);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -295,9 +296,10 @@ const ProfileBuilder = () => {
           return category;
         }
 
-        const savedFields = category.fields
-          .filter((field) => field.identifier)
-          .map((field) => ({ fieldReferenceId: field.identifier }));
+        const matchingCategoryFromCustomGroups = customGroups.find(
+          (cg) => cg.identifier === category.identifier,
+        );
+        const savedFields = matchingCategoryFromCustomGroups?.fields || [];
 
         const newProfileField = await createProfileFieldType({
           customFieldIdentifier: draggableId,
@@ -314,6 +316,14 @@ const ProfileBuilder = () => {
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
           fields: updatedSavedFields,
         });
+
+        setCustomGroups((prevCustomGroups) =>
+          prevCustomGroups.map((cg) =>
+            cg.identifier === category.identifier
+              ? { ...cg, fields: updatedSavedFields }
+              : cg,
+          ),
+        );
 
         const newField = allCustomFields.find(
           (item) => item.identifier === draggableId,
