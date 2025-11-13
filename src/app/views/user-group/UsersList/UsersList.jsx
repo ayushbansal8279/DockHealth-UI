@@ -68,7 +68,7 @@ const UsersList = (props) => {
   const columns = [
     {
       field: 'isSelected',
-      headerName: '',
+      headerName: 'SELECT',
       flex: 0.1,
       sortable: false,
       filterable: false,

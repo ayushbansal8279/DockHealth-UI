@@ -386,7 +386,7 @@ const PatientsList = ({
   const defaultColumns = [
     {
       field: 'isSelected',
-      headerName: '',
+      headerName: 'SELECT',
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -470,8 +470,7 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: (value) =>
-        value ? moment(value).format('MM/DD/YYYY') : '',
+      valueGetter: (value) => (value ? moment(value).format('MM/DD/YYYY') : ''),
       valueSetter: (value, row) => {
         const formattedDate = value ? moment(value).format('MM/DD/YYYY') : null;
         return { ...row, dob: formattedDate };

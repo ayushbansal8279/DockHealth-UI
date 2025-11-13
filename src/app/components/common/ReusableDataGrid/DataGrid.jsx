@@ -75,6 +75,19 @@ const ReusableDataGrid = ({
       apiRef={apiRef}
       initialState={initialState}
       showToolbar={showToolbar}
+      slotProps={{
+        panel: {
+          disablePortal: false,
+          sx: {
+            '& .MuiDataGrid-filterForm .MuiFormControl-root': {
+              width: 'auto !important',
+              minWidth: 0,
+              flex: '0 0 auto',
+            },
+          },
+        },
+        toolbar: { placeholder },
+      }}
       multipleColumnsSortingMode="always"
       disablePivoting
       {...props}
