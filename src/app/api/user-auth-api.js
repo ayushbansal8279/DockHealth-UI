@@ -27,6 +27,32 @@ const store = configureStore();
 // eslint-disable-next-line import/no-mutable-exports
 export let resolvedCognitoUser = null;
 
+// Store authenticated user details after cookie-based authentication
+// This is populated after successful token exchange and user details fetch
+let authenticatedUserDetails = null;
+
+// In-memory storage adapter - data is stored only in memory and cleared on page refresh
+const inMemoryStorage = (() => {
+  const storage = {};
+
+  return {
+    getItem: (key) => {
+      return storage[key] || null;
+    },
+    setItem: (key, value) => {
+      storage[key] = value;
+    },
+    removeItem: (key) => {
+      delete storage[key];
+    },
+    clear: () => {
+      Object.keys(storage).forEach((key) => {
+        delete storage[key];
+      });
+    },
+  };
+})();
+
 Amplify.configure({
   // To get the AWS Credentials, you need to configure
   // the Auth module with your Cognito Federated Identity Pool
@@ -35,6 +61,7 @@ Amplify.configure({
     userPoolId: import.meta.env.VITE_AWS_USERPOOLID,
     userPoolWebClientId: import.meta.env.VITE_AWS_CLIENTAPP,
     authenticationFlowType: 'USER_SRP_AUTH',
+    storage: inMemoryStorage,
   },
 });
 
@@ -122,6 +149,73 @@ export function changePassword(oldPassword, newPassword) {
   return Auth.changePassword(userAuth, oldPassword, newPassword);
 }
 
+/**
+ * Fetch authenticated user details using HTTPOnly cookie
+ * @returns {Promise} Promise that resolves with user details
+ */
+async function fetchAuthenticatedUserDetails() {
+  try {
+    // Fetch user details using the HTTPOnly cookie
+    // The cookie is automatically sent via withCredentials: true in axios config
+    const response = await axios.get('user/me', {
+      withCredentials: true,
+    });
+    
+    if (response.data) {
+      authenticatedUserDetails = response.data;
+      return response.data;
+    }
+    
+    throw new Error('No user data returned from auth/me endpoint');
+  } catch (error) {
+    log('Failed to fetch authenticated user details:', error);
+    authenticatedUserDetails = null;
+    throw error;
+  }
+}
+
+/**
+ * Exchange Cognito access token for HTTPOnly cookie and fetch user details
+ * @param {string} accessToken - The Cognito access token
+ * @returns {Promise} Promise that resolves when cookie is set and user details are fetched
+ */
+export function exchangeTokenForCookie(accessToken) {
+  return new Promise((resolve, reject) => {
+    // Use a temporary axios instance with credentials enabled for this request
+    // The cookie will be set by the backend and automatically included in future requests
+    axios
+      .post(
+        'auth/exchangeToken',
+        { accessToken },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            // Temporarily use Bearer token for this exchange request
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      )
+      .then(async () => {
+        // Token successfully exchanged, cookie is now set
+        
+        // Fetch and store user details using the newly set cookie
+        try {
+          await fetchAuthenticatedUserDetails();
+          resolve();
+        } catch (error) {
+          log('Token exchange succeeded but user details fetch failed:', error);
+          resolve();
+        }
+      })
+      .catch((error) => {
+        log(error);
+        authenticatedUserDetails = null;
+        reject(error);
+      });
+  });
+}
+
 export function logout(history) {
   onLogout();
   userLogout();
@@ -132,30 +226,51 @@ export function logout(history) {
     if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
       sessionStorage.removeItem('EnterpriseUserFlag');
       sessionStorage.removeItem('SSO_ACCESSTOKEN');
-      sessionStorage.removeItem('SSO_REFRESHTOKEN');
       sessionStorage.removeItem('SSO_USEREMAIL');
-      resolve();
-    } else {
-      Auth.signOut()
-        .then(() => {
-          resolvedCognitoUser = null;
-          store.dispatch({ type: GET_USER_AUTH_DATA_SUCCESS, userAuth: null });
-          store.dispatch({ type: RESET_APP });
-          sessionStorage.removeItem('accessToken');
-          sessionStorage.removeItem('userIdentifier');
-          sessionStorage.removeItem('authUser');
-          sessionStorage.removeItem('sessionStartTime');
-          sessionStorage.removeItem('currentOrganizationIdentifier');
-          sessionStorage.removeItem('notificationsEnabled');
-          sessionStorage.removeItem('hasUnreadAlerts');
-          sessionStorage.removeItem('redirectToHome');
-          sessionStorage.removeItem('redirectToLink');
-          sessionStorage.removeItem('selectedTaskIdentifier');
-          resolve();
-        })
+      // Clear authenticated user details
+      authenticatedUserDetails = null;
+      // Clear cookie via backend
+      axios
+        .post('auth/logout', {}, { withCredentials: true })
         .catch((error) => {
           log(error);
-          reject(error);
+          // Continue with logout even if cookie clearing fails
+        })
+        .finally(() => {
+          resolve();
+        });
+    } else {
+      // Clear cookie via backend first
+      axios
+        .post('auth/logout', {}, { withCredentials: true })
+        .catch((error) => {
+          log(error);
+          // Continue with logout even if cookie clearing fails
+        })
+        .finally(() => {
+          Auth.signOut()
+            .then(() => {
+              resolvedCognitoUser = null;
+              store.dispatch({ type: GET_USER_AUTH_DATA_SUCCESS, userAuth: null });
+              store.dispatch({ type: RESET_APP });
+              sessionStorage.removeItem('accessToken');
+              sessionStorage.removeItem('userIdentifier');
+              sessionStorage.removeItem('sessionStartTime');
+              sessionStorage.removeItem('currentOrganizationIdentifier');
+              sessionStorage.removeItem('notificationsEnabled');
+              sessionStorage.removeItem('hasUnreadAlerts');
+              sessionStorage.removeItem('redirectToHome');
+              sessionStorage.removeItem('redirectToLink');
+              sessionStorage.removeItem('selectedTaskIdentifier');
+              inMemoryStorage.removeItem('authUser');
+              // Clear authenticated user details
+              authenticatedUserDetails = null;
+              resolve();
+            })
+            .catch((error) => {
+              log(error);
+              reject(error);
+            });
         });
     }
   });
@@ -166,7 +281,6 @@ export function login(loginUserName, password) {
 
   sessionStorage.removeItem('EnterpriseUserFlag');
   sessionStorage.removeItem('SSO_ACCESSTOKEN');
-  sessionStorage.removeItem('SSO_REFRESHTOKEN');
   sessionStorage.removeItem('SSO_USEREMAIL');
   return new Promise((resolve, reject) => {
     Auth.signIn({
@@ -182,16 +296,27 @@ export function login(loginUserName, password) {
           resolve(userAuth);
         } else {
           store.dispatch({ type: GET_USER_AUTH_DATA_SUCCESS, userAuth });
-          sessionStorage.setItem(
-            'accessToken',
-            userAuth.signInUserSession.accessToken.jwtToken,
-          );
-          sendEvent({
-            eventAction: 'LOGIN_SUCCESS',
-            eventCategory: 'AUTH',
-            usageEventType: 'USAGE_ACTION',
-          });
-          resolve(userAuth);
+          const accessToken = userAuth.signInUserSession.accessToken.jwtToken;
+          
+          // Exchange Cognito token for HTTPOnly cookie
+          exchangeTokenForCookie(accessToken)
+            .then(() => {
+              sendEvent({
+                eventAction: 'LOGIN_SUCCESS',
+                eventCategory: 'AUTH',
+                usageEventType: 'USAGE_ACTION',
+              });
+              resolve(userAuth);
+            })
+            .catch((error) => {
+              log(error);
+              sendEvent({
+                eventAction: 'LOGIN_SUCCESS',
+                eventCategory: 'AUTH',
+                usageEventType: 'USAGE_ACTION',
+              });
+              resolve(userAuth);
+            });
         }
       })
       .catch((error) => {
@@ -222,16 +347,29 @@ export function sendMFACode(userData) {
           type: GET_USER_AUTH_DATA_SUCCESS,
           userAuth: loggedUser,
         });
-        sessionStorage.setItem(
-          'accessToken',
-          loggedUser.signInUserSession.accessToken.jwtToken,
-        );
-        sendEvent({
-          eventAction: 'LOGIN_SUCCESS',
-          eventCategory: 'AUTH',
-          usageEventType: 'USAGE_ACTION',
-        });
-        resolve(loggedUser);
+        const accessToken = loggedUser.signInUserSession.accessToken.jwtToken;
+        
+        // Exchange Cognito token for HTTPOnly cookie
+        exchangeTokenForCookie(accessToken)
+          .then(() => {
+            sendEvent({
+              eventAction: 'LOGIN_SUCCESS',
+              eventCategory: 'AUTH',
+              usageEventType: 'USAGE_ACTION',
+            });
+            resolve(loggedUser);
+          })
+          .catch((error) => {
+            log(error);
+            // If exchange fails, still resolve with loggedUser but log the error
+            // The user can still proceed, but Bearer token will be used as fallback
+            sendEvent({
+              eventAction: 'LOGIN_SUCCESS',
+              eventCategory: 'AUTH',
+              usageEventType: 'USAGE_ACTION',
+            });
+            resolve(loggedUser);
+          });
       })
       .catch((error) => {
         log(error);
@@ -273,20 +411,47 @@ export async function isAuthenticated() {
     return { isLoggedIn: false, user: userData };
   }
 
+  // First, check if we have authenticated user details from cookie-based auth
+  if (authenticatedUserDetails) {
+    return { isLoggedIn: true, user: authenticatedUserDetails };
+  }
+
+  // If we don't have user details, try to fetch them using the cookie
   try {
-    const user = await Auth.currentAuthenticatedUser({
-      bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-    });
-    const authData = await Auth.currentSession();
-    sessionStorage.setItem('accessToken', authData.accessToken.jwtToken);
-    return { isLoggedIn: true, user };
-  } catch (error) {
-    log(error);
-    if (sessionStorage.getItem('accessToken')) {
-      const authUser = JSON.parse(sessionStorage.getItem('authUser'));
-      return { isLoggedIn: true, user: authUser };
+    const userDetails = await fetchAuthenticatedUserDetails();
+    return { isLoggedIn: true, user: userDetails };
+  } catch (cookieError) {
+    // Cookie-based auth failed, fall back to Cognito authentication
+    log('Cookie-based authentication failed, attempting Cognito auth:', cookieError);
+
+    try {
+      const user = await Auth.currentAuthenticatedUser({
+        bypassCache: false,
+      });
+      const authData = await Auth.currentSession();
+      const accessToken = authData.accessToken.jwtToken;
+
+      // If we have a Cognito token but no cookie, exchange it
+      if (accessToken) {
+        try {
+          await exchangeTokenForCookie(accessToken);
+          // After successful exchange, user details should be stored
+          if (authenticatedUserDetails) {
+            return { isLoggedIn: true, user: authenticatedUserDetails };
+          }
+        } catch (exchangeError) {
+          log('Token exchange failed:', exchangeError);
+          return { isLoggedIn: false, user: null };
+        }
+      }
+
+      return { isLoggedIn: true, user };
+    } catch (cognitoError) {
+      log('Cognito authentication failed:', cognitoError);
+      // No valid cookie and no valid Cognito session
+      authenticatedUserDetails = null;
+      return { isLoggedIn: false, user: null };
     }
-    return { isLoggedIn: false, user: null };
   }
 }
 
@@ -330,8 +495,12 @@ export function resetPassword(userData) {
 }
 
 export function getUserByEmailAndAccessToken(userEmail, accessToken) {
-  const authString = 'Bearer '.concat(accessToken);
-  axios.defaults.headers.common.Authorization = authString;
+  // Only set Bearer token if accessToken is provided and we're not using cookies
+  // For cookie-based auth, the cookie will be sent automatically via withCredentials
+  if (accessToken) {
+    const authString = 'Bearer '.concat(accessToken);
+    axios.defaults.headers.common.Authorization = authString;
+  }
 
   const email = userEmail?.toLowerCase();
 
@@ -416,7 +585,7 @@ export async function getUserByEmail(email, cognitoUser) {
 
 export function updateStoreWithCurrentUser(cognitoUser) {
   resolvedCognitoUser = cognitoUser;
-  sessionStorage.setItem('authUser', JSON.stringify(cognitoUser));
+  inMemoryStorage.setItem('authUser', JSON.stringify(cognitoUser));
   store.dispatch({ type: GET_USER_AUTH_DATA_SUCCESS, userAuth: cognitoUser });
 }
 
@@ -432,14 +601,15 @@ export function refreshAccessToken() {
     const currentSession = await Auth.currentSession();
     cognitoUser.refreshSession(
       currentSession.refreshToken,
-      (error, session) => {
-        const { accessToken } = session;
-        axios.defaults.headers.common.Authorization = `Bearer ${accessToken.jwtToken}`;
-        sessionStorage.setItem('accessToken', accessToken.jwtToken);
-        resolve(true);
+      async (error, session) => {
         if (error) {
           reject(error);
+          return;
         }
+        
+        const { accessToken } = session;
+        sessionStorage.setItem('accessToken', accessToken.jwtToken);
+        resolve(true);
       },
     );
   });
@@ -453,14 +623,12 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
       const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
       await axios.post(`${authUrl}/token`, authData).then((response) => {
-        const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
         const organizationIdentifier = response?.data.organizationIdentifier;
         const patientIdentifier = response?.data.patientIdentifier;
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('accessToken', userAccessToken);
 
@@ -522,7 +690,6 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
       await axios
         .post(`${authUrl}/embeddedToken`, authData)
         .then((response) => {
-          const userRefreshToken = response?.data.refresh_token;
           const userAccessToken = response?.data.access_token;
           const email = response?.data.profile;
           const organizationIdentifier = response?.data.organizationIdentifier;
@@ -531,7 +698,6 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
           const taskIdentifier = response?.data.taskIdentifier;
           sessionStorage.setItem('EnterpriseUserFlag', true);
           sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-          sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
           sessionStorage.setItem('SSO_USEREMAIL', email);
           sessionStorage.setItem('accessToken', userAccessToken);
 
@@ -588,14 +754,12 @@ export const getFHIREnterpriseAccessTokensByAuthCode = (
       const authData = `grant_type=authorization_code&code=${authCode}`;
 
       return axios.post(requestAuthTokenURL, authData).then((response) => {
-        const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
         const userIdentifier = response?.data.userIdentifier;
         const patientIdentifier = response?.data.patientIdentifier;
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('userIdentifier', userIdentifier);
         sessionStorage.setItem('patientIdentifier', patientIdentifier);
@@ -618,14 +782,12 @@ export const getFHIREnterpriseAccessTokensByRefreshToken = (
       const authData = `grant_type=refresh_token&refresh_token=${refreshToken}`;
 
       return axios.post(requestAuthTokenURL, authData).then((response) => {
-        const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
         const userIdentifier = response?.data.userIdentifier;
         const patientIdentifier = response?.data.patientIdentifier;
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('userIdentifier', userIdentifier);
         sessionStorage.setItem('patientIdentifier', patientIdentifier);
@@ -648,14 +810,12 @@ export const getCustomLaunchEnterpriseAccessTokensByAuthCode = (
       // const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}/launch/drchrono`;
 
       return axios.post(requestAuthTokenURL, authData).then((response) => {
-        const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
         const userIdentifier = response?.data.userIdentifier;
         const patientIdentifier = response?.data.patientIdentifier;
         sessionStorage.setItem('EnterpriseUserFlag', true);
         sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
-        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('userIdentifier', userIdentifier);
         sessionStorage.setItem('patientIdentifier', patientIdentifier);

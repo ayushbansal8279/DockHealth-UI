@@ -30,7 +30,7 @@ const checkUserAccountState = async ({
     const { location } = history;
     const { pathname } = location;
 
-    const data = await getUserByEmail(user.username, user);
+    const data = await getUserByEmail(user.email || user.username, user);
 
     const isOrganizationAdmin = ['ADMIN', 'OWNER'].includes(data.orgUserRole);
     try {
