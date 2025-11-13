@@ -998,7 +998,7 @@ const TaskItem = React.memo(
             (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
             !!searchValue ||
             !!sort.key
-          ) ?? false;
+          ) ? true : false;
         return (
           <StickyMainTaskItemCell
             isLastChild={isLastChild}
