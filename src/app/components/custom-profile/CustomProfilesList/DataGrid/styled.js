@@ -47,7 +47,17 @@ export const StyledDataGrid = styled(DataGridPremium)`
   }
 
   & .MuiDataGrid-columnSeparator {
-    visibility: hidden;
+    visibility: visible;
+    cursor: col-resize;
+    color: rgba(0, 0, 0, 0.12);
+
+    &:hover {
+      color: rgba(0, 0, 0, 0.38);
+    }
+
+    &:active {
+      color: rgba(0, 0, 0, 0.54);
+    }
   }
 
   &.MuiDataGrid-root--densityStandard .MuiDataGrid-cell,

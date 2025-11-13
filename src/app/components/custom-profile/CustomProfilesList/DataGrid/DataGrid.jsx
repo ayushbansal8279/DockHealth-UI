@@ -5,6 +5,8 @@ import {
   GridToolbarExport,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
+  useGridApiRef,
+  useKeepGroupedColumnsHidden,
 } from '@mui/x-data-grid-premium';
 import { StyledDataGrid } from './styled';
 import { Box, Tooltip } from '@mui/material';
@@ -74,18 +76,42 @@ const ReusableDataGrid = ({
   rows,
   getRowId = (row) => row.id,
   rowCount,
-  toolbar: Toolbar = DefaultToolbar,
+  // toolbar: Toolbar = DefaultToolbar,
   loading,
   onRecordClick,
   showToolbar = true,
-  showExport = true,
-  showSearch = true,
-  showColumns = true,
-  showFilter = true,
+  // showExport = true,
+  // showSearch = true,
+  // showColumns = true,
+  // showFilter = true,
   placeholder = 'Search within results',
   ...props
 }) => {
+  const apiRef = useGridApiRef();
+  
+  // Only use useKeepGroupedColumnsHidden if row grouping is actually configured
+  const hasRowGrouping = props.initialState?.rowGrouping?.model?.length > 0;
+  const baseInitialState = {
+    ...props.initialState,
+    // Only include rowGrouping and aggregation if they're provided in props
+    ...(props.initialState?.rowGrouping && {
+      rowGrouping: props.initialState.rowGrouping,
+    }),
+    ...(props.initialState?.aggregation && {
+      aggregation: props.initialState.aggregation,
+    }),
+  };
+
+  const initialState = hasRowGrouping
+    ? useKeepGroupedColumnsHidden({
+        apiRef: apiRef,
+        initialState: baseInitialState,
+      })
+    : baseInitialState;
+
   const paginationMode = props.paginationMode ?? 'client';
+  const sortingMode = props.sortingMode ?? 'client';
+  
   return (
     <StyledDataGrid
       sx={{
@@ -98,44 +124,51 @@ const ReusableDataGrid = ({
       getRowId={getRowId}
       rowCount={paginationMode === 'server' ? rowCount : undefined}
       paginationMode={paginationMode}
+      sortingMode={sortingMode}
       headerHeight={35}
       pagination
       showColumnRightBorder
       showCellRightBorders
       filterMode={props.filterMode ?? 'client'}
-      slots={{
-        noRowsOverlay: () => (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100%"
-          >
-            No records found
-          </Box>
-        ),
-        ...(showToolbar
-          ? {
-              toolbar: () => (
-                <Toolbar
-                  showExport={showExport}
-                  showSearch={showSearch}
-                  showColumns={showColumns}
-                  showFilter={showFilter}
-                  placeholder={placeholder}
-                />
-              ),
-            }
-          : {}),
-      }}
-      slotProps={showToolbar ? { panel: { disablePortal: true } } : {}}
-      disableColumnMenu
-      disableSelectionOnClick
+      // slots={{
+      //   noRowsOverlay: () => (
+      //     <Box
+      //       display="flex"
+      //       justifyContent="center"
+      //       alignItems="center"
+      //       height="100%"
+      //     >
+      //       No records found
+      //     </Box>
+      //   ),
+      //   ...(showToolbar
+      //     ? {
+      //         toolbar: () => (
+      //           <Toolbar
+      //             showExport={showExport}
+      //             showSearch={showSearch}
+      //             showColumns={showColumns}
+      //             showFilter={showFilter}
+      //             placeholder={placeholder}
+      //           />
+      //         ),
+      //       }
+      //     : {}),
+      // }}
+      // slotProps={showToolbar ? { panel: { disablePortal: true } } : {}}
+      disableColumnMenu={false}
+      // disableSelectionOnClick
       disableRowSelectionOnClick
-      disableColumnFilter={false}
-      disableDensitySelector
+      // disableColumnFilter={false}
+      // disableDensitySelector
+      disableColumnResize={false}
       loading={loading}
       onRowClick={onRecordClick}
+      apiRef={apiRef}
+      initialState={initialState}
+      showToolbar={showToolbar}
+      multipleColumnsSortingMode="always"
+      disablePivoting
       {...props}
     />
   );

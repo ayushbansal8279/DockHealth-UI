@@ -490,7 +490,13 @@ const CustomProfileListContent = ({
             field: 'isSelected',
             headerName: 'SELECT',
             flex: 0.1,
+            filterable: false,
             sortable: false,
+            disableColumnMenu: true,
+            disableExport: true,
+            disableReorder: true,
+            groupable: false,
+            hideable: false,
             headerClassName: 'no-sort-icon',
             renderHeader: () =>
               renderCheckboxColumnHeader({
@@ -523,11 +529,11 @@ const CustomProfileListContent = ({
               flex: 1,
               filterable: true,
               sortable: true,
-              valueGetter: (params) => {
-                if (!params || !params.row) {
+              valueGetter: (value, row) => {
+                if (!row) {
                   return '';
                 }
-                return params.row[field.name] ?? '';
+                return row[field.name] ?? '';
               },
               renderCell: (params) => {
                 if (!params || !params.row) {

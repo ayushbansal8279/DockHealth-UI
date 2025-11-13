@@ -171,6 +171,7 @@ export default function DataGrid({
         columnVisibilityModel={columnVisibilityModel}
         onColumnVisibilityModelChange={setColumnVisibilityModel}
         disableRowSelectionOnClick
+        disableColumnResize={false}
         checkboxSelection={multiselect}
         onRowClick={handleRowClick}
         {...props}
