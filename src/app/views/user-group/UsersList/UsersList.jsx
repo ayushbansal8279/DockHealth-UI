@@ -90,9 +90,10 @@ const UsersList = (props) => {
       ),
     },
     {
-      field: 'user',
+      field: 'name',
       headerName: 'USER',
       flex: 1,
+      valueGetter: (value) => value ?? '',
       renderCell: (params) => (
         <div
           className="people-cell-container"
