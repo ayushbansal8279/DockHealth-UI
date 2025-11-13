@@ -7,22 +7,19 @@ import memoizeWith from 'ramda/src/memoizeWith';
 import identity from 'ramda/src/identity';
 import isEmpty from 'ramda/src/isEmpty';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
-import {
-  patientSelector,
-  patientFoldersSelector,
-  patientAttachmentsSelector,
-  patientTaskAttachementSelector,
-} from 'selectors/patient-details-selectors';
 import { downloadPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal } from 'modal/actions';
-import { createPatientAttachmentsPath } from 'routing/helpers/paths';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
+import {
+  acceptedFileTypes,
+  isValidFileType,
+  ERROR_INVALID_FILE_TYPE,
+} from '@/app/components/task-drawer/AttachmentsSection/helpers';
 import { getTaskAttachment } from '@/app/api/task-api';
 import { blobFileDownload } from '@/app/helpers/blob-file-download';
 import {
   currentProfileIdentifierSelector,
-  currentProfileTypeIdentifierSelector,
   profileAttachmentsSelector,
   profileFoldersSelector,
   profileSelector,
@@ -104,7 +101,21 @@ const useInitializeAttachmentsSectionHooks = () => {
   const onAttachmentFileInputChange = useCallback(
     (files) => {
       if (files && !isEmpty(files)) {
-        const [newAttachment, ...restAttachments] = files;
+        const validFiles = files.filter((file) => {
+          if (!isValidFileType(file)) {
+            dispatch(
+              showGlobalErrorAlert(`${ERROR_INVALID_FILE_TYPE}: ${file.name}`),
+            );
+            return false;
+          }
+          return true;
+        });
+
+        if (validFiles.length === 0) {
+          return;
+        }
+
+        const [newAttachment, ...restAttachments] = validFiles;
 
         setCurrentlyUploadedAttachment(newAttachment);
         setUploadProgress(0);
@@ -126,11 +137,24 @@ const useInitializeAttachmentsSectionHooks = () => {
         );
       }
     },
-    [dispatch, profile, folderIdentifier],
+    [dispatch, profileIdentifier, folderIdentifier],
+  );
+
+  const handleDropRejected = useCallback(
+    (fileRejections) => {
+      fileRejections.forEach(({ file }) => {
+        dispatch(
+          showGlobalErrorAlert(`${ERROR_INVALID_FILE_TYPE}: ${file.name}`),
+        );
+      });
+    },
+    [dispatch],
   );
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
     onDrop: onAttachmentFileInputChange,
+    onDropRejected: handleDropRejected,
+    accept: acceptedFileTypes,
   });
 
   const loadAttachmentsContent = useCallback(

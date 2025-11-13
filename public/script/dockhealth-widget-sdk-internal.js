@@ -133,7 +133,6 @@ module.exports = init
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"dockhealth-widget-sdk","version":"1.0.0","private":false,"repository":"https://github.com/DockHealth/dockhealth-widgets","main":"dist/sdk/index.js","author":"Dock Health <info@dock.health>","license":"","files":["README.md","dist/","src/","examples"],"devDependencies":{"html-webpack-plugin":"^5.5.0","path":"^0.12.7","webpack":"^5.73.0","webpack-cli":"^4.9.2","webpack-dev-server":"^4.9.2"},"scripts":{"build":"webpack --mode=production"}}');
 
 /***/ })
 
