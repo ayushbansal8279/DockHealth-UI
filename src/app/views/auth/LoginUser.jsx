@@ -20,7 +20,6 @@ const onSubmit = (form, history) => {
 
   window.sessionStorage.setItem('username', username);
   window.sessionStorage.removeItem('SSO_ACCESSTOKEN');
-  window.sessionStorage.removeItem('SSO_REFRESHTOKEN');
   window.sessionStorage.removeItem('SSO_USEREMAIL');
   UserAuthApi.checkSSO(username)
     .then((issuer) => {
