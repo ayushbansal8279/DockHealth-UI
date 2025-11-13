@@ -409,8 +409,10 @@ const ListDetailsTableView = () => {
   useEffect(() => {
     if (currentUserIdentifier) {
       const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
-      const ch = pusher.current.subscribe(channelName);
-      setChannel(ch);
+      const ch = pusher.current?.subscribe(channelName);
+      if (ch) {
+        setChannel(ch);
+      }
 
       return () => {
         if (ch) ch.unsubscribe(channelName);

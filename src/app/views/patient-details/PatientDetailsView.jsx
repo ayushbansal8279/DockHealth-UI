@@ -226,9 +226,11 @@ const PatientDetailsView = () => {
     let ch;
 
     if (currentUserIdentifier) {
-      ch = pusher.current.subscribe(channelName);
-      ch.bind('task-update', taskCallback);
-      ch.bind('task-bundle-update', taskBundleCallback);
+      ch = pusher.current?.subscribe(channelName);
+      if (ch) {
+        ch.bind('task-update', taskCallback);
+        ch.bind('task-bundle-update', taskBundleCallback);
+      }
     }
 
     return () => {
