@@ -23,7 +23,7 @@ import Tooltip from "@/app/components/common/Tooltip/Tooltip";
 import { createTaskListPath } from "@/app/routing/helpers/paths";
 import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
 import { AssignMemberIconContainer, BulkContainer, StyledListLink } from "./styled";
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const WorkspaceListTable = () => {
   const dispatch = useDispatch();

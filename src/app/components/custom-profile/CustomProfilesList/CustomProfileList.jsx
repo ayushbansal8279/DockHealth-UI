@@ -81,7 +81,7 @@ import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
 import { ProfileStatus, OperationType } from '@/app/helpers/profile-helpers';
 import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import { ToolbarIconImg } from 'components/patients/PatientsToolbar/styled';
-import ReusableDataGrid from './DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import { DataGridWrapper, StyledLink } from './styled';
 import RelationshipLinks from '../RelationshipLinks';
@@ -605,11 +605,11 @@ const CustomProfileListContent = ({
             flex: 0.2,
             sortable: true,
             filterable: true,
-            valueGetter: (params) => {
-              if (!params || !params.row) {
+            valueGetter: (value, row) => {
+              if (!row) {
                 return '';
               }
-              return params.row.profileStatus || '';
+              return row.profileStatus || '';
             },
             renderCell: ({ row }) => {
               const status = row.profileStatus;

@@ -10,7 +10,7 @@ import { getContactColumns } from './helpers';
 import { ViewContainer } from './styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 // const PAGE_SIZE = 30;
 

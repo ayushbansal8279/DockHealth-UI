@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { invoiceDetailsSelector } from 'selectors/organization-selectors';
-import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { InvoicesListContainer, ChargeDetailsLink } from './styled';
 import moment from 'moment';
 

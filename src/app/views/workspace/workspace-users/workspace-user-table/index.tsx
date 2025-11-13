@@ -23,7 +23,7 @@ import { getFilteredRows } from "@/app/helpers/workspace-helpers";
 import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
 import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
 import { BulkContainer, ListContainer, ListEntryContainer } from "./styled";
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 
