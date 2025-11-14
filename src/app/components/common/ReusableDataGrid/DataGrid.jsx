@@ -10,24 +10,17 @@ const ReusableDataGrid = ({
   rows,
   getRowId = (row) => row.id,
   rowCount,
-  // toolbar: Toolbar = DefaultToolbar,
   loading,
   onRecordClick,
   showToolbar = true,
-  // showExport = true,
-  // showSearch = true,
-  // showColumns = true,
-  // showFilter = true,
   placeholder = 'Search within results',
   ...props
 }) => {
   const apiRef = useGridApiRef();
 
-  // Only use useKeepGroupedColumnsHidden if row grouping is actually configured
   const hasRowGrouping = props.initialState?.rowGrouping?.model?.length > 0;
   const baseInitialState = {
     ...props.initialState,
-    // Only include rowGrouping and aggregation if they're provided in props
     ...(props.initialState?.rowGrouping && {
       rowGrouping: props.initialState.rowGrouping,
     }),
@@ -65,10 +58,7 @@ const ReusableDataGrid = ({
       showCellRightBorders
       filterMode={props.filterMode ?? 'client'}
       disableColumnMenu={false}
-      // disableSelectionOnClick
       disableRowSelectionOnClick
-      // disableColumnFilter={false}
-      // disableDensitySelector
       disableColumnResize={false}
       loading={loading}
       onRowClick={onRecordClick}
