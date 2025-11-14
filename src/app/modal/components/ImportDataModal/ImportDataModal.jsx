@@ -24,6 +24,7 @@ const ImportDataModal = ({
   downloadTemplate,
   setImportPopoverOpen,
   refreshPatientListOnUpload,
+  refreshListOnUpload,
   uploadFunction,
   label,
   identifier,
@@ -50,7 +51,6 @@ const ImportDataModal = ({
             closeModal();
           }, 100);
         } else {
-          setIsUploading(false);
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               closeModal();
@@ -62,15 +62,25 @@ const ImportDataModal = ({
       uploadFunction(file, {}, identifier, type)
         .then((response) => {
           setImportResponse?.(response);
+
           if (isPatientImport) {
             setIsUploading(false);
+            refreshPatientListOnUpload?.();
+          } else {
+            setIsUploading(false);
+            setTimeout(() => {
+              refreshListOnUpload?.();
+            }, 500);
           }
+
           closeModalAfterResponse();
         })
         .catch((error) => {
           console.error('File upload failed:', error);
           setImportResponse?.(null);
           if (isPatientImport) {
+            setIsUploading(false);
+          } else {
             setIsUploading(false);
           }
           closeModalAfterResponse();
@@ -87,6 +97,8 @@ const ImportDataModal = ({
       setImportPopoverOpen,
       setImportResponse,
       label,
+      refreshListOnUpload,
+      refreshPatientListOnUpload,
     ],
   );
 

@@ -6,6 +6,7 @@ import curry from 'ramda/src/curry';
 import Swal from 'sweetalert2';
 import parsePhoneNumber from 'libphonenumber-js';
 import palette from 'styles/palette';
+import { applyButtonStyles } from '@/app/modal/components/ModalButton/buttonStyles';
 
 export const noop = () => {};
 
@@ -172,6 +173,55 @@ export const showAlert = ({
     }
   });
   // fix z-index for drawer container
+  Swal.getContainer().style.zIndex = 10_000;
+
+  return swalPromise;
+};
+
+export const showAlert2 = ({
+  status: icon,
+  text = '',
+  html = '',
+  title,
+  confirmButtonText = 'Close',
+  denyButtonText = 'Download',
+  showDenyButton = true,
+  onConfirm = null,
+  onDeny = null,
+  ...otherOptions
+}) => {
+  const swalPromise = Swal.fire({
+    icon,
+    title,
+    text,
+    html,
+    showDenyButton,
+    confirmButtonText,
+    denyButtonText,
+    confirmButtonColor: palette.oPlusRed,
+    denyButtonColor: palette.oPlusRed,
+    customClass: {
+      confirmButton: 'swal2-confirm-custom',
+      denyButton: 'swal2-deny-custom',
+    },
+    buttonsStyling: true,
+    didOpen: () => {
+      const confirmButton = Swal.getConfirmButton();
+      const denyButton = Swal.getDenyButton();
+
+      if (confirmButton) applyButtonStyles(confirmButton, 'confirm');
+      if (denyButton && showDenyButton) applyButtonStyles(denyButton, 'deny');
+    },
+    ...otherOptions,
+  }).then((result) => {
+    if (result.isDenied && onDeny) {
+      onDeny(result);
+    } else if (result.isConfirmed && onConfirm) {
+      onConfirm(result);
+    }
+    return result;
+  });
+
   Swal.getContainer().style.zIndex = 10_000;
 
   return swalPromise;
