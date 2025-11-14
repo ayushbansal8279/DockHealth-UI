@@ -7,7 +7,7 @@ import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getSmoothStepPath, useStore } from '@xyflow/react';
+import { getSmoothStepPath, useReactFlow, useStore } from '@xyflow/react';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
 import { LabelsWrapper, HardDependencyLabel } from './styled';
@@ -15,6 +15,7 @@ import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getEdgeParams } from '../LinkPath/helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskLink = (props) => {
@@ -28,15 +29,24 @@ const TaskLink = (props) => {
     sourcePosition,
     targetPosition,
     data: { link },
+    selected,
   } = props;
   const { isDependent, delayPeriod, delayPeriodUnit } = link || {};
+  const { getNodes } = useReactFlow();
+  const nodes = getNodes();
+  const sourceNode = nodes.find((n) => n.id === sourceTaskIdentifier);
+  const targetNode = nodes.find((n) => n.id === targetTaskIdentifier);
+  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
+    sourceNode,
+    targetNode,
+  );
   const [, edgeCenterX, edgeCenterY] = getSmoothStepPath({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
+    sourceX: selected ? sourceX : sx,
+    sourceY: selected ? sourceY : sy,
+    sourcePosition: selected ? sourcePosition : sourcePos,
+    targetX: selected ? targetX : tx,
+    targetY: selected ? targetY : ty,
+    targetPosition: selected ? targetPosition : targetPos,
   });
   const { 2: zoom } = useStore((store) => store.transform);
   const labelWrapperReference = useRef(null);
@@ -57,7 +67,7 @@ const TaskLink = (props) => {
         timeRelative: null,
         timeReference: null,
         customFieldIdentifier: null,
-        customFieldName: null
+        customFieldName: null,
       }),
     );
   };
@@ -72,7 +82,7 @@ const TaskLink = (props) => {
         timeRelative: null,
         timeReference: null,
         customFieldIdentifier: null,
-        customFieldName: null
+        customFieldName: null,
       }),
     );
   };
