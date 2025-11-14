@@ -27,22 +27,4 @@ export const StyledDataGrid = styled(DataGridPremium)`
       margin-bottom: 0;
     }
   }
-
-  & .MuiDataGrid-filterForm {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  & .MuiDataGrid-filterFormRow {
-    display: contents;
-  }
-
-  & .MuiDataGrid-filterFormDeleteIcon {
-    margin-right: 0;
-  }
-
-  & .MuiDataGrid-filterFormDeleteIcon ~ * {
-    margin-left: 0;
-  }
 `;
