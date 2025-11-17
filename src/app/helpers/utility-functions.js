@@ -6,7 +6,6 @@ import curry from 'ramda/src/curry';
 import Swal from 'sweetalert2';
 import parsePhoneNumber from 'libphonenumber-js';
 import palette from 'styles/palette';
-import { applyButtonStyles } from '@/app/modal/components/ModalButton/buttonStyles';
 
 export const noop = () => {};
 
@@ -185,7 +184,7 @@ export const showAlert2 = ({
   title,
   confirmButtonText = 'Close',
   denyButtonText = 'Download',
-  showDenyButton = true,
+  showDenyButton = false,
   onConfirm = null,
   onDeny = null,
   ...otherOptions
@@ -197,20 +196,19 @@ export const showAlert2 = ({
     html,
     showDenyButton,
     confirmButtonText,
-    denyButtonText,
-    confirmButtonColor: palette.oPlusRed,
-    denyButtonColor: palette.oPlusRed,
+    denyButtonText: showDenyButton ? denyButtonText : undefined,
+    buttonsStyling: false,
     customClass: {
       confirmButton: 'swal2-confirm-custom',
-      denyButton: 'swal2-deny-custom',
+      ...(showDenyButton && { denyButton: 'swal2-deny-custom' }),
     },
-    buttonsStyling: true,
     didOpen: () => {
-      const confirmButton = Swal.getConfirmButton();
-      const denyButton = Swal.getDenyButton();
-
-      if (confirmButton) applyButtonStyles(confirmButton, 'confirm');
-      if (denyButton && showDenyButton) applyButtonStyles(denyButton, 'deny');
+      if (!showDenyButton) {
+        const denyButton = Swal.getDenyButton();
+        if (denyButton) {
+          denyButton.style.display = 'none';
+        }
+      }
     },
     ...otherOptions,
   }).then((result) => {
