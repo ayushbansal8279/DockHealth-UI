@@ -37,7 +37,7 @@ const BuilderPlayground = ({ context, identifier }) => {
       context,
       name: value,
       fields: [],
-      isDefault: true,
+      isDefault: false,
     };
     if (context === 'PROFILETYPE') {
       newCategory.profileTypeIdentifier = identifier;
