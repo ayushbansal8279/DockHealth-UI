@@ -28,6 +28,8 @@ export const LabeledCollapseItemName = styled.p`
   font-weight: ${({ $isSubMenu }) =>
     $isSubMenu ? fontWeights.light : fontWeights.regularPlus};
   font-family: 'Outfit', sans-serif;
-  text-transform: ${({ $isSubMenu }) => ($isSubMenu ? 'none' : ` uppercase`)};
+  text-transform: ${({ $isSubMenu, $capitalizeEachWord }) =>
+    $capitalizeEachWord ? 'capitalize' : $isSubMenu ? 'none' : 'uppercase'};
+  color: ${({ $isSubMenu }) => ($isSubMenu ? palette.darkGrey : 'inherit')};
   text-align: left;
 `;
