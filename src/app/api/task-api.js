@@ -626,6 +626,12 @@ export function updateTasksLink(link) {
   return axios.put(`task/link`, link).then(({ data }) => data);
 }
 
+export function reconnectTaskLink(sourceTaskIdentifier, payload) {
+  return axios
+    .patch(`task/link/${sourceTaskIdentifier}`, payload)
+    .then(({ data }) => data);
+}
+
 export function shareTask(
   taskIdentifier,
   userIdentifiers,
