@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import ToolbarButton from 'components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
-import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { TabContent, ToolbarStack, DataGridContainer } from '../styled';
 import { openModal, closeModal } from '@/app/modal/actions';
 import { showGlobalErrorAlert } from '@/app/alert/actions';

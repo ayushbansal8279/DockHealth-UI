@@ -16,7 +16,7 @@ import {
 import TaskItemBulkEdit from '@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import Checkbox from '@/app/components/common/Checkbox/Checkbox';
 import { UserEditContext } from '@/app/context-api/user-edit-context';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const UsersList = (props) => {
   const { users, searchTerm } = props;
@@ -68,9 +68,15 @@ const UsersList = (props) => {
   const columns = [
     {
       field: 'isSelected',
-      headerName: '',
+      headerName: 'SELECT',
       flex: 0.1,
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      disableExport: true,
+      disableReorder: true,
+      groupable: false,
+      hideable: false,
       renderHeader: () =>
         renderCheckboxColumnHeader({
           isListChecked,
@@ -84,9 +90,10 @@ const UsersList = (props) => {
       ),
     },
     {
-      field: 'user',
+      field: 'name',
       headerName: 'USER',
       flex: 1,
+      valueGetter: (value) => value ?? '',
       renderCell: (params) => (
         <div
           className="people-cell-container"
@@ -109,13 +116,13 @@ const UsersList = (props) => {
       field: 'email',
       headerName: 'EMAIL',
       flex: 2,
-      valueGetter: (params) => params?.value ?? '',
+      valueGetter: (value) => value ?? '',
     },
     {
       field: 'orgUserRole',
       headerName: 'USER STATUS',
       flex: 0.75,
-      valueGetter: (params) => params?.value ?? '',
+      valueGetter: (value) => value ?? '',
     },
   ];
 

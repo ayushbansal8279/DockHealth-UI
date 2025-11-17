@@ -18,7 +18,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
-import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { TabContent, ToolbarStack, DataGridContainer } from '../styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { openModal } from '@/app/modal/actions';

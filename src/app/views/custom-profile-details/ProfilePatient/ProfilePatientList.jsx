@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { formatPhoneNumber } from '@/app/helpers/utility-functions';
 import { GENDER_OPTIONS_BIRTH } from '@/app/types/gender';
 import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { Text, PatientCell } from './styled';
 
 const renderColumnHeader = (props) => {

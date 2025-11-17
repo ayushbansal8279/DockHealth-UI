@@ -30,7 +30,7 @@ import { MoreActionsWrapper } from '@/app/views/person-details/PersonDetailsDraw
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const getFilteredOrganizationUsers = ({
   organizationUsers,
