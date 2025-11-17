@@ -122,6 +122,11 @@ export const getAdditionalProfileOptions = ({
   ...commonOptions(displayOptionsState, handleDisplayOptionChange),
 ];
 
+export const getAdditionalGlobalOptions = ({
+  displayOptionsState,
+  handleDisplayOptionChange,
+}) => [...commonOptions(displayOptionsState, handleDisplayOptionChange)];
+
 export const getAdditionalOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
@@ -159,7 +164,10 @@ export const getAdditionalOptions = ({
     }
 
     case 'GLOBAL': {
-      return [];
+      return getAdditionalGlobalOptions({
+        displayOptionsState,
+        handleDisplayOptionChange,
+      });
     }
 
     default: {
