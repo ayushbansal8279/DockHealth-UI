@@ -74,6 +74,7 @@ const FormSelect = React.forwardRef(
     if (!options || options.length === 0) {
       return (
         <Select
+          variant="outlined"
           name={name}
           label={label}
           value=""
@@ -90,6 +91,7 @@ const FormSelect = React.forwardRef(
 
     return (
       <Select
+        variant="outlined"
         name={name}
         label={label}
         value={value}
