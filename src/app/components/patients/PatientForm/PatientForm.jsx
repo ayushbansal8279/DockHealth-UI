@@ -63,6 +63,7 @@ const PatientForm = forwardRef(
       formState: { errors },
       setError,
       clearErrors,
+      getValues,
     } = formMethods;
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
@@ -124,6 +125,7 @@ const PatientForm = forwardRef(
               initialValue={patientCustomField?.values}
               fieldsGroupKey="patientMetaData"
               formMethods={formMethods}
+              selected={getValues('patientMetaData')}
             />
           </HidableContainer>
         ) : (
@@ -138,6 +140,7 @@ const PatientForm = forwardRef(
               initialValue={patientCustomField?.value}
               fieldsGroupKey="patientMetaData"
               formMethods={formMethods}
+              selected={getValues('patientMetaData')}
             />
           </HidableContainer>
         );

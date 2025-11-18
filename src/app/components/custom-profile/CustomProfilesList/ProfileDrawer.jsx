@@ -268,6 +268,13 @@ const ProfileDrawer = ({
                   );
 
                   const render = () => {
+                    const values = getValues('profileMetaData');
+                    const selected = types?.reduce((acc, type) => {
+                      const key = type.customFieldIdentifier;
+                      const value = values?.[type.identifier];
+                      acc[key] = value ?? null;
+                      return acc;
+                    }, {});
                     return (
                       <CustomField
                         readOnly={!editMode}
@@ -283,6 +290,7 @@ const ProfileDrawer = ({
                             : ''
                         }
                         fieldsGroupKey="profileMetaData"
+                        selected={selected}
                       />
                     );
                   };
