@@ -369,8 +369,16 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   );
 
   const filteredFields = useMemo(() => {
+    let filtered = fieldLibrary;
+
+    if (isWorkspace) {
+      filtered = filtered.filter(
+        (field) => field.contextType !== ContextType.PREDEFINED,
+      );
+    }
+
     if (!searchPhrase) {
-      return [...fieldLibrary].sort((a, b) => {
+      return [...filtered].sort((a, b) => {
         if (
           a.contextType === ContextType.PREDEFINED &&
           b.contextType !== ContextType.PREDEFINED
@@ -387,7 +395,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       });
     }
 
-    return fieldLibrary
+    return filtered
       .filter((field) => {
         const searchLower = searchPhrase.toLowerCase();
         const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
@@ -424,6 +432,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   }, [
     fieldLibrary,
     searchPhrase,
+    isWorkspace,
     getProfileTypeNames,
     getCategoryFromContextType,
   ]);
