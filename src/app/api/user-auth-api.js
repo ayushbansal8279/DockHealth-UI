@@ -53,6 +53,46 @@ const inMemoryStorage = (() => {
   };
 })();
 
+const selectiveStorage = (() => {
+  let memoryStorage = {};
+
+  return {
+    getItem: (key) => {
+      if (key.includes('deviceKey') 
+        || key.includes('deviceGroupKey')
+        || key.includes('randomPasswordKey')
+        || key.includes('clockDrift')
+        || key.includes('LastAuthUser')) {
+        return localStorage.getItem(key);
+      }
+      return memoryStorage[key] || null;
+    },
+    setItem: (key, value) => {
+      // Store device keys in localStorage
+      if (key.includes('deviceKey') 
+        || key.includes('deviceGroupKey')
+        || key.includes('randomPasswordKey')
+        || key.includes('clockDrift')
+        || key.includes('LastAuthUser')) {
+        localStorage.setItem(key, value);
+      } else {
+        memoryStorage[key] = value;
+      }
+    },
+    removeItem: (key) => {
+      localStorage.removeItem(key);
+      delete memoryStorage[key];
+    },
+    clear: () => {
+      localStorage.clear();
+      Object.keys(memoryStorage).forEach((key) => {
+        delete memoryStorage[key];
+      });
+      memoryStorage = {};
+    },
+  };
+})();
+
 Amplify.configure({
   // To get the AWS Credentials, you need to configure
   // the Auth module with your Cognito Federated Identity Pool
@@ -61,7 +101,7 @@ Amplify.configure({
     userPoolId: import.meta.env.VITE_AWS_USERPOOLID,
     userPoolWebClientId: import.meta.env.VITE_AWS_CLIENTAPP,
     authenticationFlowType: 'USER_SRP_AUTH',
-    storage: inMemoryStorage,
+    storage: selectiveStorage,
   },
 });
 
