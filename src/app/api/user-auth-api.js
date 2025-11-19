@@ -54,7 +54,7 @@ const inMemoryStorage = (() => {
 })();
 
 const selectiveStorage = (() => {
-  const memoryStorage = {};
+  let memoryStorage = {};
 
   return {
     getItem: (key) => {
