@@ -16,6 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ReusableDataGrid from 'components/common/ReusableDataGrid';
@@ -27,6 +28,7 @@ import AlertMessages from '@/app/alert/AlertMessages';
 import {
   deleteCustomField,
   getAllCustomFields,
+  duplicateCustomField,
 } from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
 import { TargetType, ContextType } from '@/app/helpers/custom-fields-helpers';
@@ -193,6 +195,19 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       }),
     );
     handleMenuClose();
+  };
+
+  const handleDuplicateFieldClick = async (field) => {
+    if (!field?.identifier) return;
+
+    try {
+      await duplicateCustomField(field.identifier);
+      dispatch(showGlobalAlert(AlertMessages.CREATED));
+      fetchFields();
+    } catch (error) {
+      console.error('Error duplicating field:', error);
+      dispatch(showGlobalErrorAlert());
+    }
   };
 
   const columns = useMemo(
@@ -491,34 +506,51 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
           horizontal: 'right',
         }}
       >
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem
+            onClick={() => {
+              handleEditFieldClick(selectedField);
+              handleMenuClose();
+            }}
+          >
+            <ListItemIcon>
+              <EditIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Edit</ListItemText>
+          </MenuItem>
+        )}
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem onClick={handleChangeScopeClick}>
+            <ListItemIcon>
+              <SwapHorizIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Change Scope</ListItemText>
+          </MenuItem>
+        )}
         <MenuItem
           onClick={() => {
-            handleEditFieldClick(selectedField);
+            handleDuplicateFieldClick(selectedField);
             handleMenuClose();
           }}
         >
           <ListItemIcon>
-            <EditIcon fontSize="small" />
+            <FileCopyIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
+          <ListItemText>Duplicate</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleChangeScopeClick}>
-          <ListItemIcon>
-            <SwapHorizIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Change Scope</ListItemText>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleDeleteFieldClick(selectedField);
-            handleMenuClose();
-          }}
-        >
-          <ListItemIcon>
-            <DeleteIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Delete</ListItemText>
-        </MenuItem>
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem
+            onClick={() => {
+              handleDeleteFieldClick(selectedField);
+              handleMenuClose();
+            }}
+          >
+            <ListItemIcon>
+              <DeleteIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Delete</ListItemText>
+          </MenuItem>
+        )}
       </Menu>
     </TabContent>
   );

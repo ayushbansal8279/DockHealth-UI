@@ -343,3 +343,25 @@ export function updateCustomFieldScope(customFieldIdentifier, payload) {
       );
     });
 }
+
+export function duplicateCustomField(customFieldIdentifier) {
+  return axios
+    .post(`custom/field/duplicate/${customFieldIdentifier}`)
+    .then(({ data }) => {
+      if (data.statusCode === 'SUCCESS') {
+        return data;
+      } else {
+        throw new Error(
+          data.errorMessage || 'Failed to duplicate custom field',
+        );
+      }
+    })
+    .catch((error) => {
+      log(error);
+      throw new Error(
+        error?.response?.data?.errorMessage ||
+          error?.message ||
+          'Failed to duplicate custom field',
+      );
+    });
+}
