@@ -190,6 +190,24 @@ export function changePassword(oldPassword, newPassword) {
 }
 
 /**
+ * Check if secure cookie is available by making a lightweight request
+ * @returns {Promise<boolean>} Promise that resolves to true if cookie is available, false otherwise
+ */
+async function isSecureCookieAvailable() {
+  try {
+    // Make a lightweight HEAD request to check if cookie is valid
+    // This avoids fetching full user details if cookie is not available
+    await axios.head('user/me', {
+      withCredentials: true,
+    });
+    return true;
+  } catch (error) {
+    // If the request fails (401, 403, etc.), cookie is not available or invalid
+    return false;
+  }
+}
+
+/**
  * Fetch authenticated user details using HTTPOnly cookie
  * @returns {Promise} Promise that resolves with user details
  */
@@ -456,43 +474,53 @@ export async function isAuthenticated() {
     return { isLoggedIn: true, user: authenticatedUserDetails };
   }
 
-  // If we don't have user details, try to fetch them using the cookie
-  try {
-    const userDetails = await fetchAuthenticatedUserDetails();
-    return { isLoggedIn: true, user: userDetails };
-  } catch (cookieError) {
-    // Cookie-based auth failed, fall back to Cognito authentication
-    log('Cookie-based authentication failed, attempting Cognito auth:', cookieError);
-
+  // Check if secure cookie is available before attempting to fetch user details
+  const cookieAvailable = await isSecureCookieAvailable();
+  if (!cookieAvailable) {
+    log('Secure cookie is not available');
+  } else {
+    // Cookie is available, try to fetch user details
     try {
-      const user = await Auth.currentAuthenticatedUser({
-        bypassCache: false,
-      });
-      const authData = await Auth.currentSession();
-      const accessToken = authData.accessToken.jwtToken;
-
-      // If we have a Cognito token but no cookie, exchange it
-      if (accessToken) {
-        try {
-          await exchangeTokenForCookie(accessToken);
-          // After successful exchange, user details should be stored
-          if (authenticatedUserDetails) {
-            return { isLoggedIn: true, user: authenticatedUserDetails };
-          }
-        } catch (exchangeError) {
-          log('Token exchange failed:', exchangeError);
-          return { isLoggedIn: false, user: null };
-        }
-      }
-
-      return { isLoggedIn: true, user };
-    } catch (cognitoError) {
-      log('Cognito authentication failed:', cognitoError);
-      // No valid cookie and no valid Cognito session
-      authenticatedUserDetails = null;
-      return { isLoggedIn: false, user: null };
+      const userDetails = await fetchAuthenticatedUserDetails();
+      return { isLoggedIn: true, user: userDetails };
+    } catch (cookieError) {
+      // Cookie-based auth failed, fall back to Cognito authentication
+      log('Cookie-based authentication failed', cookieError);
     }
   }
+
+  try {
+    const user = await Auth.currentAuthenticatedUser({
+      bypassCache: false,
+    });
+    const authData = await Auth.currentSession();
+    const accessToken = authData.accessToken.jwtToken;
+
+    // If we have a Cognito token but no cookie, exchange it
+    if (accessToken) {
+      try {
+        await exchangeTokenForCookie(accessToken);
+        // After successful exchange, user details should be stored
+        if (authenticatedUserDetails) {
+          return { isLoggedIn: true, user: authenticatedUserDetails };
+        }
+      } catch (exchangeError) {
+        log('Token exchange failed:', exchangeError);
+        return { isLoggedIn: false, user: null };
+      }
+    }
+
+    return { isLoggedIn: true, user };
+  } catch (cognitoError) {
+    log('Cognito authentication failed:', cognitoError);
+    // No valid cookie and no valid Cognito session
+    authenticatedUserDetails = null;
+    return { isLoggedIn: false, user: null };
+  }
+}
+
+export function isUserAlreadyAuthenticated() {
+  return authenticatedUserDetails !== null;
 }
 
 export function forgotPassword(userData) {
@@ -892,7 +920,7 @@ export function checkSSO(email) {
         import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
       }auth/checkSSO`;
       const response = await axios.get(
-        `${checkSSOUrl}?email=${encodeURIComponent(email)}`,
+        `${checkSSOUrl}?email=${encodeURIComponent(email)}`, { withCredentials: false },
       );
       const issuer = response?.data.issuer;
       log(`issuer: ${issuer}`);

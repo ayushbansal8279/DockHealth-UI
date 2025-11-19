@@ -44,7 +44,6 @@ const ProfileDetailsView = () => {
   const currentUser = useSelector(userProfileSelector);
   const currentProfileTypeName = useSelector(profileTypeNameSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
-  const pusher = useRef(initializePusher());
   const handleTabChange = (_, newTabValue) => {
     history.push(`${url}/${newTabValue}`);
   };
@@ -103,20 +102,25 @@ const ProfileDetailsView = () => {
     let ch;
 
     if (currentUserIdentifier) {
-      ch = pusher.current?.subscribe(channelName);
-      if (ch) {
-        ch.bind('task-update', taskCallback);
-        ch.bind('task-bundle-update', taskBundleCallback);
-      }
+      initializePusher().then((pusher) => {
+        if (pusher) {
+          ch = pusher.current?.subscribe(channelName);
+          if (ch) {
+            ch.bind('task-update', taskCallback);
+            ch.bind('task-bundle-update', taskBundleCallback);
+          }
+          return () => {
+            if (ch) {
+              ch.unbind('task-update', taskCallback);
+              ch.unbind('task-bundle-update', taskBundleCallback);
+              ch.unsubscribe(channelName);
+            }
+          };
+        }
+      });
     }
 
-    return () => {
-      if (ch) {
-        ch.unbind('task-update', taskCallback);
-        ch.unbind('task-bundle-update', taskBundleCallback);
-        ch.unsubscribe(channelName);
-      }
-    };
+    return () => {};
   }, [currentUserIdentifier, patientIdentifier, dispatch]);
 
   const [patients, setPatients] = useState([]);
