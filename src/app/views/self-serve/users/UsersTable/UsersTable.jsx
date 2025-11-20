@@ -31,6 +31,7 @@ import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ReusableDataGrid from 'components/common/ReusableDataGrid';
+import { renderTruncatedCell } from '@/app/components/common/TruncatedCell/TruncatedCell';
 
 const getFilteredOrganizationUsers = ({
   organizationUsers,
@@ -126,6 +127,7 @@ const UsersTable = ({
     UserSubscriptionStatus.ALL,
   );
   const [pinnedColumns] = useState({
+    left: ['userName'],
     right: ['options'],
   });
 
@@ -156,18 +158,21 @@ const UsersTable = ({
             <>
               <UserAvatar size={22} user={row} />
               <Spacing horizontal={4} />
-              <span
-                className="member-cell"
-                onClick={() =>
-                  history.push(
-                    `/core/assignedToPerson/${encodeURIComponent(
-                      row.userIdentifier,
-                    )}`,
-                  )
-                }
-              >
-                {row?.userName}
-              </span>
+              {renderTruncatedCell(
+                <span
+                  className="member-cell"
+                  onClick={() =>
+                    history.push(
+                      `/core/assignedToPerson/${encodeURIComponent(
+                        row.userIdentifier,
+                      )}`,
+                    )
+                  }
+                >
+                  {row?.userName}
+                </span>,
+                row?.userName,
+              )}
             </>
           );
         },
@@ -460,7 +465,7 @@ const UsersTable = ({
               <ReusableDataGrid
                 columns={columns}
                 rows={filteredOrganizationUsersWithId}
-                rowHeight={35}
+                rowHeight={40}
                 pinnedColumns={pinnedColumns}
               />
             )}
