@@ -215,8 +215,8 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'fieldType',
         headerName: 'Type',
-        width: 80,
-        flex: 0,
+        flex: 0.2,
+        minWidth: 60,
         sortable: false,
         filterable: false,
         renderCell: (params) => {
@@ -224,46 +224,38 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
           return (
             <Tooltip title={fieldTypeInfo.placeholder} arrow>
               <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                width="100%"
-                height="100%"
+                sx={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid #e0e0e0',
+                }}
               >
-                <Box
-                  sx={{
-                    width: '32px',
-                    height: '32px',
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '1px solid #e0e0e0',
-                  }}
-                >
-                  {fieldTypeInfo.img ? (
-                    <img
-                      src={fieldTypeInfo.img}
-                      alt={fieldTypeInfo.placeholder}
-                      style={{
-                        width: '20px',
-                        height: '20px',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        fontSize: '12px',
-                        color: '#666',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      ?
-                    </Box>
-                  )}
-                </Box>
+                {fieldTypeInfo.img ? (
+                  <img
+                    src={fieldTypeInfo.img}
+                    alt={fieldTypeInfo.placeholder}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      objectFit: 'contain',
+                    }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      fontSize: '12px',
+                      color: '#666',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    ?
+                  </Box>
+                )}
               </Box>
             </Tooltip>
           );
@@ -272,14 +264,14 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'name',
         headerName: 'Field Name',
-        width: 250,
         flex: 1.25,
+        minWidth: 200,
       },
       {
         field: 'contextType',
         headerName: 'Category',
-        width: 150,
         flex: 1,
+        minWidth: 100,
         renderCell: (params) => {
           const category = getCategoryFromContextType(params.value);
           return category || '';
@@ -288,8 +280,8 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'profileTypeDetails',
         headerName: 'Objects',
-        width: 200,
         flex: 1.5,
+        minWidth: 200,
         renderCell: (params) => {
           const profileTypeNames = getProfileTypeNames(params.value);
 
@@ -349,17 +341,17 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'validationRegexDescription',
         headerName: 'Format',
-        width: 150,
         flex: 1,
+        minWidth: 250,
         renderCell: (params) => {
           return params.value || '';
         },
       },
       {
         field: 'actions',
-        headerName: 'Actions',
-        width: 80,
-        flex: 0,
+        headerName: 'Options',
+        minWidth: 80,
+        flex: 0.2,
         sortable: false,
         filterable: false,
         renderCell: (params) => (

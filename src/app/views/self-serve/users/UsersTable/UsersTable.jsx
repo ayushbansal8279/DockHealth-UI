@@ -31,6 +31,7 @@ import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ReusableDataGrid from 'components/common/ReusableDataGrid';
+import { renderTruncatedCell } from '@/app/components/common/TruncatedCell/TruncatedCell';
 
 const getFilteredOrganizationUsers = ({
   organizationUsers,
@@ -125,6 +126,10 @@ const UsersTable = ({
   const [userSubscriptionStatus, setUserSubscriptionStatus] = useState(
     UserSubscriptionStatus.ALL,
   );
+  const [pinnedColumns] = useState({
+    left: ['userName'],
+    right: ['options'],
+  });
 
   const history = useHistory();
 
@@ -146,24 +151,28 @@ const UsersTable = ({
         field: 'userName',
         headerName: 'USER',
         flex: 1,
+        minWidth: 180,
         renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
           return (
             <>
               <UserAvatar size={22} user={row} />
               <Spacing horizontal={4} />
-              <span
-                className="member-cell"
-                onClick={() =>
-                  history.push(
-                    `/core/assignedToPerson/${encodeURIComponent(
-                      row.userIdentifier,
-                    )}`,
-                  )
-                }
-              >
-                {row?.userName}
-              </span>
+              {renderTruncatedCell(
+                <span
+                  className="member-cell"
+                  onClick={() =>
+                    history.push(
+                      `/core/assignedToPerson/${encodeURIComponent(
+                        row.userIdentifier,
+                      )}`,
+                    )
+                  }
+                >
+                  {row?.userName}
+                </span>,
+                row?.userName,
+              )}
             </>
           );
         },
@@ -173,11 +182,13 @@ const UsersTable = ({
         headerName: 'EMAIL',
         renderHeader: renderColumnHeader,
         flex: 1,
+        minWidth: 240,
       },
       {
         field: 'orgUserRole',
         headerName: 'USER STATUS',
         flex: 0.5,
+        minWidth: 150,
         renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
           const { firstName, lastName, email, userIdentifier, userStatus } =
@@ -249,6 +260,7 @@ const UsersTable = ({
         field: 'registrationDate',
         headerName: 'JOINED',
         flex: 0.5,
+        minWidth: 150,
         renderHeader: renderColumnHeader,
         renderCell: ({ row }) => {
           const { registrationDate, userStatus } = row;
@@ -299,6 +311,7 @@ const UsersTable = ({
         field: 'taskLists',
         headerName: 'LISTS (Guests)',
         flex: 0.5,
+        minWidth: 110,
         renderHeader: renderColumnHeader,
         sortable: false,
         renderCell: ({ row }) => {
@@ -333,6 +346,7 @@ const UsersTable = ({
         field: 'subscription',
         headerName: 'SUBSCRIPTION',
         flex: 0.5,
+        minWidth: 120,
         renderHeader: renderColumnHeader,
         sortable: false,
         renderCell: ({ row }) => {
@@ -356,6 +370,9 @@ const UsersTable = ({
       {
         field: 'options',
         headerName: 'OPTIONS',
+        flex: 0.2,
+        minWidth: 80,
+        align: 'center',
         renderHeader: renderColumnHeader,
         sortable: false,
         renderCell: (row) => {
@@ -448,7 +465,8 @@ const UsersTable = ({
               <ReusableDataGrid
                 columns={columns}
                 rows={filteredOrganizationUsersWithId}
-                rowHeight={35}
+                rowHeight={40}
+                pinnedColumns={pinnedColumns}
               />
             )}
           </StyledUsersTable>
