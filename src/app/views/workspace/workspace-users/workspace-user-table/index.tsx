@@ -81,6 +81,7 @@ const WorkspaceUserTable = () => {
       field: 'name',
       headerName: 'Users',
       flex: 1.75,
+      minWidth: 180,
       renderCell: ({ row }) => {
         return (
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -95,11 +96,13 @@ const WorkspaceUserTable = () => {
       field: 'email',
       headerName: 'Email',
       flex: 2,
+      minWidth: 240,
     },
     {
       field: 'workspaceUserRole',
       headerName: `${workspaceLabel} role`,
       flex: 0.6,
+      minWidth: 150,
       renderCell: ({ row }) => {
         const { firstName, lastName, email, userIdentifier, userStatus } = row;
         const key = `${firstName}${lastName}${userIdentifier}${email}`;

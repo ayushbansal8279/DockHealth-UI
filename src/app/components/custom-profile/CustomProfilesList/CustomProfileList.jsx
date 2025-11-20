@@ -490,6 +490,7 @@ const CustomProfileListContent = ({
             field: 'isSelected',
             headerName: 'SELECT',
             flex: 0.1,
+            minWidth: 80,
             filterable: false,
             sortable: false,
             disableColumnMenu: true,
@@ -527,6 +528,7 @@ const CustomProfileListContent = ({
               field: field.identifier,
               headerName: field.name,
               flex: 1,
+              minWidth: 150,
               filterable: true,
               sortable: true,
               valueGetter: (value, row) => {
@@ -603,6 +605,7 @@ const CustomProfileListContent = ({
             field: 'profileStatus',
             headerName: 'Status',
             flex: 0.2,
+            minWidth: 100,
             sortable: true,
             filterable: true,
             valueGetter: (value, row) => {

@@ -152,12 +152,14 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         field: 'name',
         headerName: 'Object Name',
         flex: 0.5,
+        minWidth: 150,
         renderHeader: renderColumnHeader,
       },
       {
         field: 'description',
         headerName: 'Description',
         flex: 1,
+        minWidth: 300,
         renderHeader: renderColumnHeader,
         renderCell: (params) => {
           return params.value || '';
@@ -166,8 +168,8 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'contextType',
         headerName: 'Type',
-        width: 150,
         flex: 0.2,
+        minWidth: 100,
         renderHeader: renderColumnHeader,
         renderCell: (params) => {
           return params.value
