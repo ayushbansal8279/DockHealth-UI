@@ -799,9 +799,9 @@ const SmartFlowBuilderView = () => {
     const reactFlowBounds =
       builderWrapperReference.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    const position = reactFlowInstance.project({
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
+    const position = reactFlowInstance.screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
     });
 
     switch (type) {
