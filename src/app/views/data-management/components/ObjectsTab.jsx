@@ -227,7 +227,7 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   );
 
   const filteredObjects = useMemo(() => {
-    const filtered = !searchPhrase
+    let filtered = !searchPhrase
       ? objects
       : objects.filter(
           (obj) =>
@@ -237,6 +237,12 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
               .includes(searchPhrase.toLowerCase()) ||
             obj.contextType?.toLowerCase().includes(searchPhrase.toLowerCase()),
         );
+
+    if (isWorkspace) {
+      filtered = filtered.filter(
+        (obj) => obj.contextType !== ContextType.PREDEFINED,
+      );
+    }
 
     return [...filtered].sort((a, b) => {
       if (
@@ -253,7 +259,7 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       }
       return 0;
     });
-  }, [objects, searchPhrase]);
+  }, [objects, searchPhrase, isWorkspace]);
 
   if (loading) {
     return (
