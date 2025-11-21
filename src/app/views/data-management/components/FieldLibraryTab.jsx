@@ -98,7 +98,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     try {
       setLoading(true);
       setError(null);
-      const fields = await getAllCustomFields(workspaceIdentifier);
+      const fields = await getAllCustomFields(workspaceIdentifier, true);
       setFieldLibrary(fields || []);
     } catch (err) {
       setError(err.message);

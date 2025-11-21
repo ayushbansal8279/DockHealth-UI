@@ -5,9 +5,12 @@ import { noop, showAlert } from '../helpers/utility-functions';
 import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 
-export function getAllCustomFields(workspaceIdentifier) {
+export function getAllCustomFields(workspaceIdentifier, hidden = false) {
   return axios
-    .get(`custom/field`, withWorkspaceHeaders(workspaceIdentifier))
+    .get(`custom/field`, {
+      ...withWorkspaceHeaders(workspaceIdentifier),
+      params: { hidden },
+    })
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -19,11 +22,12 @@ export function getAllPatientCustomFields(
   active = true,
   patientIdentifier,
   workspaceIdentifier,
+  includeHidden = false,
 ) {
   return axios
     .get(`custom/field/getAll/PATIENT`, {
       ...withWorkspaceHeaders(workspaceIdentifier),
-      params: { active, targetIdentifier: patientIdentifier },
+      params: { active, targetIdentifier: patientIdentifier, includeHidden },
     })
     .then(({ data }) => data)
     .catch((error) => {
@@ -32,10 +36,13 @@ export function getAllPatientCustomFields(
     });
 }
 
-export function getAllTaskListCustomFields(taskListIdentifier) {
+export function getAllTaskListCustomFields(
+  taskListIdentifier,
+  includeHidden = false,
+) {
   return axios
     .get(`custom/field/getAll/TASK`, {
-      params: { taskListIdentifier },
+      params: { taskListIdentifier, includeHidden },
     })
     .then(({ data }) => data)
     .catch((error) => {
@@ -44,9 +51,11 @@ export function getAllTaskListCustomFields(taskListIdentifier) {
     });
 }
 
-export function getAllProviderCustomFields() {
+export function getAllProviderCustomFields(includeHidden = false) {
   return axios
-    .get(`custom/field/getAll/PROVIDER`)
+    .get(`custom/field/getAll/PROVIDER`, {
+      params: { includeHidden },
+    })
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
