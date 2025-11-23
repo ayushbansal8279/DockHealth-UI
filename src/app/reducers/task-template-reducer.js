@@ -502,7 +502,6 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
       const { temporaryElements } =
         state.taskTemplateDetails[currentTaskTemplateIdentifier];
-        
       return {
         ...state,
         taskTemplateDetails: updateTaskTemplateDetailsState(
@@ -748,7 +747,10 @@ const TaskTemplateReducer = (state = initialState, action) => {
           {
             temporaryElements: [
               ...(temporaryElements || []),
-              createMedicalRecordGatheringAgentNode(temporaryElements, position),
+              createMedicalRecordGatheringAgentNode(
+                temporaryElements,
+                position,
+              ),
             ],
           },
         ),
@@ -1154,6 +1156,87 @@ const TaskTemplateReducer = (state = initialState, action) => {
             updateTaskTemplateDetailsStateCallback,
           )
         : state;
+    }
+
+    case ActionTypes.RECONNECT_TASK_LINK_SUCCESS: {
+      const { newEdge, oldEdge, taskTemplateIdentifier } = action;
+      const { source: oldSrc, target: oldTgt } = oldEdge;
+      const { source: newSrc, target: newTgt } = newEdge;
+
+      const template = state.taskTemplateDetails[taskTemplateIdentifier] || {
+        tasks: [],
+      };
+
+      const tasks = template.tasks.map((task) => {
+        if (!Array.isArray(task.taskLinks) || task.taskLinks.length === 0)
+          return task;
+
+        const newTaskLinks = task.taskLinks.map((link) =>
+          link.sourceTaskIdentifier === oldSrc &&
+          link.targetTaskIdentifier === oldTgt
+            ? {
+                ...link,
+                sourceTaskIdentifier: newSrc,
+                targetTaskIdentifier: newTgt,
+              }
+            : link,
+        );
+
+        // return same object if nothing changed
+        return newTaskLinks === task.taskLinks
+          ? task
+          : { ...task, taskLinks: newTaskLinks };
+      });
+
+      const newTasksMap = Object.fromEntries(
+        tasks.map((t) => [t.taskIdentifier, t]),
+      );
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          taskTemplateIdentifier,
+          state.taskTemplateDetails,
+          { tasks },
+        ),
+        tasksMap: {
+          ...state.tasksMap,
+          ...newTasksMap,
+        },
+      };
+    }
+
+    case ActionTypes.RECONNECT_TASK_LINK_FAILURE: {
+      const { taskTemplateIdentifier, rollback } = action;
+
+      if (!rollback) {
+        // nothing to do — just show error and keep current state
+        return {
+          ...state,
+        };
+      }
+
+      const {
+        tasks: prevTasks = [],
+        layout: prevLayout = [],
+        tasksMap: prevTasksMap = {},
+      } = rollback;
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          taskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            tasks: prevTasks,
+            layout: prevLayout,
+          },
+        ),
+        tasksMap: {
+          ...state.tasksMap,
+          ...prevTasksMap,
+        },
+      };
     }
 
     default: {

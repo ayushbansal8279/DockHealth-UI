@@ -183,25 +183,6 @@ function* deleteTasksLink({ sourceTaskIdentifier, targetTaskIdentifier }) {
   }
 }
 
-function* deleteTasksLinkWithoutAlert({
-  sourceTaskIdentifier,
-  targetTaskIdentifier,
-}) {
-  try {
-    yield call(
-      TaskApi.deleteTasksLink,
-      sourceTaskIdentifier,
-      targetTaskIdentifier,
-    );
-    yield all([
-      put(TaskActions.refreshTask(sourceTaskIdentifier)),
-      put(TaskActions.refreshTask(targetTaskIdentifier)),
-    ]);
-  } catch {
-    yield put(showGlobalErrorAlert());
-  }
-}
-
 function* refreshTemplateBundle({ templateBundleIdentifier }) {
   try {
     const templateBundle = yield call(
@@ -533,10 +514,6 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
   yield takeEvery(ActionTypes.DELETE_TASKS_LINK, deleteTasksLink);
-  yield takeEvery(
-    ActionTypes.DELETE_TASKS_LINK_WITHOUT_ALERT,
-    deleteTasksLinkWithoutAlert,
-  );
   yield takeEvery(ActionTypes.UPDATE_TASKS_LINK, updateTasksLink);
   yield takeEvery(ActionTypes.SEND_FAX_FOR_TASK, sendFaxForTask);
   yield takeEvery(ActionTypes.SEND_ESIGN_FOR_TASK, sendESignForTask);
