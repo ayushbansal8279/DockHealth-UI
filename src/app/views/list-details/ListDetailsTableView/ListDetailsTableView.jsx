@@ -98,7 +98,6 @@ const ListDetailsTableView = () => {
   const prevTaskCounters = usePrevious(taskCounters);
   const prevParams = usePrevious(params);
 
-  const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
   const [clearSearch, setClearSearch] = useState(false);
   const [clearFilter, setClearFilter] = useState(false);
@@ -408,15 +407,18 @@ const ListDetailsTableView = () => {
 
   useEffect(() => {
     if (currentUserIdentifier) {
-      const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
-      const ch = pusher.current?.subscribe(channelName);
-      if (ch) {
-        setChannel(ch);
-      }
-
-      return () => {
-        if (ch) ch.unsubscribe(channelName);
-      };
+      initializePusher().then((pusher) => {
+        if (pusher) {
+          const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
+          const ch = pusher?.subscribe(channelName);
+          if (ch) {
+            setChannel(ch);
+          }
+          return () => {
+            if (ch) ch.unsubscribe(channelName);
+          };
+        }
+      });
     }
 
     return () => {};
