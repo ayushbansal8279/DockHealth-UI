@@ -43,7 +43,6 @@ import { getDashboardTaskViewFilter } from '@/app/helpers/local-storage-helper';
 const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, DOCK_PRO } = UserOrganizationRole;
 
 const DashboardView = ({ tabName }) => {
-  const pusher = useRef(initializePusher());
   const history = useHistory();
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
@@ -140,21 +139,26 @@ const DashboardView = ({ tabName }) => {
     const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
     let ch;
 
-    if (currentUserIdentifier) {
-      ch = pusher.current?.subscribe(channelName);
-      if (ch) {
-        ch.bind('task-update', taskCallback);
-        ch.bind('task-bundle-update', taskBundleCallback);
-      }
+    if (currentUserIdentifier) {      
+      initializePusher().then((pusher) => {
+        if (pusher) {
+          ch = pusher?.subscribe(channelName);
+        }
+        if (ch) {
+          ch.bind('task-update', taskCallback);
+          ch.bind('task-bundle-update', taskBundleCallback);
+        }
+        return () => {
+          if (ch) {
+            ch.unbind('task-update', taskCallback);
+            ch.unbind('task-bundle-update', taskBundleCallback);
+            ch.unsubscribe(channelName);
+          }
+        };
+      });
     }
 
-    return () => {
-      if (ch) {
-        ch.unbind('task-update', taskCallback);
-        ch.unbind('task-bundle-update', taskBundleCallback);
-        ch.unsubscribe(channelName);
-      }
-    };
+    return () => {};
   }, [currentUserIdentifier, dispatch]);
 
   useEffect(() => {

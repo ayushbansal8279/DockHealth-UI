@@ -1,5 +1,6 @@
 import Pusher from 'pusher-js';
 import axiosInstance from 'api/axios-heydoc';
+import { isUserAlreadyAuthenticated } from 'api/user-auth-api';
 import { log } from 'helpers/log';
 
 const APP_KEY = import.meta.env.VITE_PUSHER_APP_KEY;
@@ -78,12 +79,19 @@ const fetchAndCacheToken = async () => {
     cachedTokenData = { token: null, expiresAt: null };
   }
 
+  const isLoggedIn = isUserAlreadyAuthenticated();
+  if (!isLoggedIn) {
+    return null;
+  }
+
   if (!tokenFetchPromise) {
     tokenFetchPromise = getAccessTokenFromBackend();
   }
 
   try {
     const tokenData = await tokenFetchPromise;
+    // Reset promise after it resolves so we can fetch a new token if needed later
+    tokenFetchPromise = null;
     if (tokenData) {
       cachedTokenData.token = tokenData.token;
       // Calculate expiration timestamp (current time + expires_in seconds)
@@ -106,11 +114,11 @@ let pusherAccessToken = null;
 /**
  * Initializes Pusher instance with access token retrieved from backend
  * Token is fetched asynchronously in the background and cached with expiration
- * @returns {Pusher|null} The Pusher instance or null if not yet initialized
+ * @returns {Promise<Pusher|null>} A Promise that resolves with the Pusher instance or null if initialization fails
  */
-export const initializePusher = () => {
+export const initializePusher = async () => {
   // If we already have an instance with a valid token, return it
-  if (pusherInstance && pusherAccessToken && isTokenValid()) {
+  if (pusherInstance) {
     return pusherInstance;
   }
 
@@ -138,23 +146,20 @@ export const initializePusher = () => {
     return pusherInstance;
   }
 
-  // Start fetching token in the background if not already started
-  if (!tokenFetchPromise) {
-    fetchAndCacheToken().then((token) => {
-      if (token && (!pusherInstance || pusherAccessToken !== token)) {
-        pusherInstance = new Pusher(APP_KEY, {
-          cluster: APP_CLUSTER,
-          authEndpoint: `${
-            import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-          }pusher/auth`,
-          auth: {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-          forceTLS: true,
-        });
-        pusherAccessToken = token;
-      }
+  // Wait for token to be fetched and then initialize
+  const token = await fetchAndCacheToken();
+  if (token && (!pusherInstance || pusherAccessToken !== token)) {
+    pusherInstance = new Pusher(APP_KEY, {
+      cluster: APP_CLUSTER,
+      authEndpoint: `${
+        import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+      }pusher/auth`,
+      auth: {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+      forceTLS: true,
     });
+    pusherAccessToken = token;
   }
 
   // Return existing instance or null if not yet initialized
@@ -166,11 +171,11 @@ let pusherInstanceForPresence = null;
 /**
  * Initializes Pusher instance for presence channels with access token retrieved from backend
  * Token is fetched asynchronously in the background and cached with expiration
- * @returns {Pusher|null} The Pusher instance or null if not yet initialized
+ * @returns {Promise<Pusher|null>} A Promise that resolves with the Pusher instance or null if initialization fails
  */
-export const initializePusherForPresence = () => {
+export const initializePusherForPresence = async () => {
   // If we already have an instance with a valid token, return it
-  if (pusherInstanceForPresence && pusherAccessToken && isTokenValid()) {
+  if (pusherInstanceForPresence) {
     return pusherInstanceForPresence;
   }
 
@@ -201,26 +206,20 @@ export const initializePusherForPresence = () => {
     return pusherInstanceForPresence;
   }
 
-  // Start fetching token in the background if not already started
-  if (!tokenFetchPromise) {
-    fetchAndCacheToken().then((token) => {
-      if (
-        token &&
-        (!pusherInstanceForPresence || pusherAccessToken !== token)
-      ) {
-        pusherInstanceForPresence = new Pusher(APP_KEY, {
-          cluster: APP_CLUSTER,
-          authEndpoint: `${
-            import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-          }pusher/auth?presence=true`,
-          auth: {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-          forceTLS: true,
-        });
-        pusherAccessToken = token;
-      }
+  // Wait for token to be fetched and then initialize
+  const token = await fetchAndCacheToken();
+  if (token && (!pusherInstanceForPresence || pusherAccessToken !== token)) {
+    pusherInstanceForPresence = new Pusher(APP_KEY, {
+      cluster: APP_CLUSTER,
+      authEndpoint: `${
+        import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+      }pusher/auth?presence=true`,
+      auth: {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+      forceTLS: true,
     });
+    pusherAccessToken = token;
   }
 
   // Return existing instance or null if not yet initialized

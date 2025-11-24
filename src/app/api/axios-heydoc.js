@@ -70,6 +70,10 @@ axiosInstance.interceptors.response.use(identity, (error) => {
   if (window.location.hash && window.location.hash.includes('/auth/login')) {
     return;
   }
+  // ignore head requests for cookie check failures
+  if (error?.config?.method === 'head') {
+    return;
+  }
 
   log('Connection error');
   log(error);
