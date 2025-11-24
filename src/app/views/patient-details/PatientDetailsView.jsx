@@ -227,7 +227,7 @@ const PatientDetailsView = () => {
     if (currentUserIdentifier) {
       initializePusher().then((pusher) => {
         if (pusher) {
-          ch = pusher.current?.subscribe(channelName);
+          ch = pusher?.subscribe(channelName);
           if (ch) {
             ch.bind('task-update', taskCallback);
             ch.bind('task-bundle-update', taskBundleCallback);

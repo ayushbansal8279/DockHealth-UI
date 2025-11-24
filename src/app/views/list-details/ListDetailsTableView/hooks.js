@@ -459,7 +459,7 @@ const initializeListDetailsViewHooks = () => {
       initializePusher().then((pusher) => {
         if (pusher) {
           const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
-          const ch = pusher.current?.subscribe(channelName);
+          const ch = pusher?.subscribe(channelName);
           if (ch) {
             setChannel(ch);
           }
