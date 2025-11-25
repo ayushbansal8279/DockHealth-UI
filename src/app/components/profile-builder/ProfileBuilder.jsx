@@ -336,6 +336,9 @@ const ProfileBuilder = () => {
         const newField = allCustomFields.find(
           (item) => item.identifier === draggableId,
         );
+        newField.customFieldIdentifier = draggableId;
+        newField.identifier = newProfileField.identifier;
+        newField.fieldReferenceId = newProfileField.identifier;
         dispatch(showGlobalAlert(AlertMessages.UPDATED));
 
         return {
