@@ -289,19 +289,45 @@ const ProfileBuilder = () => {
     }
   };
 
+  function buildFieldToCategoryMap(categories = []) {
+    const map = new Map();
+    categories.forEach((category) => {
+      (category.fields || []).forEach((field) => {
+        const fid = field.customFieldIdentifier ?? field.fieldReferenceId;
+        if (fid) {
+          map.set(fid, {
+            identifier: category.identifier,
+            name: category.name,
+          });
+        }
+      });
+    });
+    return map;
+  }
+
   const handleExistingFieldDrop = async (e, destination) => {
     const draggableId = e?.active?.id.split('#')[0];
+
+    const fieldToCategoryMap = buildFieldToCategoryMap(selectedCategories);
+    if (fieldToCategoryMap.has(draggableId)) {
+      const existingCategory = fieldToCategoryMap.get(draggableId);
+
+      if (existingCategory.identifier === destination) {
+        dispatch(showGlobalErrorAlert('Field already exists in this category'));
+        return;
+      }
+
+      dispatch(
+        showGlobalErrorAlert(
+          `Field already exists in another category (${existingCategory.name})`,
+        ),
+      );
+      return;
+    }
+
     const updatedCategories = await Promise.all(
       selectedCategories.map(async (category) => {
         if (category?.identifier !== destination) return category;
-
-        const fieldExists = category.fields.some(
-          (field) => field.customFieldIdentifier === draggableId,
-        );
-        if (fieldExists) {
-          dispatch(showGlobalErrorAlert('Field already exists in group'));
-          return category;
-        }
 
         const matchingCategoryFromCustomGroups = customGroups.find(
           (cg) => cg.identifier === category.identifier,
@@ -333,17 +359,20 @@ const ProfileBuilder = () => {
           ),
         );
 
-        const newField = allCustomFields.find(
-          (item) => item.identifier === draggableId,
-        );
-        newField.customFieldIdentifier = draggableId;
-        newField.identifier = newProfileField.identifier;
-        newField.fieldReferenceId = newProfileField.identifier;
+        const originalField =
+          allCustomFields.find((item) => item.identifier === draggableId) || {};
+        const enrichedField = {
+          ...originalField,
+          customFieldIdentifier: draggableId,
+          identifier: newProfileField.identifier,
+          fieldReferenceId: newProfileField.identifier,
+        };
+
         dispatch(showGlobalAlert(AlertMessages.UPDATED));
 
         return {
           ...category,
-          fields: [...category.fields, newField],
+          fields: [...(category.fields || []), enrichedField],
         };
       }),
     );
