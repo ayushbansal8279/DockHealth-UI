@@ -187,3 +187,25 @@ export const SortHeaderRow = styled.div`
     page-break-inside: avoid;
   }
 `;
+
+export const TaskIconWrapper = styled.div`
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+
+  img {
+    width: 15px;
+    height: 15px;
+    filter: invert(42%) sepia(8%) saturate(1089%) hue-rotate(162deg)
+      brightness(92%) contrast(87%);
+  }
+`;
+
+export const PatientIconWrapper = styled.div`
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: #5a6c7d;
+`;
