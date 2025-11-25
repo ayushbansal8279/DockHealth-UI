@@ -296,7 +296,7 @@ const ProfileBuilder = () => {
         if (category?.identifier !== destination) return category;
 
         const fieldExists = category.fields.some(
-          (field) => field.identifier === draggableId,
+          (field) => field.customFieldIdentifier === draggableId,
         );
         if (fieldExists) {
           dispatch(showGlobalErrorAlert('Field already exists in group'));
