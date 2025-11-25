@@ -32,9 +32,12 @@ const SelectedCategory = ({ category }) => {
     useSensor(TouchSensor),
   );
   const dispatch = useDispatch();
-  const { selectedCategories, setSelectedCategories } = useContext(
-    ProfileBuilderContext,
-  );
+  const {
+    selectedCategories,
+    setSelectedCategories,
+    removeCustomGroup,
+    setCustomGroups,
+  } = useContext(ProfileBuilderContext);
   const { setNodeRef } = useDroppable({
     id: category?.identifier,
     data: { type: category.identifier },
@@ -47,6 +50,7 @@ const SelectedCategory = ({ category }) => {
           (category1) => category1.identifier !== category.identifier,
         ),
       );
+      removeCustomGroup?.(category.identifier);
     });
     dispatch(showGlobalAlert(AlertMessages.DELETED));
   };
@@ -55,7 +59,15 @@ const SelectedCategory = ({ category }) => {
     const payload = {
       name: value,
     };
-    CustomFieldApi.updateCustomFiledGroup(category.identifier, payload);
+    CustomFieldApi.updateCustomFiledGroup(category.identifier, payload).then(
+      (updatedGroup) => {
+        setCustomGroups((prev) =>
+          prev.map((cg) =>
+            cg.identifier === category.identifier ? updatedGroup : cg,
+          ),
+        );
+      },
+    );
     dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
 
@@ -80,6 +92,12 @@ const SelectedCategory = ({ category }) => {
 
       CustomFieldApi.updateCustomFiledGroup(category.identifier, {
         fields: updatedFiled,
+      }).then((updatedGroup) => {
+        setCustomGroups((prev) =>
+          prev.map((cg) =>
+            cg.identifier === category.identifier ? updatedGroup : cg,
+          ),
+        );
       });
 
       const updatedCategories = selectedCategories.map((item) =>

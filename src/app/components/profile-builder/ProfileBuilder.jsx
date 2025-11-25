@@ -66,6 +66,12 @@ const ProfileBuilder = () => {
   const [profileType, setProfileType] = useState(null);
   const [customGroups, setCustomGroups] = useState([]);
 
+  const removeCustomGroup = (groupIdentifier) => {
+    setCustomGroups((prev) =>
+      prev.filter((group) => group.identifier !== groupIdentifier),
+    );
+  };
+
   const getContextFromProfileType = (profile) => {
     if (!profile) return null;
 
@@ -109,6 +115,7 @@ const ProfileBuilder = () => {
         (group) => group.name === 'Default Group',
       );
 
+      let finalCustomGroups = [...customGroups];
       if (!hasDefaultFields) {
         const defaultCategory = {
           context: profileContext,
@@ -121,15 +128,15 @@ const ProfileBuilder = () => {
         const savedDefault = await CustomFieldApi.saveCustomFiledGroup(
           defaultCategory,
         );
-        customGroups.push(savedDefault);
+        finalCustomGroups = [...finalCustomGroups, savedDefault];
       }
-      customGroups.sort((a, b) => {
+      finalCustomGroups.sort((a, b) => {
         if (a.name === 'Default Group') return -1;
         if (b.name === 'Default Group') return 1;
         return a.displayOrder - b.displayOrder;
       });
 
-      const processedGroups = customGroups.map((category) => {
+      const processedGroups = finalCustomGroups.map((category) => {
         if (!category.fields) {
           return category;
         }
@@ -146,7 +153,7 @@ const ProfileBuilder = () => {
 
         return { ...category, fields: enrichedFields };
       });
-      setCustomGroups(customGroups);
+      setCustomGroups(finalCustomGroups);
       setSelectedCategories(processedGroups);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -313,15 +320,16 @@ const ProfileBuilder = () => {
           { fieldReferenceId: newProfileField.identifier },
         ];
 
-        CustomFieldApi.updateCustomFiledGroup(category.identifier, {
-          fields: updatedSavedFields,
-        });
+        const updatedGroup = await CustomFieldApi.updateCustomFiledGroup(
+          category.identifier,
+          {
+            fields: updatedSavedFields,
+          },
+        );
 
-        setCustomGroups((prevCustomGroups) =>
-          prevCustomGroups.map((cg) =>
-            cg.identifier === category.identifier
-              ? { ...cg, fields: updatedSavedFields }
-              : cg,
+        setCustomGroups((prev) =>
+          prev.map((cg) =>
+            cg.identifier === category.identifier ? updatedGroup : cg,
           ),
         );
 
@@ -375,6 +383,8 @@ const ProfileBuilder = () => {
           setNewCategory,
           isAddCategoryDrop,
           activeDragItem,
+          removeCustomGroup,
+          setCustomGroups,
         }}
       >
         <HeaderContainer>
