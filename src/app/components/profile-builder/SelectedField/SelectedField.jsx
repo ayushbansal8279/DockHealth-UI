@@ -69,7 +69,9 @@ const SelectedField = ({ field, category, id }) => {
     zIndex: isDragging ? 9999 : 'auto',
   };
 
-  const { setSelectedCategories } = useContext(ProfileBuilderContext);
+  const { setSelectedCategories, setCustomGroups } = useContext(
+    ProfileBuilderContext,
+  );
 
   const handleEditClick = () => {
     dispatch(
@@ -205,6 +207,12 @@ const SelectedField = ({ field, category, id }) => {
 
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
           fields: updatedSavedRefrenceFields,
+        }).then((updatedGroup) => {
+          setCustomGroups((prev) =>
+            prev.map((cg) =>
+              cg.identifier === category.identifier ? updatedGroup : cg,
+            ),
+          );
         });
 
         updateCustomGroupsData(updatedSavedActualFields);
@@ -239,6 +247,12 @@ const SelectedField = ({ field, category, id }) => {
 
       CustomFieldApi.updateCustomFiledGroup(category.identifier, {
         fields: updatedSavedRefrenceFields,
+      }).then((updatedGroup) => {
+        setCustomGroups((prev) =>
+          prev.map((cg) =>
+            cg.identifier === category.identifier ? updatedGroup : cg,
+          ),
+        );
       });
 
       const allRemainingFields = [
