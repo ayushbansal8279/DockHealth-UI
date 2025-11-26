@@ -457,17 +457,17 @@ export function rememberDevice() {
 }
 
 export async function isAuthenticated() {
-  if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
-    const userData = {
-      username: sessionStorage.getItem('SSO_USEREMAIL'),
-    };
+  // if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
+  //   const userData = {
+  //     username: sessionStorage.getItem('SSO_USEREMAIL'),
+  //   };
 
-    if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
-      return { isLoggedIn: true, user: userData };
-    }
+  //   if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
+  //     return { isLoggedIn: true, user: userData };
+  //   }
 
-    return { isLoggedIn: false, user: userData };
-  }
+  //   return { isLoggedIn: false, user: userData };
+  // }
 
   // First, check if we have authenticated user details from cookie-based auth
   if (authenticatedUserDetails) {
@@ -690,7 +690,7 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
       const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
-      await axios.post(`${authUrl}/token`, authData).then((response) => {
+      await axios.post(`${authUrl}/token`, authData).then(async (response) => {
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
         const organizationIdentifier = response?.data.organizationIdentifier;
@@ -722,6 +722,14 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
           });
         } catch {
           // do nothing
+        }
+        // Fetch and store user details using the newly set cookie
+        try {
+          await fetchAuthenticatedUserDetails();
+          resolve();
+        } catch (error) {
+          log('Token exchange succeeded but user details fetch failed:', error);
+          resolve();
         }
       });
       try {
