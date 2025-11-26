@@ -181,6 +181,9 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleMenuExited = () => {
     setSelectedField(null);
   };
 
@@ -498,6 +501,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        onExited={handleMenuExited}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
