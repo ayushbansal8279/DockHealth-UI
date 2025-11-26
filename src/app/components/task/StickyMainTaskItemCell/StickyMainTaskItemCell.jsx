@@ -27,18 +27,28 @@ const StickyMainTaskItemCell = styled.div`
     searchValue,
     isFilterApply,
     isSortApplied,
-  }) =>
-    origin === 'PATIENT'
-      ? isSubtask || isWorkflowSubtask
-        ? '60px'
-        : '24px'
-      : origin === 'LIST'
-      ? isSubtask || isWorkflowSubtask
-        ? searchValue || isFilterApply || isSortApplied
-          ? '54.5px'
-          : '90px'
-        : '54.5px'
-      : '24px'};
+  }) => {
+    const hasSearchOrFilter = searchValue || isFilterApply || isSortApplied;
+    const isAnySubtask = isSubtask || isWorkflowSubtask;
+
+    // --- CASE: PATIENT OR CUSTOM_PROFILE ---
+    if (origin === 'PATIENT' || origin === 'CUSTOM_PROFILE') {
+      if (isAnySubtask) {
+        return hasSearchOrFilter ? '24px' : '60px';
+      }
+      return '24px';
+    }
+
+    // --- CASE: LIST ---
+    if (origin === 'LIST') {
+      if (isAnySubtask) {
+        return hasSearchOrFilter ? '54.5px' : '90px';
+      }
+      return '54.5px';
+    }
+    // --- DEFAULT CASE (other origins) ---
+    return '24px';
+  }};
   ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 2px solid
     ${({ isWorkflowtask, isTamplateGroup, isTaskOfTemplate }) =>
