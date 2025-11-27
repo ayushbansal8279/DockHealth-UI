@@ -98,7 +98,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     try {
       setLoading(true);
       setError(null);
-      const fields = await getAllCustomFields(workspaceIdentifier);
+      const fields = await getAllCustomFields(workspaceIdentifier, true);
       setFieldLibrary(fields || []);
     } catch (err) {
       setError(err.message);
@@ -181,6 +181,9 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleMenuExited = () => {
     setSelectedField(null);
   };
 
@@ -201,9 +204,9 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     if (!field?.identifier) return;
 
     try {
-      await duplicateCustomField(field.identifier);
+      const duplicatedField = await duplicateCustomField(field.identifier);
       dispatch(showGlobalAlert(AlertMessages.CREATED));
-      fetchFields();
+      setFieldLibrary((prev) => [...prev, duplicatedField]);
     } catch (error) {
       console.error('Error duplicating field:', error);
       dispatch(showGlobalErrorAlert());
@@ -498,6 +501,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        onExited={handleMenuExited}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
