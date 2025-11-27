@@ -38,7 +38,7 @@ export function getAllCustomFieldsByTargetType(
   workspaceIdentifier,
 ) {
   return axios
-    .get(`custom/field/getAll/${targetType}`, {
+    .get(`custom/field?targetType=${targetType}`, {
       ...withWorkspaceHeaders(workspaceIdentifier),
       params,
     })
