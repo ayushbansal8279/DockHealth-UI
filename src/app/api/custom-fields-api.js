@@ -348,13 +348,14 @@ export function duplicateCustomField(customFieldIdentifier) {
   return axios
     .post(`custom/field/duplicate/${customFieldIdentifier}`)
     .then(({ data }) => {
-      if (data.statusCode === 'SUCCESS') {
+      if (data && (data.identifier || data.externalIdentifier)) {
         return data;
-      } else {
-        throw new Error(
-          data.errorMessage || 'Failed to duplicate custom field',
-        );
       }
+
+      const errMsg =
+        data?.errorMessage ||
+        'Failed to duplicate custom field (unexpected response)';
+      throw new Error(errMsg);
     })
     .catch((error) => {
       log(error);
