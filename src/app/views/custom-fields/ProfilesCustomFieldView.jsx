@@ -52,7 +52,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const fetchUserCustomFields = () => {
-    ProfileTypeFieldApi.getAllProfileFieldTypes(profileTypeIdentifier)
+    ProfileTypeFieldApi.getAllProfileFieldTypes(profileTypeIdentifier, true)
       .then((data) => {
         setCustomFields(data);
         setIsFetching(false);

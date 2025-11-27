@@ -1,9 +1,11 @@
 import axios from './axios-heydoc';
 import { handleApiError } from '../helpers/api-helpers';
 
-export function getAllProfileFieldTypes(identifier) {
+export function getAllProfileFieldTypes(identifier, includeHidden = false) {
   return axios
-    .get(`profile/type/field/getAll/${identifier}`)
+    .get(`profile/type/field/getAll/${identifier}`, {
+      params: { includeHidden },
+    })
     .then(({ data }) => data);
 }
 
