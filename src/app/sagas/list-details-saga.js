@@ -97,17 +97,36 @@ const ERROR_TYPES = {
 };
 
 function processTaskCountersSuccess(countersData) {
+  if (Array.isArray(countersData)) {
+    const incompleteCounter = countersData
+      .filter((item) => item.metricName === 'INCOMPLETE_TASKS_COUNT')
+      .map((item) => item.metricValue)
+      .reduce((acc, curr) => acc + curr, 0);
+    const completeCounter = countersData
+      .filter((item) => item.metricName === 'COMPLETE_TASKS_COUNT')
+      .map((item) => item.metricValue)
+      .reduce((acc, curr) => acc + curr, 0);
+    return {
+      incomplete: incompleteCounter || 0,
+      complete: completeCounter || 0,
+    };
+  }
+  // Handle non-array scenario
+  if (countersData && typeof countersData === 'object') {
+    const incompleteCounter = countersData.find(
+      ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
+    );
+    const completeCounter = countersData.find(
+      ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
+    );
+    return {
+      incomplete: incompleteCounter || 0,
+      complete: completeCounter || 0,
+    };
+  }
   return {
-    incomplete: countersData
-      ? countersData.find(
-          ({ metricName }) => metricName === 'INCOMPLETE_TASKS_COUNT',
-        )?.metricValue
-      : 0,
-    complete: countersData
-      ? countersData.find(
-          ({ metricName }) => metricName === 'COMPLETE_TASKS_COUNT',
-        )?.metricValue
-      : 0,
+    incomplete: 0,
+    complete: 0,
   };
 }
 
@@ -165,7 +184,11 @@ function* getCurrentListTasks() {
       );
       groups = action.groups;
     }
-    const groupsWithTasks = compose(filter((g) => g.metricValue >= 0))(groups);
+    const groupsWithTasks = compose(
+      filter(
+        (g) => g.metrics?.some((metric) => metric.metricValue >= 0) ?? false,
+      ),
+    )(groups);
     const groupsToGet = groupsWithTasks;
 
     yield all(

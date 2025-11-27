@@ -42,7 +42,7 @@ const UserCustomFieldsView = () => {
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const fetchUserCustomFields = () => {
-    CustomFieldsApi.getAllProviderCustomFields()
+    CustomFieldsApi.getAllProviderCustomFields(true)
       .then((data) => {
         const customFieldsData = data?.filter(
           (cf) => cf.contextType === 'CUSTOM',

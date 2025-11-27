@@ -93,7 +93,6 @@ const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
                       readOnly={false}
                       label="Middle"
                       name="middleName"
-                      size={2}
                     />
                   </Grid>
                   <Grid item size={5}>

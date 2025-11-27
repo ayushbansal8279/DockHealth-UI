@@ -52,7 +52,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const fetchUserCustomFields = () => {
-    ProfileTypeFieldApi.getAllProfileFieldTypes(profileTypeIdentifier)
+    ProfileTypeFieldApi.getAllProfileFieldTypes(profileTypeIdentifier, true)
       .then((data) => {
         setCustomFields(data);
         setIsFetching(false);
@@ -100,16 +100,51 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
     dispatch(
       openModal('DeleteConfirmation', {
         title: 'Delete field',
-        description:
-          'Are you sure you want to delete this custom field? This action cannot be undone.',
-        confirm: () => {
-          setColumnsToState(columns.filter((f) => f.identifier !== id));
-          ProfileTypeFieldApi.deleteProfileFieldType(id).then(() => {
+        description: (
+          <>
+            <p>
+              Are you sure you want to delete this custom field? This action
+              cannot be undone.
+            </p>
+            <p style={{ marginTop: '8px' }}>
+              <strong>Note:</strong> Deleting this field here will also remove
+              it from the Object Builder groups where it is used.
+            </p>
+          </>
+        ),
+        confirm: async () => {
+          try {
+            const groups = await CustomFieldsApi.searchCustomFiledGroups(
+              'PROFILETYPE',
+              profileTypeIdentifier,
+            );
+
+            const groupToUpdate = groups.find((group) =>
+              group.fields?.some((field) => field.fieldReferenceId === id),
+            );
+
+            if (groupToUpdate) {
+              const updatedFields = groupToUpdate.fields.filter(
+                (field) => field.fieldReferenceId !== id,
+              );
+              await CustomFieldsApi.updateCustomFiledGroup(
+                groupToUpdate.identifier,
+                {
+                  fields: updatedFields,
+                },
+              );
+            }
+
+            await ProfileTypeFieldApi.deleteProfileFieldType(id);
+
+            setColumnsToState(columns.filter((f) => f.identifier !== id));
             setCustomFields((previousValue) =>
               previousValue.filter(({ identifier }) => id !== identifier),
             );
             dispatch(showGlobalAlert(AlertMessages.DELETED));
-          });
+          } catch (error) {
+            dispatch(showGlobalErrorAlert());
+          }
         },
       }),
     );
@@ -281,7 +316,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                             <CustomFieldCell>
                               <CustomFieldText>
                                 {field.displayOptions &&
-                                field.displayOptions?.includes(DisplayOption.TASK_REQUIRED)
+                                field.displayOptions?.includes(
+                                  DisplayOption.TASK_REQUIRED,
+                                )
                                   ? 'Yes'
                                   : ''}
                               </CustomFieldText>

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   ReactFlow,
   applyEdgeChanges,
@@ -10,9 +10,8 @@ import {
   getMiniMapNodeColor,
   NodeType,
 } from 'helpers/smart-flow-builder-helpers';
-import { deleteTasksLinkWithoutAlert } from '@/app/actions/task-actions';
 import { useDispatch } from 'react-redux';
-import { linkTasks } from '@/app/actions/task-template-actions';
+import { reconnectTaskLink } from '@/app/actions/task-template-actions';
 
 const ReactFlowAdapter = ({
   elements,
@@ -27,7 +26,6 @@ const ReactFlowAdapter = ({
     (element) => Object.values(NodeType).includes(element.type),
     [],
   );
-  const reconnectRef = useRef(false);
 
   const [nodes, edges] = useMemo(() => {
     const nodesArray = [];
@@ -69,8 +67,6 @@ const ReactFlowAdapter = ({
       const {
         source: newEdgeSourceTaskIdentifier,
         target: newEdgeTargetTaskIdentifier,
-        sourceHandle: newEdgeSourceHandle,
-        targetHandle: newEdgeTargetHandle,
       } = newConnection;
 
       if (
@@ -79,42 +75,8 @@ const ReactFlowAdapter = ({
       ) {
         return;
       }
-      reconnectRef.current = true;
-      dispatch(
-        linkTasks(
-          { id: newEdgeSourceTaskIdentifier, handle: newEdgeSourceHandle },
-          { id: newEdgeTargetTaskIdentifier, handle: newEdgeTargetHandle },
-        ),
-      );
-    },
-    [dispatch],
-  );
 
-  const onReconnectStart = useCallback(
-    (event, edge, handleType) => {
-      const { source: sourceTaskIdentifier, target: targetTaskIdentifier } =
-        edge;
-      dispatch(
-        deleteTasksLinkWithoutAlert(sourceTaskIdentifier, targetTaskIdentifier),
-      );
-    },
-    [dispatch],
-  );
-
-  const onReconnectEnd = useCallback(
-    (event, edge, handleType, connectionState) => {
-      const { source, target, sourceHandle, targetHandle } = edge;
-
-      if (reconnectRef.current) {
-        reconnectRef.current = false;
-      } else {
-        dispatch(
-          linkTasks(
-            { id: source, handle: sourceHandle },
-            { id: target, handle: targetHandle },
-          ),
-        );
-      }
+      dispatch(reconnectTaskLink(newConnection, oldEdge));
     },
     [dispatch],
   );
@@ -129,8 +91,6 @@ const ReactFlowAdapter = ({
       onEdgesChange={onEdgesChange}
       onPaneClick={onPanelClick}
       onReconnect={onReconnect}
-      onReconnectStart={onReconnectStart}
-      onReconnectEnd={onReconnectEnd}
       edgesReconnectable={true}
       reconnectRadius={20}
     >

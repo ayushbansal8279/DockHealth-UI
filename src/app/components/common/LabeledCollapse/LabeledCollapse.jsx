@@ -18,6 +18,7 @@ const LabeledCollapse = ({
   isOpened,
   noBorder = false,
   isSubMenu,
+  capitalizeEachWord,
 }) => {
   const [openedItem, setOpenedItem] = useState(null);
 
@@ -40,7 +41,10 @@ const LabeledCollapse = ({
           rotated={isOpened || openedItem}
         />
         <Spacing horizontal={4} />
-        <LabeledCollapseItemName $isSubMenu={isSubMenu}>
+        <LabeledCollapseItemName
+          $isSubMenu={isSubMenu}
+          $capitalizeEachWord={capitalizeEachWord}
+        >
           {name}
         </LabeledCollapseItemName>
         <Spacing horizontal={3} />

@@ -21,21 +21,24 @@ const listenRealTimeAlerts = (currentUser, showAlert, audio) => {
   const currentUserIdentifier = currentUser.userIdentifier;
   const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-  const pusher = initializePusher();
-  let channel = pusher?.channel(channelName);
-  if (!channel || !channel.subscribed) {
-    channel = pusher?.subscribe(channelName);
-  }
-  if (channel) {
-    channel.unbind('activity-alert');
-    channel.bind('activity-alert', ({ alert }) => {
-      if (alert) {
-        sessionStorage.setItem('hasUnreadAlerts', true);
-        showAlert(alert);
-        // audio.play();
+  initializePusher().then((pusher) => {
+    if (pusher) {
+      let channel = pusher?.channel(channelName);
+      if (!channel || !channel.subscribed) {
+        channel = pusher?.subscribe(channelName);
       }
-    });
-  }
+      if (channel) {
+        channel.unbind('activity-alert');
+        channel.bind('activity-alert', ({ alert }) => {
+          if (alert) {
+            sessionStorage.setItem('hasUnreadAlerts', true);
+            showAlert(alert);
+            // audio.play();
+          }
+        });
+      }
+    }
+  });
 };
 
 const ActivityAlertsToasts = () => {

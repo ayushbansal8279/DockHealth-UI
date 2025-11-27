@@ -846,13 +846,14 @@ export const bulkEditDueDate = (tasksToUpdate, dueDate) => (dispatch) => {
   });
 };
 
-export const bulkEditDueDateWorkflow = (tasksToUpdate, dueDateTime) => (dispatch) => {
-  dispatch({
-    type: ActionTypes.UPDATE_WORKFLOWS,
-    tasksToUpdate,
-    fields: { dueDateTime },
-  });
-};
+export const bulkEditDueDateWorkflow =
+  (tasksToUpdate, dueDateTime) => (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_WORKFLOWS,
+      tasksToUpdate,
+      fields: { dueDateTime },
+    });
+  };
 
 export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   return {
@@ -1074,23 +1075,6 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
   }
   return {
     type: ActionTypes.DELETE_TASKS_LINK,
-    sourceTaskIdentifier,
-    targetTaskIdentifier,
-  };
-}
-
-export function deleteTasksLinkWithoutAlert(
-  sourceTaskIdentifier,
-  targetTaskIdentifier,
-) {
-  if (sourceTaskIdentifier === 'START_INDICATOR') {
-    sourceTaskIdentifier = targetTaskIdentifier;
-  }
-  if (targetTaskIdentifier === 'END_INDICATOR') {
-    targetTaskIdentifier = sourceTaskIdentifier;
-  }
-  return {
-    type: ActionTypes.DELETE_TASKS_LINK_WITHOUT_ALERT,
     sourceTaskIdentifier,
     targetTaskIdentifier,
   };

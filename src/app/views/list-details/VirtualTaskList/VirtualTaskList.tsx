@@ -31,6 +31,7 @@ import {
   currentListTasksStatusSelector,
   patientSelector,
 } from '@/app/selectors/patient-details-selectors';
+import VListSpacer from './VirtualSegment/VListSpacer/VListSpacer';
 
 export interface Props {
   groupedTasks: any[];
@@ -388,40 +389,50 @@ function VirtualTaskList({
 
   const nodes = useMemo(() => {
     if (origin === 'PATIENT') {
-      return groupedTasks.map((group, index: number) => {
-        const patientTasks = group?.tasks;
-        const patientTaskIdentifiers = patientTasks?.map(
-          (task: any) => task?.identifier,
-        );
+      return groupedTasks
+        .map((group, index: number) => {
+          const patientTasks = group?.tasks;
+          const patientTaskIdentifiers = patientTasks?.map(
+            (task: any) => task?.identifier,
+          );
 
-        return createNode(
-          'DEFAULT_PATIENT_TASK_GROUP',
-          VListGroup,
-          'ListGroup',
-          false,
-          {
-            name: 'Default',
-            taskGroupIdentifier: 'DEFAULT_PATIENT_TASK_GROUP',
-            bgColor: false,
-            groupTaskCounts: patientTasks?.length,
-            tasksCount: patientTasks?.length,
-            isLastGroupOfList: false,
-            origin,
-          },
-          createGroupChildren(
-            origin,
-            patientTaskIdentifiers,
-            index,
-            listGroups?.length || 0,
+          return createNode(
             'DEFAULT_PATIENT_TASK_GROUP',
+            VListGroup,
+            'ListGroup',
             false,
+            {
+              name: 'Default',
+              taskGroupIdentifier: 'DEFAULT_PATIENT_TASK_GROUP',
+              bgColor: false,
+              groupTaskCounts: patientTasks?.length,
+              tasksCount: patientTasks?.length,
+              isLastGroupOfList: false,
+              origin,
+            },
+            createGroupChildren(
+              origin,
+              patientTaskIdentifiers,
+              index,
+              listGroups?.length || 0,
+              'DEFAULT_PATIENT_TASK_GROUP',
+              false,
+              false,
+              undefined,
+              patientTaskIdentifiers,
+            ),
+            true,
+          );
+        })
+        .concat(
+          createNode(
+            uniqueId().toString(),
+            VListSpacer,
+            'ListSpacer',
             false,
-            undefined,
-            patientTaskIdentifiers,
+            {},
           ),
-          true,
         );
-      });
     } else {
       return listGroups
         .map((group: any, index: number) => {
@@ -472,6 +483,13 @@ function VirtualTaskList({
             {},
             [],
             true,
+          ),
+          createNode(
+            uniqueId().toString(),
+            VListSpacer,
+            'ListSpacer',
+            false,
+            {},
           ),
         );
     }

@@ -23,7 +23,7 @@ import Tooltip from "@/app/components/common/Tooltip/Tooltip";
 import { createTaskListPath } from "@/app/routing/helpers/paths";
 import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
 import { AssignMemberIconContainer, BulkContainer, StyledListLink } from "./styled";
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const WorkspaceListTable = () => {
   const dispatch = useDispatch();
@@ -82,6 +82,7 @@ const WorkspaceListTable = () => {
       field: 'listName',
       headerName: 'Name',
       flex: 3,
+      minWidth: 200,
       renderCell: ({ row }) => {
         const { taskListIdentifier, listName } = row;
         return (
@@ -99,6 +100,7 @@ const WorkspaceListTable = () => {
       field: 'listType',
       headerName: 'List type',
       flex: 1,
+      minWidth: 120,
       renderCell: ({ row }) => {
         const listType = row.listType;
         return (
@@ -112,6 +114,7 @@ const WorkspaceListTable = () => {
       field: 'archived',
       headerName: 'Status',
       flex: 1,
+      minWidth: 100,
       renderCell: ({ row }) => {
         const archived = row.archived;
         return (
@@ -125,6 +128,7 @@ const WorkspaceListTable = () => {
       field: 'users',
       headerName: 'Users',
       flex: 1,
+      minWidth: 150,
       renderCell: ({ row }) => {
         const users = row.users;
         return (
@@ -151,8 +155,10 @@ const WorkspaceListTable = () => {
     },
     {
       field: 'action',
-      headerName: 'Actions',
+      headerName: 'Options',
       flex: 0.5,
+      minWidth: 80,
+      align: 'center',
       renderCell: ({ row }) => (
         <ListOptionsMenu list={row} workspaceIdentifier={workspaceIdentifier}>
           <MoreVert color="primary" />

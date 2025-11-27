@@ -81,7 +81,7 @@ import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
 import { ProfileStatus, OperationType } from '@/app/helpers/profile-helpers';
 import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import { ToolbarIconImg } from 'components/patients/PatientsToolbar/styled';
-import ReusableDataGrid from './DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import { DataGridWrapper, StyledLink } from './styled';
 import RelationshipLinks from '../RelationshipLinks';
@@ -490,7 +490,14 @@ const CustomProfileListContent = ({
             field: 'isSelected',
             headerName: 'SELECT',
             flex: 0.1,
+            minWidth: 60,
+            filterable: false,
             sortable: false,
+            disableColumnMenu: true,
+            disableExport: true,
+            disableReorder: true,
+            groupable: false,
+            hideable: false,
             headerClassName: 'no-sort-icon',
             renderHeader: () =>
               renderCheckboxColumnHeader({
@@ -521,13 +528,14 @@ const CustomProfileListContent = ({
               field: field.identifier,
               headerName: field.name,
               flex: 1,
+              minWidth: 150,
               filterable: true,
               sortable: true,
-              valueGetter: (params) => {
-                if (!params || !params.row) {
+              valueGetter: (value, row) => {
+                if (!row) {
                   return '';
                 }
-                return params.row[field.name] ?? '';
+                return row[field.name] ?? '';
               },
               renderCell: (params) => {
                 if (!params || !params.row) {
@@ -597,13 +605,14 @@ const CustomProfileListContent = ({
             field: 'profileStatus',
             headerName: 'Status',
             flex: 0.2,
+            minWidth: 100,
             sortable: true,
             filterable: true,
-            valueGetter: (params) => {
-              if (!params || !params.row) {
+            valueGetter: (value, row) => {
+              if (!row) {
                 return '';
               }
-              return params.row.profileStatus || '';
+              return row.profileStatus || '';
             },
             renderCell: ({ row }) => {
               const status = row.profileStatus;
@@ -622,6 +631,32 @@ const CustomProfileListContent = ({
         ]
       : []),
   ];
+
+  const pinnedProfileNameFields = useMemo(() => {
+    const profileNameFields = profileTypeFields
+      .filter(
+        (field) =>
+          field.displayOptions?.includes('PROFILE_NAME') &&
+          filters.includes(field.identifier),
+      )
+      .slice(0, 2)
+      .map((field) => field.identifier);
+    return profileNameFields;
+  }, [profileTypeFields, filters]);
+
+  const pinnedColumns = useMemo(() => {
+    const leftPinned = [];
+
+    if (!isGuestOrDockLite && !isViewOnly) {
+      leftPinned.push('isSelected');
+    }
+
+    leftPinned.push(...pinnedProfileNameFields);
+
+    return {
+      ...(leftPinned.length > 0 ? { left: leftPinned } : {}),
+    };
+  }, [isGuestOrDockLite, isViewOnly, pinnedProfileNameFields]);
 
   // TODO: fix filter
   const filteredProfiles = useMemo(() => {
@@ -922,6 +957,7 @@ const CustomProfileListContent = ({
             loading={loading}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
+            pinnedColumns={pinnedColumns}
           />
         </DataGridWrapper>
       </ViewLayout>

@@ -64,6 +64,13 @@ const ProfileBuilder = () => {
   const [profileName, setProfileName] = useState('');
   const [context, setContext] = useState(null);
   const [profileType, setProfileType] = useState(null);
+  const [customGroups, setCustomGroups] = useState([]);
+
+  const removeCustomGroup = (groupIdentifier) => {
+    setCustomGroups((prev) =>
+      prev.filter((group) => group.identifier !== groupIdentifier),
+    );
+  };
 
   const getContextFromProfileType = (profile) => {
     if (!profile) return null;
@@ -108,6 +115,7 @@ const ProfileBuilder = () => {
         (group) => group.name === 'Default Group',
       );
 
+      let finalCustomGroups = [...customGroups];
       if (!hasDefaultFields) {
         const defaultCategory = {
           context: profileContext,
@@ -120,15 +128,15 @@ const ProfileBuilder = () => {
         const savedDefault = await CustomFieldApi.saveCustomFiledGroup(
           defaultCategory,
         );
-        customGroups.push(savedDefault);
+        finalCustomGroups = [...finalCustomGroups, savedDefault];
       }
-      customGroups.sort((a, b) => {
+      finalCustomGroups.sort((a, b) => {
         if (a.name === 'Default Group') return -1;
         if (b.name === 'Default Group') return 1;
         return a.displayOrder - b.displayOrder;
       });
 
-      const processedGroups = customGroups.map((category) => {
+      const processedGroups = finalCustomGroups.map((category) => {
         if (!category.fields) {
           return category;
         }
@@ -145,6 +153,7 @@ const ProfileBuilder = () => {
 
         return { ...category, fields: enrichedFields };
       });
+      setCustomGroups(finalCustomGroups);
       setSelectedCategories(processedGroups);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -165,9 +174,7 @@ const ProfileBuilder = () => {
 
         const enrichedFields = category.fields.map((field) => {
           const matchingField = allCustomFields?.find(
-            (customField) =>
-              customField.identifier === field.fieldReferenceId ||
-              customField.customFieldIdentifier === field.fieldReferenceId,
+            (customField) => customField.identifier === field.fieldReferenceId,
           );
 
           return matchingField ? { ...field, ...matchingField } : field;
@@ -175,6 +182,7 @@ const ProfileBuilder = () => {
 
         return { ...category, fields: enrichedFields };
       });
+      setCustomGroups(customGroups);
       setSelectedCategories(processedGroups);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -281,23 +289,50 @@ const ProfileBuilder = () => {
     }
   };
 
+  function buildFieldToCategoryMap(categories = []) {
+    const map = new Map();
+    categories.forEach((category) => {
+      (category.fields || []).forEach((field) => {
+        const fid = field.customFieldIdentifier ?? field.fieldReferenceId;
+        if (fid) {
+          map.set(fid, {
+            identifier: category.identifier,
+            name: category.name,
+          });
+        }
+      });
+    });
+    return map;
+  }
+
   const handleExistingFieldDrop = async (e, destination) => {
     const draggableId = e?.active?.id.split('#')[0];
+
+    const fieldToCategoryMap = buildFieldToCategoryMap(selectedCategories);
+    if (fieldToCategoryMap.has(draggableId)) {
+      const existingCategory = fieldToCategoryMap.get(draggableId);
+
+      if (existingCategory.identifier === destination) {
+        dispatch(showGlobalErrorAlert('Field already exists in this category'));
+        return;
+      }
+
+      dispatch(
+        showGlobalErrorAlert(
+          `Field already exists in another category (${existingCategory.name})`,
+        ),
+      );
+      return;
+    }
+
     const updatedCategories = await Promise.all(
       selectedCategories.map(async (category) => {
         if (category?.identifier !== destination) return category;
 
-        const fieldExists = category.fields.some(
-          (field) => field.identifier === draggableId,
+        const matchingCategoryFromCustomGroups = customGroups.find(
+          (cg) => cg.identifier === category.identifier,
         );
-        if (fieldExists) {
-          dispatch(showGlobalErrorAlert('Field already exists in group'));
-          return category;
-        }
-
-        const savedFields = category.fields
-          .filter((field) => field.identifier)
-          .map((field) => ({ fieldReferenceId: field.identifier }));
+        const savedFields = matchingCategoryFromCustomGroups?.fields || [];
 
         const newProfileField = await createProfileFieldType({
           customFieldIdentifier: draggableId,
@@ -311,18 +346,33 @@ const ProfileBuilder = () => {
           { fieldReferenceId: newProfileField.identifier },
         ];
 
-        CustomFieldApi.updateCustomFiledGroup(category.identifier, {
-          fields: updatedSavedFields,
-        });
-
-        const newField = allCustomFields.find(
-          (item) => item.identifier === draggableId,
+        const updatedGroup = await CustomFieldApi.updateCustomFiledGroup(
+          category.identifier,
+          {
+            fields: updatedSavedFields,
+          },
         );
+
+        setCustomGroups((prev) =>
+          prev.map((cg) =>
+            cg.identifier === category.identifier ? updatedGroup : cg,
+          ),
+        );
+
+        const originalField =
+          allCustomFields.find((item) => item.identifier === draggableId) || {};
+        const enrichedField = {
+          ...originalField,
+          customFieldIdentifier: draggableId,
+          identifier: newProfileField.identifier,
+          fieldReferenceId: newProfileField.identifier,
+        };
+
         dispatch(showGlobalAlert(AlertMessages.UPDATED));
 
         return {
           ...category,
-          fields: [...category.fields, newField],
+          fields: [...(category.fields || []), enrichedField],
         };
       }),
     );
@@ -365,6 +415,8 @@ const ProfileBuilder = () => {
           setNewCategory,
           isAddCategoryDrop,
           activeDragItem,
+          removeCustomGroup,
+          setCustomGroups,
         }}
       >
         <HeaderContainer>

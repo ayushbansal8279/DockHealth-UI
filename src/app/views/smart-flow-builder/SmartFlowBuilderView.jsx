@@ -799,9 +799,9 @@ const SmartFlowBuilderView = () => {
     const reactFlowBounds =
       builderWrapperReference.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    const position = reactFlowInstance.project({
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
+    const position = reactFlowInstance.screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
     });
 
     switch (type) {
@@ -898,17 +898,28 @@ const SmartFlowBuilderView = () => {
   };
 
   const handleAutoAlignClick = async () => {
-    const autoLayout = await getAutoLayout(tasks);
-    dispatch(saveTaskTemplateLayoutToHistory());
-    dispatch(saveTaskTemplateLayout(autoLayout));
-    setTimeout(reactFlowInstance.fitView, 0);
     dispatch(
-      AlertActions.showGlobalAlertWithUndo(
-        'AUTO ALIGNMENT',
-        'UNDO_AUTO_ALIGN',
-        () => dispatch(undoTaskTemplateLayout()),
-        { preventRequest: true },
-      ),
+      ModalActions.openModal('Confirmation', {
+        title: 'Auto Align Workflow',
+        description:
+          'This will automatically rearrange all tasks in the workflow. This action can be undone.',
+        timeout: 50000,
+        confirm: async () => {
+          const autoLayout = await getAutoLayout(tasks);
+          dispatch(saveTaskTemplateLayoutToHistory());
+          dispatch(saveTaskTemplateLayout(autoLayout));
+          setTimeout(reactFlowInstance.fitView, 0);
+          dispatch(
+            AlertActions.showGlobalAlertWithUndo(
+              'AUTO ALIGNMENT',
+              'UNDO_AUTO_ALIGN',
+              () => dispatch(undoTaskTemplateLayout()),
+              { preventRequest: true },
+            ),
+          );
+        },
+        confirmButtonText: 'Auto Align',
+      }),
     );
   };
 
