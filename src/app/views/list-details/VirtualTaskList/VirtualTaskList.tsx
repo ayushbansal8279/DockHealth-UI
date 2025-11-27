@@ -9,6 +9,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import { TaskStatus } from 'helpers/task-helpers';
+import { getTaskCount, getPatientCount } from 'components/tasklist/TasksGroup/helper';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
 import VListGroup from 'views/list-details/VirtualTaskList/VirtualSegment/VListGroup/VListGroup';
 import VTask from 'views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
@@ -447,6 +448,9 @@ function VirtualTaskList({
               groupedTask.groupIdentifier === group.taskGroupIdentifier,
           );
 
+          const groupTaskCounts = getTaskCount(group?.metrics);
+          const numberOfPatients = getPatientCount(group?.metrics);
+
           return createNode(
             group.taskGroupIdentifier,
             VListGroup,
@@ -456,7 +460,8 @@ function VirtualTaskList({
               name: group.groupName,
               taskGroupIdentifier: group.taskGroupIdentifier,
               bgColor: !(index % 2 === 0),
-              groupTaskCounts: group?.metricValue,
+              groupTaskCounts,
+              numberOfPatients,
               tasksCount: groupTasks?.length,
               isLastGroupOfList: index === listGroups?.length - 1,
               origin,

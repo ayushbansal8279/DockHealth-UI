@@ -70,6 +70,7 @@ const TasksGroup = ({
   isLastGroup,
   groupName,
   groupTaskCounts,
+  numberOfPatients,
   quickAddTask,
   moveGroupUp,
   moveGroupDown,
@@ -298,8 +299,6 @@ const TasksGroup = ({
     groupName === 'DEFAULT'
       ? defaultGroupNameItem?.value || 'New Tasks'
       : groupName;
-
-  const numberOfPatients = Math.floor(Math.random() * 20) + 1;
 
   return (
     <TasksGroupContainer
