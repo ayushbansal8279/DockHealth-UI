@@ -56,10 +56,13 @@ import {
   GroupOpenContainer,
   TasksGroupNumericalBadgeContainer,
   TasksGroupTaskCount,
+  TasksGroupTaskCountIcon,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
 import { useVirtualTaskListScrollContext } from '@/app/views/list-details/VirtualTaskList/VirtualTaskListScrollContext';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
+import PatientsIcon from 'img/navigation/PatientsIcon';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
 
 const TasksGroup = ({
   isDefaultGroup,
@@ -296,6 +299,8 @@ const TasksGroup = ({
       ? defaultGroupNameItem?.value || 'New Tasks'
       : groupName;
 
+  const numberOfPatients = Math.floor(Math.random() * 20) + 1;
+
   return (
     <TasksGroupContainer
       $width={percentage > 90 ? `${droppableHeaderWidth + 70}px` : '100%'}
@@ -304,7 +309,7 @@ const TasksGroup = ({
     >
       <TasksGroupHeader
         $left={origin === 'LIST' ? 8 : 24}
-        $width={visibleWidth ? `${visibleWidth - 80}px` : '100%'}
+        $width={visibleWidth ? `${visibleWidth - 40}px` : '100%'}
       >
         <Spacing horizontal={4} />
         <GroupOpenContainer onClick={onToggleGroupOpen}>
@@ -317,30 +322,21 @@ const TasksGroup = ({
         <Spacing horizontal={1} />
         <GroupNameSectionWrapper>
           <TasksGroupLabel>
-            <GroupNameSection
-              initialValue={derivedGroupName}
-              onEnterClick={handleEditGroupName}
-              closeOnEnter
-              disabled={
-                isDefaultGroup ||
-                isCompletedGroup ||
-                restrictions?.editSettings === DISABLED ||
-                restrictCustomizationFeatures
-              }
-              isDefaultInputShown={false}
-            >
-              <TasksGroupLabelName>{derivedGroupName}</TasksGroupLabelName>
-            </GroupNameSection>
-            {!isNil(groupTaskCounts) && (
-              <TasksGroupNumericalBadgeContainer>
-                <TasksGroupTaskCount>
-                  {!isSearchApplied && !areFiltersApplied
-                    ? groupTaskCounts
-                    : tasksCount}
-                </TasksGroupTaskCount>
-              </TasksGroupNumericalBadgeContainer>
-            )}
-            <div>
+            <Box display="flex" alignItems="center" gap={1}>
+              <GroupNameSection
+                initialValue={derivedGroupName}
+                onEnterClick={handleEditGroupName}
+                closeOnEnter
+                disabled={
+                  isDefaultGroup ||
+                  isCompletedGroup ||
+                  restrictions?.editSettings === DISABLED ||
+                  restrictCustomizationFeatures
+                }
+                isDefaultInputShown={false}
+              >
+                <TasksGroupLabelName>{derivedGroupName}</TasksGroupLabelName>
+              </GroupNameSection>
               {!isCompletedGroup && !restrictCustomizationFeatures && (
                 <GroupOptionsContainer>
                   <OptionsMenu options={options} placement="bottom-start">
@@ -348,7 +344,33 @@ const TasksGroup = ({
                   </OptionsMenu>
                 </GroupOptionsContainer>
               )}
-            </div>
+            </Box>
+            {!isNil(groupTaskCounts) && (
+              <Box display="flex" alignItems="center" gap={1}>
+                <TasksGroupNumericalBadgeContainer>
+                  <TasksGroupTaskCount>
+                    <TasksGroupTaskCountIcon
+                      src={StatusSwitchIcon}
+                      alt="Task icon"
+                    />
+                    {!isSearchApplied && !areFiltersApplied
+                      ? groupTaskCounts
+                      : tasksCount}{' '}
+                    {(!isSearchApplied && !areFiltersApplied
+                      ? groupTaskCounts
+                      : tasksCount) === 1
+                      ? 'task'
+                      : 'tasks'}
+                  </TasksGroupTaskCount>
+                </TasksGroupNumericalBadgeContainer>
+                <TasksGroupNumericalBadgeContainer>
+                  <TasksGroupTaskCount>
+                    <PatientsIcon width="15px" />
+                    <div>{numberOfPatients} patients</div>
+                  </TasksGroupTaskCount>
+                </TasksGroupNumericalBadgeContainer>
+              </Box>
+            )}
           </TasksGroupLabel>
         </GroupNameSectionWrapper>
       </TasksGroupHeader>
