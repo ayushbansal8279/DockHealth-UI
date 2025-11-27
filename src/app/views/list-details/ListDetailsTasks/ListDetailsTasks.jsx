@@ -40,6 +40,7 @@ import LoadMoreButton, {
   LoadMoreSection,
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import { TaskStatus, TaskOrigin } from 'helpers/task-helpers';
+import { getTaskCount, getPatientCount } from 'components/tasklist/TasksGroup/helper';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
@@ -294,11 +295,14 @@ const ListDetailsTasks = ({
   const renderTasks = useCallback(
     () =>
       tasksToMap.map(
-        ({ groupName, taskGroupIdentifier, metricValue }, index) => {
+        ({ groupName, taskGroupIdentifier, metrics }, index) => {
           const group = groupedTasks?.find(
             (g) => g.groupIdentifier === taskGroupIdentifier,
           );
           const isLoadingGroup = group?.isLoadingGroup;
+
+          const groupTaskCounts = getTaskCount(metrics);
+          const numberOfPatients = getPatientCount(metrics);
 
           return (
             <TasksGroup
@@ -310,7 +314,8 @@ const ListDetailsTasks = ({
                   ? defaultGroupNameItem?.value || 'New tasks'
                   : groupName
               }
-              groupTaskCounts={metricValue}
+              groupTaskCounts={groupTaskCounts}
+              numberOfPatients={numberOfPatients}
               quickAddTask={quickAddTask}
               moveGroupUp={() => moveGroup(index, 'up')}
               moveGroupDown={() => moveGroup(index, 'down')}

@@ -20,8 +20,9 @@ export interface Props extends Segment {
   count: number;
   taskGroupIdentifier: string;
   bgColor: boolean;
-  groupTaskCounts: boolean;
-  tasksCount: boolean;
+  groupTaskCounts: number;
+  numberOfPatients: number;
+  tasksCount: number;
   origin: string;
 }
 
@@ -33,6 +34,7 @@ function VListGroup(
     metadata,
     bgColor,
     groupTaskCounts,
+    numberOfPatients,
     tasksCount,
     register,
     origin,
@@ -82,6 +84,7 @@ function VListGroup(
             taskGroupIdentifier={taskGroupIdentifier}
             groupName={name}
             groupTaskCounts={groupTaskCounts}
+            numberOfPatients={numberOfPatients}
             tasksCount={tasksCount}
             areFiltersApplied={areFiltersApplied}
             isSearchApplied={searchValue}
