@@ -28,7 +28,7 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 22
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
