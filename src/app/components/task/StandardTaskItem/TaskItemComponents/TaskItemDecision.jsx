@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback, useState } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { DecisionBox, DecisionSelect } from '../../styled';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 
@@ -23,11 +23,15 @@ const TaskItemDecision = ({
     [outcomes],
   );
 
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(
+    outcomes.find((outcome) => outcome.isSelected)?.taskOutcomeIdentifier ?? '',
+  );
 
   useEffect(() => {
-    setValue('');
-  }, [task?.taskIdentifier]);
+    const selectedOutcome = outcomes.find((outcome) => outcome.isSelected);
+    const newValue = selectedOutcome?.taskOutcomeIdentifier ?? '';
+    setValue(newValue);
+  }, [outcomes, task?.taskIdentifier]);
 
   const isValidValue = useMemo(
     () => options.some((option) => option.value === value),
@@ -36,13 +40,11 @@ const TaskItemDecision = ({
 
   const safeValue = isValidValue ? value : '';
 
-  const selectedOutcome = useMemo(
-    () => outcomes.find((outcome) => outcome.taskOutcomeIdentifier === value),
-    [outcomes, value],
-  );
   const selectedTask = useMemo(
-    () => selectedOutcome?.name ?? null,
-    [selectedOutcome],
+    () =>
+      outcomes.find((outcome) => outcome.taskOutcomeIdentifier === value)
+        ?.name ?? null,
+    [outcomes, value],
   );
 
   const handleValueChange = useCallback(
@@ -55,22 +57,6 @@ const TaskItemDecision = ({
     },
     [clearError, onSelect, task, templateBundleIdentifier],
   );
-
-  // Early return for loading state
-  if (!outcomes || outcomes.length === 0) {
-    return (
-      <DecisionBox>
-        <DecisionSelect
-          name="decision"
-          value=""
-          options={[]}
-          disabled={true}
-          error={error}
-          iconColorActive={iconColorActive}
-        />
-      </DecisionBox>
-    );
-  }
 
   return (
     <Tooltip placement="top" title={selectedTask} arrow>
