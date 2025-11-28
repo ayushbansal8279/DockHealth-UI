@@ -9,6 +9,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { ColorIndicator } from '../Select/styled';
+import { inputSx } from '@/app/styles/form';
 
 const AutoCompleteFormSelect = React.forwardRef(
   (
@@ -113,33 +114,8 @@ const AutoCompleteFormSelect = React.forwardRef(
             <TextField
               name={name}
               {...params}
-              variant="standard"
-              sx={{
-                backgroundColor: '#f5f8fa',
-                borderRadius: '4px',
-                '& .MuiInputLabel-root': {
-                  color: '#7d91a2',
-                  paddingLeft: '10px',
-                  textTransform: 'none',
-                },
-                '& .MuiInputLabel-shrink': {
-                  color: '#7d91a2',
-                  paddingTop: '15px',
-                  paddingLeft: '15px',
-                  textTransform: 'none',
-                },
-                '& .MuiInputBase-root': {
-                  borderRadius: '4px',
-                  padding: '8px 10px',
-                },
-                '& .MuiAutocomplete-popupIndicator': {
-                  color: '#ffac33',
-                  marginRight: '6px',
-                },
-                '& .MuiInput-underline:before': {
-                  display: 'none',
-                },
-              }}
+              variant="outlined"
+              sx={inputSx}
               label={label}
               inputRef={reference}
               InputProps={{

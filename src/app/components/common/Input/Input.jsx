@@ -2,17 +2,8 @@
 import React from 'react';
 import { TextField } from '@mui/material';
 import clsx from 'clsx';
-import { styled } from '@mui/material/styles';
+import { inputSx } from '@/app/styles/form';
 
-const StyledTextField = styled(TextField)`
-  & .MuiInputBase-formControl:before {
-    border: none !important;
-  }
-
-  & .MuiInputLabel-root{
-    text-transform: none !important;
-  }
-`;
 
 const Input = React.forwardRef(
   (
@@ -39,7 +30,7 @@ const Input = React.forwardRef(
     },
     reference,
   ) => (
-    <StyledTextField
+    <TextField
       ref={reference}
       inputRef={inputRef}
       id={id}
@@ -63,7 +54,8 @@ const Input = React.forwardRef(
         shrink: readOnly || shrink,
       }}
       hiddenLabel={hiddenLabel}
-      variant={variant}
+      variant="outlined"
+      sx={inputSx}
       {...restProps}
     />
   ),

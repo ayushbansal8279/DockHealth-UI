@@ -21,6 +21,7 @@ import zIndex from 'styles/z-index';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Input from '../Input/Input';
 import { ColorIndicator } from './styled';
+import { selectSx, inputLabelSx } from '@/app/styles/form';
 
 const Select = React.forwardRef(
   (
@@ -65,7 +66,7 @@ const Select = React.forwardRef(
       <FormControl error={error} className={className}>
         {label && (
           <InputLabel
-            sx={{ textTransform: 'none' }}
+            sx={inputLabelSx}
             shrink={!!value}
             variant={variant}
             required={required}
@@ -75,6 +76,7 @@ const Select = React.forwardRef(
         )}
         <MuiSelect
           label={label}
+          sx={selectSx}
           open={isOpen}
           onOpen={() => setIsOpen(true)}
           onClose={() => setIsOpen(false)}

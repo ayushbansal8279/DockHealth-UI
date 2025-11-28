@@ -1,39 +1,41 @@
 import styled from 'styled-components';
-import React from 'react';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const TextEditorFormStyleContainer = styled.div`
-  background-color: #f7fafb !important;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  padding: 0 0 5px 15px;
+  border: ${({ focused }) =>
+    focused ? '2px solid #0ca1c7' : '1px solid #e0e0e0'};
+  border-radius: 10px;
+  padding-left: ${({ focused }) => (focused ? '0' : '10px')};
   color: #3d4858;
   font-size: 16px;
   min-height: 50px;
   position: relative;
-  border-bottom: ${({ focused, hasError }) => 
-    hasError ? (focused ? '' : '1px solid #e40909') : ''
-  };
+  border-bottom: ${({ focused, hasError }) =>
+    hasError ? (focused ? '' : '1px solid #e40909') : ''};
   font-family: Outfit;
 `;
 
 export const TextEditorInputLabel = styled.div`
-  position: ${({ shouldExpandLabel }) => shouldExpandLabel ? 'absolute' : 'relative'};
-  top: ${({ shouldExpandLabel }) => shouldExpandLabel ? '10px' : '2px'};
-  left: ${({ shouldExpandLabel }) => shouldExpandLabel ? '10px' : '0px'};
-  color: ${({ hasError }) => hasError ? palette.oPlusRed : palette.coolGrey1};
+  position: ${({ shouldExpandLabel }) =>
+    shouldExpandLabel ? 'absolute' : 'relative'};
+  top: ${({ shouldExpandLabel }) => (shouldExpandLabel ? '10px' : '2px')};
+  left: ${({ shouldExpandLabel }) => (shouldExpandLabel ? '10px' : '0px')};
+  color: ${({ hasError }) => (hasError ? palette.oPlusRed : palette.coolGrey1)};
   transition: all 0.2s ease-in-out;
 `;
 
 export const DescriptionLabel = styled.label`
   display: block;
   font-family: inherit;
-  font-size: ${({ shouldExpandLabel }) => shouldExpandLabel ? fontSizes.regular : fontSizes.tinyPlus};
+  font-size: ${({ shouldExpandLabel }) =>
+    shouldExpandLabel ? fontSizes.regular : fontSizes.small};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
   text-transform: none;
-  margin-bottom: ${({ shouldExpandLabel }) => shouldExpandLabel ? '0px' : '2px'};
+  margin-left: ${({ focused }) => (focused ? '10px' : '0')};
+  margin-bottom: ${({ shouldExpandLabel }) =>
+    shouldExpandLabel ? '0px' : '2px'};
 
   & > span {
     text-transform: none;

@@ -20,7 +20,7 @@ const CustomFieldTextEditor = React.forwardRef(
           shouldExpandLabel={shouldExpandLabel}
         >
           <>
-            <DescriptionLabel shouldExpandLabel={shouldExpandLabel}>
+            <DescriptionLabel focused={focused} shouldExpandLabel={shouldExpandLabel}>
               {label}
               <Spacing horizontal={3} />
               {required && <span>*</span>}

@@ -116,7 +116,11 @@ const renderOption = ({
 );
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
+const PatientLabels = ({
+  isPatientBulk,
+  disableFocusOnRender = false,
+  customerTypeLabel,
+}) => {
   const { saveEditLabel, deleteLabel, refreshLabels, isFetchingLabels } =
     initializeLabelsSectionHooks({});
 
@@ -294,6 +298,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       isOptionEqualToValue={(option, value) =>
         option.labelIdentifier === value.labelIdentifier
       }
+      label={`${customerTypeLabel} Labels`}
       disablePortal={!isPatientBulk}
       getInputReference={getInputReference}
       getOptionLabel={(option) => option?.labelName}
