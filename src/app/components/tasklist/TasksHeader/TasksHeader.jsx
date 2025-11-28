@@ -25,6 +25,7 @@ import {
   getTaskHeaderOptions,
   reorderColumns,
   TaskHeaderColumn,
+  getColumnType,
 } from './helpers';
 import ColumnSortHeader from '../ColumnSortHeader/ColumnSortHeader';
 import {
@@ -165,6 +166,7 @@ const TasksHeader = React.memo(
           customFieldDefaultPrintWidth || regularFieldDefaultPrintWidth;
 
         const columnWidth = Math.max(f.columnWidth, regularFieldMinimumWidth);
+        const columnType = getColumnType(f);
 
         return (
           <ColumnSortHeader
@@ -199,6 +201,7 @@ const TasksHeader = React.memo(
             setDragDropDisabled={setDragDropDisabled}
             hoveredIndex={hoveredIndex}
             activeIndex={activeTaskHeader?.current?.index}
+            columnType={columnType}
           />
         );
       },
@@ -306,6 +309,7 @@ const TasksHeader = React.memo(
               setDragDropDisabled={setDragDropDisabled}
               hoveredIndex={hoveredIndex}
               activeIndex={activeTaskHeader?.current?.index}
+              columnType={activeTaskHeader?.current?.columnType}
             />
           )}
         </DragOverlay>

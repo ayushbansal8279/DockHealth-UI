@@ -16,9 +16,14 @@ import {
   ResizeHandler,
   DragPreviewWrapper,
   DragPreviewText,
+  TaskIconWrapper,
+  PatientIconWrapper,
 } from './styled';
 import SortDoubleArrow from 'img/SortDoubleArrow';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
+import PatientsIcon from 'img/navigation/PatientsIcon';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 const ColumnSortHeader = ({
   id,
@@ -43,6 +48,7 @@ const ColumnSortHeader = ({
   setDragDropDisabled,
   hoveredIndex,
   activeIndex,
+  columnType,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
@@ -57,7 +63,7 @@ const ColumnSortHeader = ({
     over,
   } = useDroppable({
     id,
-    data: { index, label, width, tasksHeaderTextTransform },
+    data: { index, label, width, tasksHeaderTextTransform, columnType },
     disabled: dragDropDisabled,
   });
 
@@ -67,7 +73,7 @@ const ColumnSortHeader = ({
     setNodeRef: dragRef,
   } = useDraggable({
     id,
-    data: { index, label, width, tasksHeaderTextTransform },
+    data: { index, label, width, tasksHeaderTextTransform, columnType },
     disabled: dragDropDisabled,
   });
 
@@ -153,18 +159,37 @@ const ColumnSortHeader = ({
                   </Box>
                 )}
               <Box
-                textOverflow="ellipsis"
-                overflow={truncateEnabled ? 'hidden' : 'initial'}
-                width="100%"
-                whiteSpace="nowrap"
                 display="flex"
                 alignItems="center"
                 fontFamily="Outfit"
                 fontWeight="600"
                 pl="5px"
+                width="100%"
               >
-                {label}
-                <Box ml="5px" visibility="hidden">
+                {columnType === 'Task' && (
+                  <Tooltip title={'Task Field'} placement={'top'}>
+                    <TaskIconWrapper>
+                      <img src={StatusSwitchIcon} alt="Task" />
+                    </TaskIconWrapper>
+                  </Tooltip>
+                )}
+                {columnType === 'Patient' && (
+                  <Tooltip title={'Patient Field'} placement={'top'}>
+                    <PatientIconWrapper>
+                      <PatientsIcon width={15} height={15} />
+                    </PatientIconWrapper>
+                  </Tooltip>
+                )}
+                <Box
+                  textOverflow="ellipsis"
+                  overflow={truncateEnabled ? 'hidden' : 'initial'}
+                  whiteSpace="nowrap"
+                  flex="1"
+                  minWidth="0"
+                >
+                  {label}
+                </Box>
+                <Box ml="5px" visibility="hidden" flexShrink={0}>
                   {!disabled && <SortDoubleArrow />}
                 </Box>
               </Box>
@@ -200,6 +225,7 @@ const ColumnSortHeader = ({
       onSortChange,
       sort,
       truncateEnabled,
+      columnType,
     ],
   );
 
@@ -210,7 +236,28 @@ const ColumnSortHeader = ({
           width={width}
           tasksHeaderTextTransform={tasksHeaderTextTransform}
         >
-          <DragPreviewText>{label}</DragPreviewText>
+          <DragPreviewText>
+            {columnType === 'Task' && (
+              <img
+                src={StatusSwitchIcon}
+                alt="Task"
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  marginRight: '5px',
+                  verticalAlign: 'middle',
+                  filter:
+                    'invert(42%) sepia(8%) saturate(1089%) hue-rotate(162deg) brightness(92%) contrast(87%)',
+                }}
+              />
+            )}
+            {columnType === 'Patient' && (
+              <span style={{ color: '#5a6c7d', marginRight: '5px' }}>
+                <PatientsIcon width={16} height={16} />
+              </span>
+            )}
+            {label}
+          </DragPreviewText>
         </DragPreviewWrapper>
       </>
     );
