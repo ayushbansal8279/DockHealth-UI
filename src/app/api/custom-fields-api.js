@@ -36,6 +36,23 @@ export function getAllPatientCustomFields(
     });
 }
 
+export function getAllCustomFieldsByTargetType(
+  targetType,
+  params = {},
+  workspaceIdentifier,
+) {
+  return axios
+    .get(`custom/field?targetType=${targetType}`, {
+      ...withWorkspaceHeaders(workspaceIdentifier),
+      params,
+    })
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
 export function getAllTaskListCustomFields(
   taskListIdentifier,
   includeHidden = false,

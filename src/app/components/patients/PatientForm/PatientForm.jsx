@@ -63,6 +63,7 @@ const PatientForm = forwardRef(
       formState: { errors },
       setError,
       clearErrors,
+      getValues,
     } = formMethods;
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
@@ -111,33 +112,33 @@ const PatientForm = forwardRef(
             field.identifier === customFieldIdentifier,
         );
 
-        return field.fieldType === FieldType.DROPDOWN_MULTI ||
-          field.fieldType === FieldType.RELATIONSHIP ? (
+        const isMulti =
+          field.fieldType === FieldType.DROPDOWN_MULTI ||
+          field.fieldType === FieldType.RELATIONSHIP;
+
+        const value = isMulti
+          ? patientCustomField?.values
+          : patientCustomField?.value;
+
+        const hasValue = isMulti
+          ? Array.isArray(value)
+            ? value.length > 0
+            : !!value
+          : !!value;
+
+        return (
           <HidableContainer
             key={field.identifier}
-            visible={!showEmpty && !patientCustomField?.values}
+            visible={!showEmpty && !hasValue}
           >
             {index !== 0 && <Spacing vertical={3} />}
             <CustomField
               readOnly={!edited}
               field={field}
-              initialValue={patientCustomField?.values}
+              initialValue={value}
               fieldsGroupKey="patientMetaData"
               formMethods={formMethods}
-            />
-          </HidableContainer>
-        ) : (
-          <HidableContainer
-            key={field.identifier}
-            visible={!showEmpty && !patientCustomField?.value}
-          >
-            {index !== 0 && <Spacing vertical={3} />}
-            <CustomField
-              readOnly={!edited}
-              field={field}
-              initialValue={patientCustomField?.value}
-              fieldsGroupKey="patientMetaData"
-              formMethods={formMethods}
+              selected={getValues('patientMetaData')}
             />
           </HidableContainer>
         );

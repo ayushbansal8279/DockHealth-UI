@@ -31,7 +31,7 @@ import FormSelect from 'components/common/Select/FormSelect';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
 import * as ProfileTypeFieldsApi from 'api/profile-type-field-api';
-import { getAllTaskListCustomFields } from 'api/custom-fields-api';
+import { getAllCustomFieldsByTargetType } from 'api/custom-fields-api';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
@@ -211,7 +211,14 @@ const EditCustomFieldModal = ({
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   useEffect(() => {
-    getAllTaskListCustomFields(taskListIdentifier ? 'ALL' : null).then(
+    if (!type) return;
+    
+    const params = {};
+    if (type === 'TASK' && taskListIdentifier) {
+      params.taskListIdentifier = taskListIdentifier;
+    }
+
+    getAllCustomFieldsByTargetType(type, params, workspaceIdentifier).then(
       (response) => {
         setCustomFields(
           sortAlphabetical(
@@ -220,7 +227,7 @@ const EditCustomFieldModal = ({
         );
       },
     );
-  }, [taskListIdentifier]);
+  }, [type, taskListIdentifier, workspaceIdentifier]);
 
   useEffect(() => {
     register('fieldType');
@@ -854,7 +861,7 @@ const EditCustomFieldModal = ({
             uploadFunction={uploadCustomFieldOptions}
             identifier={customField?.identifier}
             type={type}
-            importFileTypeHint={"Drag & drop your CSV/Excel file here"}
+            importFileTypeHint={'Drag & drop your CSV/Excel file here'}
           />
         </Dialog>
       </Box>
