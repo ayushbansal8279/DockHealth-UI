@@ -48,9 +48,7 @@ import {
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
-import {
-  cleanedSelectedFilters,
-} from 'helpers/mega-filter-helper';
+import { cleanedSelectedFilters } from 'helpers/mega-filter-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -165,7 +163,12 @@ function* getCurrentListTasks() {
       );
       groups = action.groups;
     }
-    const groupsWithTasks = compose(filter((g) => g.metricValue >= 0))(groups);
+
+    const groupsWithTasks = compose(
+      filter(
+        (g) => g.metrics?.some((metric) => metric.metricValue >= 0) ?? false,
+      ),
+    )(groups);
     const groupsToGet = groupsWithTasks;
 
     yield all(
@@ -485,7 +488,6 @@ function* initializeListDetailsTableState() {
     const sort = yield select(userPreferenceSortSelector);
 
     if (taskListIdentifier) {
-
       if (sort) {
         yield put(
           ListDetailsActions.setListDetailsTasksSort(sort.key, sort.order),
