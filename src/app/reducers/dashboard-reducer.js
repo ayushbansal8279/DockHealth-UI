@@ -34,10 +34,14 @@ const addTask = (list, taskToAdd) => {
   };
 };
 
-const findAndAddTask = ({ lists, groupType: type, task: taskToAdd }) =>
-  lists.map((list) =>
-    list.groupType === type ? addTask(list, taskToAdd) : list,
-  );
+const findAndAddTask = ({ lists, groupType: type, task: taskToAdd }) => {
+  return lists.map((list) => {
+    if (list.taskGroupIdentifier === type || list.groupType === type) {
+      return addTask(list, taskToAdd);
+    }
+    return list;
+  });
+};
 
 const getMapOfLoadedTasks = (group) => {
   const { tasks } = group;
@@ -445,8 +449,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.ADD_TASK_SUCCESS: {
-      const { task } = action;
-      const groupType = getGroupByDueDate(task.dueDate, state.tabName);
+      const { task, groupType } = action;
       const updatedState = {
         ...state,
         lastCreatedTaskIdentifier: action?.task?.identifier,
