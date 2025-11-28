@@ -177,6 +177,54 @@ export const showAlert = ({
   return swalPromise;
 };
 
+export const showAlert2 = ({
+  status: icon,
+  text = '',
+  html = '',
+  title,
+  confirmButtonText = 'Close',
+  denyButtonText = 'Download',
+  showDenyButton = false,
+  onConfirm = null,
+  onDeny = null,
+  ...otherOptions
+}) => {
+  const swalPromise = Swal.fire({
+    icon,
+    title,
+    text,
+    html,
+    showDenyButton,
+    confirmButtonText,
+    denyButtonText: showDenyButton ? denyButtonText : undefined,
+    buttonsStyling: false,
+    customClass: {
+      confirmButton: 'swal2-confirm-custom',
+      ...(showDenyButton && { denyButton: 'swal2-deny-custom' }),
+    },
+    didOpen: () => {
+      if (!showDenyButton) {
+        const denyButton = Swal.getDenyButton();
+        if (denyButton) {
+          denyButton.style.display = 'none';
+        }
+      }
+    },
+    ...otherOptions,
+  }).then((result) => {
+    if (result.isDenied && onDeny) {
+      onDeny(result);
+    } else if (result.isConfirmed && onConfirm) {
+      onConfirm(result);
+    }
+    return result;
+  });
+
+  Swal.getContainer().style.zIndex = 10_000;
+
+  return swalPromise;
+};
+
 export const setCurrentPageInSessionStorage = (currentPathname) => {
   sessionStorage.setItem('next-page', currentPathname);
 };

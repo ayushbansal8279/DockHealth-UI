@@ -48,6 +48,7 @@ import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
 import './App.css';
 import { ampli } from '@/app/amplitude/ampli';
+import { SwalButtonGlobals } from '@/app/styles/swal-button-global';
 
 const AppContainer = styled.div`
   font-family: inherit;
@@ -301,6 +302,7 @@ class App extends PureComponent {
 
     return (
       <AppContainer id="appHome">
+        <SwalButtonGlobals />
         {isMobile && isSmall ? (
           <MobileSmallScreen />
         ) : showRotateScreenPage ? (
