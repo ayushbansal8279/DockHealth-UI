@@ -188,7 +188,7 @@ const DueDateSection = ({
           horizontal: 'left',
         }}
         transformOrigin={{
-          vertical: 'top',
+          vertical: 'center',
           horizontal: 'left',
         }}
         sx={{ marginLeft: '103px' }}
