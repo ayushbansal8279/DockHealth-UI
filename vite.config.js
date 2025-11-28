@@ -21,7 +21,9 @@ export default ({ mode }) => {
           data: {
             mode,
             ...process.env,
-            injectScript: `<script src="${process.env.VITE_DYNATRACE_SCRIPT}"></script>`,
+            injectScript: process.env.VITE_DYNATRACE_SCRIPT 
+              ? `<script src="${process.env.VITE_DYNATRACE_SCRIPT}"></script>` 
+              : '',
           },
         },
       }),
@@ -51,10 +53,6 @@ export default ({ mode }) => {
         'react-query': path.resolve(__dirname, 'src/app/react-query'),
         'context-api': path.resolve(__dirname, 'src/app/context-api'),
         'ui-toolkit': path.resolve(__dirname, 'src/app/ui-toolkit'),
-        'script/dockhealth-widget-sdk-internal.js': path.resolve(
-          './public',
-          'script/dockhealth-widget-sdk-internal.js',
-        ),
       },
     },
   });

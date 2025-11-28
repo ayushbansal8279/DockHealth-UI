@@ -113,7 +113,7 @@ const CreateProfileModal = ({
             <FormScrollingContainer>
               <Box overflow="hidden">
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid item size={12}>
                     <FormInput
                       required
                       autoFocus
@@ -121,7 +121,7 @@ const CreateProfileModal = ({
                       label="Object name"
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item size={12}>
                     <FormInput name="description" label="Description" />
                   </Grid>
                 </Grid>

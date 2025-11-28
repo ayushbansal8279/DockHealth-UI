@@ -1,6 +1,6 @@
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
-export const VAddGroup = styled('div')`
+export const VAddGroup = styled.div`
   align-items: center;
   display: flex;
   justify-content: flex-start;

@@ -6,9 +6,8 @@ import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import { BackButtonContainer, EventDurationContainer, StyledDataGrid, UserName} from './styled';
-import { GridToolbar, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import { BackButtonContainer, EventDurationContainer, UserName} from './styled';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const UserActivity = () => {
   const history = useHistory();
@@ -151,7 +150,7 @@ const UserActivity = () => {
       >
         <Grid
           item
-          xs={12}
+          size={12}
           xl={11}
           md={12}
           lg={11}

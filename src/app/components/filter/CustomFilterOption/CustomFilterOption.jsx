@@ -103,6 +103,34 @@ const CustomFilterOption = (props) => {
               };
               return dateOption;
             }
+            if (
+              item.includes('DATE_SINGLE') ||
+              item.includes('SINGLE_DATE')
+            ) {
+              let dateOption = users.find((user) => user.key === item);
+              dateOption = {
+                ...dateOption,
+                date: selectedFilters[key].date,
+              };
+              return dateOption;
+            }
+            if (item.includes('NUMBER_RANGE')) {
+              let numberOption = users.find((user) => user.key === item);
+              numberOption = {
+                ...numberOption,
+                numberStart: selectedFilters[key].numberStart,
+                numberEnd: selectedFilters[key].numberEnd,
+              };
+              return numberOption;
+            }
+            if (item.includes('SINGLE_NUMBER')) {
+              let numberOption = users.find((user) => user.key === item);
+              numberOption = {
+                ...numberOption,
+                singleNumber: selectedFilters[key].singleNumber,
+              };
+              return numberOption;
+            }
             return users.find((user) => user.key === item);
           });
           const optionForDeletedKey = {

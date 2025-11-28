@@ -80,7 +80,7 @@ export default function InboxHelpPanel() {
       <Divider />
       <Grid container spacing={2}>
         {tips.map((tip) => (
-          <Grid item xs={12} md={6} key={tip.subject}>
+          <Grid item size={12} md={6} key={tip.subject}>
             <Typography variant="subtitle2" fontWeight="bold">
               {tip.subject}
             </Typography>

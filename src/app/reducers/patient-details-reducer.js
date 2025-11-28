@@ -280,8 +280,10 @@ export default (state = INITIAL_STATE, action = {}) => {
     case ActionTypes.GET_CURRENT_PATIENT_TASKS_SUCCESS: {
       const { lists } = action;
       const newMap = {};
+      const patient = state.patient;
       for (const list of lists) {
         for (const taskItem of list?.tasks) {
+          taskItem.patient = patient;
           if (taskItem.itemType === TaskItemType.TASK) {
             newMap[taskItem.identifier] = taskItem;
             for (const subtask of taskItem?.subtasks) {

@@ -8,21 +8,44 @@ const NETWORK_ERROR = 'NETWORK_ERROR';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL,
+  // Enable credentials to send HTTPOnly cookies with requests
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    if (config.url.includes('/oidc/') || config.url.includes('/fhir/')) {
+    // OIDC and FHIR endpoints may need Bearer tokens, so skip cookie auth for them
+    // Also skip for token exchange endpoint as it uses Bearer token
+    if (
+      config.url.includes('/oidc/') ||
+      config.url.includes('/fhir/') ||
+      config.url.includes('/auth/exchangeToken')
+    ) {
+      // For these endpoints, use Bearer token if available
+      // const currentAccessToken = sessionStorage.getItem('accessToken');
+      // if (currentAccessToken) {
+      //   config.headers.Authorization = `Bearer ${currentAccessToken}`;
+      // }
       return config;
     }
-    // Do something before request is sent
+
+    // For all other endpoints, use HTTPOnly cookie authentication
+    // The cookie is automatically sent via withCredentials: true
+    // Only set Bearer token as fallback if cookie auth fails (handled by backend)
     const currentAccessToken = sessionStorage.getItem('accessToken');
     const currentOrganizationIdentifier = sessionStorage.getItem(
       'currentOrganizationIdentifier',
     );
+
     config.headers.CurrentOrganizationIdentifier =
       currentOrganizationIdentifier;
-    config.headers.Authorization = `Bearer ${currentAccessToken}`;
+
+    // Only set Bearer token if we have one and cookie might not be available
+    // This is a fallback mechanism - ideally cookie should be used
+    if (currentAccessToken && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${currentAccessToken}`;
+    }
+
     return config;
   },
   (error) =>
@@ -45,6 +68,10 @@ axiosInstance.interceptors.response.use(identity, (error) => {
 
   // donot show the error for login
   if (window.location.hash && window.location.hash.includes('/auth/login')) {
+    return;
+  }
+  // ignore head requests for cookie check failures
+  if (error?.config?.method === 'head') {
     return;
   }
 

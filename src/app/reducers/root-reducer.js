@@ -32,6 +32,7 @@ import WorkspaceReducer from './workspace-reducer';
 import workspaceListReducer from './workspace-list-reducer';
 import UIStateReducer from './ui-state-reducer';
 import UserPreferenceReducer from './user-preference-reducer';
+import AgentDrawerReducer from './agent-drawer-reducer';
 
 // function createNamedWrapperReducer(reducerFunction, reducerName) {
 //   return (state, action) => {
@@ -76,6 +77,7 @@ const appReducer = combineReducers({
   workspaceList: workspaceListReducer,
   uiState: UIStateReducer,
   userPreferenceState: UserPreferenceReducer,
+  agentDrawer: AgentDrawerReducer,
 });
 
 export default function rootReducer(state, action) {

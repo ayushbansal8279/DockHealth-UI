@@ -65,8 +65,17 @@ const filterAdditionalOptionsByFieldType = (
   fieldTypeValue,
 ) => {
   return additionalOptions.filter((option) => {
-    if (option.key !== DisplayOption.SINGLE_SELECT) return true;
-    return fieldTypeValue === FieldType.RELATIONSHIP;
+    if (option.key === DisplayOption.SINGLE_SELECT) {
+      return fieldTypeValue === FieldType.RELATIONSHIP;
+    }
+
+    if (option.key === DisplayOption.PROFILE_NAME) {
+      return (
+        fieldTypeValue === FieldType.TEXT || fieldTypeValue === FieldType.NUMBER
+      );
+    }
+
+    return true;
   });
 };
 
@@ -572,7 +581,7 @@ const EditCustomFieldModal = ({
               <FormScrollingContainer>
                 <Box overflow="hidden">
                   <Grid container spacing={2}>
-                    <Grid item mt={1} xs={15}>
+                    <Grid item mt={1} size={15}>
                       <FormInput
                         variant="outlined"
                         sx={inputStyle}
@@ -584,7 +593,7 @@ const EditCustomFieldModal = ({
                     </Grid>
                     {fieldTypeValue !== FieldType.DATE &&
                       fieldTypeValue !== FieldType.HYPERLINK && (
-                        <Grid item xs={12}>
+                        <Grid item size={12}>
                           <FormInput
                             variant="outlined"
                             sx={inputStyle}
@@ -595,7 +604,7 @@ const EditCustomFieldModal = ({
                       )}
                     {(fieldTypeValue === FieldType.TEXT ||
                       fieldTypeValue === FieldType.NUMBER) && (
-                      <Grid item xs={12} style={{ display: 'flex', gap: 10 }}>
+                      <Grid item size={12} style={{ display: 'flex', gap: 10 }}>
                         <FormSelect
                           variant="outlined"
                           name="validationRegexSelector"
@@ -612,7 +621,7 @@ const EditCustomFieldModal = ({
                     )}
                     {(fieldTypeValue === FieldType.TEXT ||
                       fieldTypeValue === FieldType.NUMBER) && (
-                      <Grid item xs={12}>
+                      <Grid item size={12}>
                         <FormInput
                           variant="outlined"
                           sx={inputStyle}
@@ -621,7 +630,7 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
-                    <Grid item xs={6}>
+                    <Grid item size={6}>
                       <FormSelect
                         readOnly={!!customField}
                         required
@@ -632,7 +641,7 @@ const EditCustomFieldModal = ({
                       />
                     </Grid>
                     {type === 'PATIENT' && (
-                      <Grid item xs={6}>
+                      <Grid item size={6}>
                         <FormSelect
                           variant="outlined"
                           required
@@ -644,7 +653,7 @@ const EditCustomFieldModal = ({
                       </Grid>
                     )}
                     {type === 'TASK' && (
-                      <Grid item xs={6}>
+                      <Grid item size={6}>
                         <FormSelect
                           required
                           label="Category"
@@ -654,10 +663,10 @@ const EditCustomFieldModal = ({
                       </Grid>
                     )}
                     {type !== 'TASK' && type !== 'PROVIDER' && (
-                      <Grid item xs={6} />
+                      <Grid item size={6} />
                     )}
                     {fieldTypeValue === FieldType.RELATIONSHIP && (
-                      <Grid item xs={6}>
+                      <Grid item size={6}>
                         <FormSelect
                           required
                           label="Object Type"
@@ -677,7 +686,7 @@ const EditCustomFieldModal = ({
                     {optionsValue?.length > 0 && (
                       <>
                         <Box m={2} />
-                        <Grid item xs={12}>
+                        <Grid item size={12}>
                           <InfoText>Dropdown options</InfoText>
                         </Grid>
                         {optionsValue.map((option, index) => {
@@ -689,7 +698,7 @@ const EditCustomFieldModal = ({
                             linkedCustomFieldOptionIdentifier,
                           } = option;
                           return (
-                            <Grid key={identifier} item xs={12}>
+                            <Grid key={identifier} item size={12}>
                               <Input
                                 required
                                 label={`Option ${index + 1}`}

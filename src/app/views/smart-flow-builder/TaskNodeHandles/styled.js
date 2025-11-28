@@ -19,9 +19,6 @@ export const TargetHandlesWrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
   width: 100%;
   height: 100%;
   z-index: 1;
@@ -29,11 +26,13 @@ export const TargetHandlesWrapper = styled.div`
 `;
 
 export const targetHandleStyles = {
-  position: 'static',
-  width: '100%',
-  height: '100%',
-  borderRadius: 0,
-  border: 'none',
-  transform: 'translate(0, 0)',
-  background: 'transparent',
+  width: 12,
+  height: 12,
+  background: '#fff',
+  border: '2px solid #999',
+  borderRadius: '50%',
+  position: 'absolute',
+  transform: 'translate(-50%, -50%)',
+  pointerEvents: 'auto',
+  zIndex: 10,
 };

@@ -1,7 +1,7 @@
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 import spacing from 'styles/spacing';
 
-export const VQuickAddTaskContainer = styled('div')<{ $width: string }>`
+export const VQuickAddTaskContainer = styled.div<{ $width: string }>`
   display: flex;
   margin-left: ${({ disableLeftOffset }: any) =>
     disableLeftOffset ? '24px' : '54.5px'};
@@ -19,7 +19,7 @@ export const VQuickAddTask = styled('div')<{ $width: string }>`
   line-height: 40px;
 `;
 
-export const TaskTemplateApplicatorContainer = styled('div')`
+export const TaskTemplateApplicatorContainer = styled.div`
   position: absolute;
   right: 5px;
   top: 0px;

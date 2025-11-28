@@ -203,12 +203,12 @@ const SubscriptionPaymentView = () => {
     <ViewLayout header={<LayoutHeader />}>
       <SubscriptionPaymentViewContainer>
         <Grid container spacing={4}>
-          <Grid item sm={12}>
+          <Grid size={{ sm: 12 }}>
             <MontserratTypography variant="h2">
               Please enter your payment information
             </MontserratTypography>
           </Grid>
-          <Grid item sm={12}>
+          <Grid size={{ sm: 12 }}>
             <PricingGridContainer>
               <PricingItemVerticallyExpanded>
                 <Grid
@@ -286,7 +286,7 @@ const SubscriptionPaymentView = () => {
               </Grid>
             </PricingGridContainer>
           </Grid>
-          <Grid item sm={12}>
+          <Grid size={{ sm: 12 }}>
             <Elements
               stripe={stripePromise}
               locale="en-US"

@@ -4,6 +4,8 @@ import { Grid } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { useSelector } from 'react-redux';
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
 import {
   userHasViewOnlyFeatureSelector,
   userHasDockGuestFeatureSelector,
@@ -13,11 +15,10 @@ import {
   RoleSelectionHeader,
   Divider,
   RoleSelectionWrapper,
-  RoleOptionLabel,
-  RoleOptionHeaderWrapper,
-  RoleOptionHeader,
-  RoleOptionDescription,
-  RoleOptionHeaderAdditionalInfo,
+  RoleItem,
+  RoleItemLabel,
+  RoleItemDescription,
+  LimitedAccessLabel,
 } from './styled';
 import {
   CancelButton,
@@ -56,144 +57,96 @@ const UserRoleStep = ({
       </Grid>
       <RoleSelectionWrapper>
         {allowedRoles.includes('MEMBER') && (
-          <>
-            <input
-              id="Member"
-              type="radio"
-              name="userRole"
-              value="MEMBER"
-              checked={roleValue === 'MEMBER'}
-              onChange={(event) => setValue(event.target.name, event.target.value)}
-            />
-            <RoleOptionLabel isSelected={roleValue === 'MEMBER'} htmlFor="Member">
-              <RoleOptionHeaderWrapper>
-                <RoleOptionHeader>Member</RoleOptionHeader>
-              </RoleOptionHeaderWrapper>
-              <RoleOptionDescription>
+          <RoleItem
+            isSelected={roleValue === 'MEMBER'}
+            onClick={() => setValue('userRole', 'MEMBER')}
+          >
+            <img src={roleValue === 'MEMBER' ? CircleCompleted : Circle} alt="circle" />
+            <div>
+              <RoleItemLabel isSelected={roleValue === 'MEMBER'}>
+                Member
+              </RoleItemLabel>
+              <RoleItemDescription>
                 Part of your Organization. Can add and invite members who are
                 already part of your organization. Can access all patients/clients
                 and people in the group/practice.
-              </RoleOptionDescription>
-            </RoleOptionLabel>
-            <Divider />
-          </>
+              </RoleItemDescription>
+            </div>
+          </RoleItem>
         )}
         {guestRoleAvailable && allowedRoles.includes('GUEST') && (
-          <>
-            <input
-              id="Guest"
-              type="radio"
-              name="userRole"
-              value="GUEST"
-              checked={roleValue === 'GUEST'}
-              onChange={(event) =>
-                setValue(event.target.name, event.target.value)
-              }
-            />
-            <RoleOptionLabel isSelected={roleValue === 'GUEST'} htmlFor="Guest">
-              <RoleOptionHeaderWrapper>
-                <RoleOptionHeader>Guests</RoleOptionHeader>
-                <RoleOptionHeaderAdditionalInfo>
-                  *Limited Access
-                </RoleOptionHeaderAdditionalInfo>
-              </RoleOptionHeaderWrapper>
-              <RoleOptionDescription>
+          <RoleItem
+            isSelected={roleValue === 'GUEST'}
+            onClick={() => setValue('userRole', 'GUEST')}
+          >
+            <img src={roleValue === 'GUEST' ? CircleCompleted : Circle} alt="circle" />
+            <div>
+              <RoleItemLabel isSelected={roleValue === 'GUEST'}>
+                Guests
+                <LimitedAccessLabel>*Limited Access</LimitedAccessLabel>
+              </RoleItemLabel>
+              <RoleItemDescription>
                 An outside collaborator you can invite into selected lists, who
                 will only have access to the tasks, patients/clients and people
                 who are part of those lists.
-              </RoleOptionDescription>
-            </RoleOptionLabel>
-            <Divider />
-          </>
+              </RoleItemDescription>
+            </div>
+          </RoleItem>
         )}
         {allowedRoles.includes('DOCK_LITE') && (
-          <>
-            <input
-              id="DockLite"
-              type="radio"
-              name="userRole"
-              value="DOCK_LITE"
-              checked={roleValue === 'DOCK_LITE'}
-              onChange={(event) => setValue(event.target.name, event.target.value)}
-            />
-            <RoleOptionLabel
-              isSelected={roleValue === 'DOCK_LITE'}
-              htmlFor="DockLite"
-            >
-              <RoleOptionHeaderWrapper>
-                <RoleOptionHeader>Dock Lite</RoleOptionHeader>
-                <RoleOptionHeaderAdditionalInfo>
-                  *Limited Access
-                </RoleOptionHeaderAdditionalInfo>
-              </RoleOptionHeaderWrapper>
-              <RoleOptionDescription>
+          <RoleItem
+            isSelected={roleValue === 'DOCK_LITE'}
+            onClick={() => setValue('userRole', 'DOCK_LITE')}
+          >
+            <img src={roleValue === 'DOCK_LITE' ? CircleCompleted : Circle} alt="circle" />
+            <div>
+              <RoleItemLabel isSelected={roleValue === 'DOCK_LITE'}>
+                Dock Lite
+                <LimitedAccessLabel>*Limited Access</LimitedAccessLabel>
+              </RoleItemLabel>
+              <RoleItemDescription>
                 A limited use member of your organization or an outside collaborator
                 you can invite into a single list, who will only have access to the
                 tasks, patients/clients and people who are part of that list.
-              </RoleOptionDescription>
-            </RoleOptionLabel>
-            <Divider />
-          </>
+              </RoleItemDescription>
+            </div>
+          </RoleItem>
         )}
         {dockProEnabled && allowedRoles.includes('DOCK_PRO') && (
-          <>
-            <input
-              id="DockPro"
-              type="radio"
-              name="userRole"
-              value={DOCK_PRO}
-              checked={roleValue === DOCK_PRO}
-              onChange={(event) =>
-                setValue(event.target.name, event.target.value)
-              }
-            />
-            <RoleOptionLabel
-              isSelected={roleValue === 'DOCK_PRO'}
-              htmlFor="DockPro"
-            >
-              <RoleOptionHeaderWrapper>
-                <RoleOptionHeader>Dock Crew</RoleOptionHeader>
-                <RoleOptionHeaderAdditionalInfo>
-                  *Limited Access
-                </RoleOptionHeaderAdditionalInfo>
-              </RoleOptionHeaderWrapper>
-              <RoleOptionDescription>
+          <RoleItem
+            isSelected={roleValue === DOCK_PRO}
+            onClick={() => setValue('userRole', DOCK_PRO)}
+          >
+            <img src={roleValue === DOCK_PRO ? CircleCompleted : Circle} alt="circle" />
+            <div>
+              <RoleItemLabel isSelected={roleValue === DOCK_PRO}>
+                Dock Crew
+                <LimitedAccessLabel>*Limited Access</LimitedAccessLabel>
+              </RoleItemLabel>
+              <RoleItemDescription>
                 Dock Crew user will help configure your account and with
                 building out Workflows and Smartflows for your team.
-              </RoleOptionDescription>
-            </RoleOptionLabel>
-            <Divider />
-          </>
+              </RoleItemDescription>
+            </div>
+          </RoleItem>
         )}
         {viewOnlyRoleAvailable && allowedRoles.includes('VIEW_ONLY') && (
-          <>
-            <input
-              id="ViewOnly"
-              type="radio"
-              name="userRole"
-              value={VIEW_ONLY}
-              checked={roleValue === VIEW_ONLY}
-              onChange={(event) =>
-                setValue(event.target.name, event.target.value)
-              }
-            />
-            <RoleOptionLabel
-              isSelected={roleValue === VIEW_ONLY}
-              htmlFor="ViewOnly"
-            >
-              <RoleOptionHeaderWrapper>
-                <RoleOptionHeader>View Only</RoleOptionHeader>
-                <RoleOptionHeaderAdditionalInfo>
-                  *Limited Access
-                </RoleOptionHeaderAdditionalInfo>
-              </RoleOptionHeaderWrapper>
-              <RoleOptionDescription />
-            </RoleOptionLabel>
-            <Divider />
-          </>
+          <RoleItem
+            isSelected={roleValue === VIEW_ONLY}
+            onClick={() => setValue('userRole', VIEW_ONLY)}
+          >
+            <img src={roleValue === VIEW_ONLY ? CircleCompleted : Circle} alt="circle" />
+            <div>
+              <RoleItemLabel isSelected={roleValue === VIEW_ONLY}>
+                View Only
+                <LimitedAccessLabel>*Limited Access</LimitedAccessLabel>
+              </RoleItemLabel>
+              <RoleItemDescription />
+            </div>
+          </RoleItem>
         )}
       </RoleSelectionWrapper>
-      <Grid container item direction="row" justifyContent="center" spacing={2}>
+      <Grid container item direction="row" justifyContent="center" spacing={2} sx={{ paddingTop: '20px' }}>
         <Grid item>
           <CancelButton
             fullWidth

@@ -174,7 +174,7 @@ function UserGroupView() {
               <Grid
                 container
                 item
-                xs={6}
+                size={6}
                 xl={6}
                 md={5}
                 lg={4}
@@ -214,7 +214,7 @@ function UserGroupView() {
 
           {isOrganizationAdmin && groupIdentifier === 'ALL' && (
             <ManageUsersContainer>
-              <Grid item xs={12} sm={12} md={8}>
+              <Grid item size={12} sm={12} md={8}>
                 <HeaderMessageContainer>
                   <img alt="lightbulb" src={LightbulbBig} />
                   <HeaderMessage>
@@ -228,7 +228,7 @@ function UserGroupView() {
                   </HeaderMessage>
                 </HeaderMessageContainer>
               </Grid>
-              <Grid item xs={12} sm={12} md={4}>
+              <Grid item size={12} sm={12} md={4}>
                 <Link to={USERS_SETTINGS_PATH}>
                   <Button fullWidth>Manage Users</Button>
                 </Link>

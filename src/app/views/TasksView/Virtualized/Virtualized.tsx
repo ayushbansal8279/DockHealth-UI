@@ -133,50 +133,50 @@ const newData = (n: number) => {
   return data;
 };
 
-const fetcher = (i: number) => {
-  console.log('fetcher', i);
-  const currentAccessToken = sessionStorage.getItem('accessToken');
-  const currentOrganizationIdentifier = sessionStorage.getItem(
-    'currentOrganizationIdentifier',
-  );
-  return fetch(
-    `https://api-dev.dockhealth.app/heydoc-services/task/findListTasksByTaskGroup/73baa05a-a77d-11eb-9858-0e3d2d599b61/7f2c0488-a77d-11eb-9858-0e3d2d599b61?status=INCOMPLETE&startPosition=${
-      30 * i
-    }&endPosition=0`,
-    {
-      method: 'GET',
-      // @ts-ignore
-      headers: {
-        Authorization: `Bearer ${currentAccessToken}`,
-        Currentorganizationidentifier: currentOrganizationIdentifier,
-      },
-    },
-  ).then((response) => response.json());
-};
+// const fetcher = (i: number) => {
+//   console.log('fetcher', i);
+//   // const currentAccessToken = sessionStorage.getItem('accessToken');
+//   const currentOrganizationIdentifier = sessionStorage.getItem(
+//     'currentOrganizationIdentifier',
+//   );
+//   return fetch(
+//     `https://api-dev.dockhealth.app/heydoc-services/task/findListTasksByTaskGroup/73baa05a-a77d-11eb-9858-0e3d2d599b61/7f2c0488-a77d-11eb-9858-0e3d2d599b61?status=INCOMPLETE&startPosition=${
+//       30 * i
+//     }&endPosition=0`,
+//     {
+//       method: 'GET',
+//       // @ts-ignore
+//       headers: {
+//         Authorization: `Bearer ${currentAccessToken}`,
+//         Currentorganizationidentifier: currentOrganizationIdentifier,
+//       },
+//     },
+//   ).then((response) => response.json());
+// };
 
 const fetchSubtasks = (taskIdentifier: string) => {
-  const currentAccessToken = sessionStorage.getItem('accessToken');
-  const currentOrganizationIdentifier = sessionStorage.getItem(
-    'currentOrganizationIdentifier',
-  );
-  return fetch(
-    `https://api-dev.dockhealth.app/heydoc-services/task/${taskIdentifier}`,
-    {
-      method: 'GET',
-      // @ts-ignore
-      headers: {
-        Authorization: `Bearer ${currentAccessToken}`,
-        Currentorganizationidentifier: currentOrganizationIdentifier,
-      },
-    },
-  ).then((response) => response.json());
+//   const currentAccessToken = sessionStorage.getItem('accessToken');
+//   const currentOrganizationIdentifier = sessionStorage.getItem(
+//     'currentOrganizationIdentifier',
+//   );
+//   return fetch(
+//     `https://api-dev.dockhealth.app/heydoc-services/task/${taskIdentifier}`,
+//     {
+//       method: 'GET',
+//       // @ts-ignore
+//       headers: {
+//         Authorization: `Bearer ${currentAccessToken}`,
+//         Currentorganizationidentifier: currentOrganizationIdentifier,
+//       },
+//     },
+//   ).then((response) => response.json());
 };
 
 const invokeUltimateFetcher = (offset: number = 0, limit: number = 10) => {
   console.log('invokeUltimateFetcher', offset, limit);
-  const fetches = [];
+  const fetches: any[] = [];
   // for (let i = offset; i <= offset + limit; i++) {
-  fetches.push(fetcher(offset));
+  // fetches.push(fetcher(offset));
   // }
 
   return Promise.all(fetches)

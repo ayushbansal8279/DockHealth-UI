@@ -49,7 +49,7 @@ export const getTemplateColumns = ({
 
       if (
         data.id !== 'users' &&
-        !['patient', 'client', 'member', 'customer']?.includes(data.id)
+        !['patients', 'clients', 'members', 'customers']?.includes(data.id)
       ) {
         contextMenuOptions.push(
           {

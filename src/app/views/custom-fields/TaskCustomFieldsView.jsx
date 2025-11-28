@@ -53,7 +53,7 @@ const TaskCustomFieldsView = ({
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const fetchTaskCustomFields = () => {
-    CustomFieldsApi.getAllTaskListCustomFields(taskListIdentifier)
+    CustomFieldsApi.getAllTaskListCustomFields(taskListIdentifier, true)
       .then((data) => {
         const customFieldsData = data?.filter(
           (cf) => cf.contextType === 'CUSTOM',

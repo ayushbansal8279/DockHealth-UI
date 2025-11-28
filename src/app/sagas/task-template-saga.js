@@ -779,6 +779,99 @@ function* linkTasks({ source, target, options, outcomeName }) {
   }
 }
 
+function* reconnectTaskLink({ newEdge, oldEdge }) {
+  const taskTemplateIdentifier = yield select(
+    currentTaskTemplateIdentifierSelector,
+  );
+  const templateDetails = yield select(
+    taskTemplateDetailsSelector(taskTemplateIdentifier),
+  );
+  const prevTasks = templateDetails?.tasks || [];
+  const prevLayout = templateDetails?.layout || [];
+  const prevTasksMap = yield select((state) => state.tasksMap || {});
+  yield put({
+    type: ActionTypes.RECONNECT_TASK_LINK_SUCCESS,
+    newEdge,
+    oldEdge,
+    taskTemplateIdentifier,
+  });
+  try {
+    const {
+      source: newEdgeSourceTaskIdentifier,
+      target: newEdgeTargetTaskIdentifier,
+    } = newEdge;
+    const {
+      source: oldEdgeSourceTaskIdentifier,
+      target: oldEdgeTargetTaskIdentifier,
+      id: oldEdgeId,
+    } = oldEdge;
+
+    if (newEdgeTargetTaskIdentifier === 'START_INDICATOR') {
+      yield put(showGlobalErrorAlert('Start cannot be a target.'));
+      yield put({
+        type: ActionTypes.RECONNECT_TASK_LINK_FAILURE,
+        taskTemplateIdentifier,
+        rollback: {
+          tasks: prevTasks,
+          layout: prevLayout,
+          tasksMap: prevTasksMap,
+        },
+      });
+      return;
+    }
+
+    if (newEdgeSourceTaskIdentifier === 'END_INDICATOR') {
+      yield put(showGlobalErrorAlert('End cannot be a source.'));
+      yield put({
+        type: ActionTypes.RECONNECT_TASK_LINK_FAILURE,
+        taskTemplateIdentifier,
+        rollback: {
+          tasks: prevTasks,
+          layout: prevLayout,
+          tasksMap: prevTasksMap,
+        },
+      });
+      return;
+    }
+
+    yield call(TaskApi.reconnectTaskLink, oldEdgeSourceTaskIdentifier, {
+      taskTemplateIdentifier,
+      oldTargetTaskIdentifier: oldEdgeTargetTaskIdentifier,
+      newTargetTaskIdentifier: newEdgeTargetTaskIdentifier,
+    });
+
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+
+    const updatedLayout = templateDetails?.layout?.map((l) => {
+      if (l.id === oldEdgeId) {
+        return {
+          ...l,
+          id: getUniqueLinkId(
+            newEdgeSourceTaskIdentifier,
+            newEdgeTargetTaskIdentifier,
+          ),
+          sourceHandle: newEdge.sourceHandle,
+          targetHandle: newEdge.targetHandle,
+        };
+      }
+      return l;
+    });
+
+    yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
+  } catch {
+    yield put(showGlobalErrorAlert());
+    yield put({
+      type: ActionTypes.RECONNECT_TASK_LINK_FAILURE,
+      taskTemplateIdentifier,
+      rollback: {
+        tasks: prevTasks,
+        layout: prevLayout,
+        tasksMap: prevTasksMap,
+      },
+    });
+  }
+}
+
 function* addTaskOutcome({ outcomeName, taskIdentifier, link }) {
   try {
     const createdOutcome = yield call(
@@ -1051,6 +1144,7 @@ export default function* watchTaskTemplate() {
     updateTaskPositionInLayout,
   );
   yield takeEvery(ActionTypes.LINK_TASKS, linkTasks);
+  yield takeEvery(ActionTypes.RECONNECT_TASK_LINK, reconnectTaskLink);
   yield takeEvery(ActionTypes.ADD_TASK_OUTCOME, addTaskOutcome);
   yield takeEvery(ActionTypes.UPDATE_TASK_OUTCOME, updateTaskOutcome);
   yield takeEvery(ActionTypes.DELETE_TASK, deleteTaskFromLayout);

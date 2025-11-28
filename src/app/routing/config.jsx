@@ -260,7 +260,7 @@ export const SETTINGS_ROUTES = [
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/object-builder/:tabName/:identifier?',
+    path: '/object-builder/objects/:identifier?',
     RouteComponent: ProfileBuilderView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },

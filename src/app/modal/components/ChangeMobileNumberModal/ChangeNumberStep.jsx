@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
-import 'yup-phone';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as UserAuthApi from 'api/user-auth-api';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
@@ -26,7 +26,10 @@ const validationSchema = object({
       }
       return this.isType(value) && matchEmptyNumber(value);
     })
-    .phone(null, null, MASK_MESSAGE)
+    .test('phone', MASK_MESSAGE, function (value) {
+      if (!value || value === '') return true;
+      return isValidPhoneNumber(String(value));
+    })
     // .matches(PHONE_MASK, MASK_MESSAGE)
     .required(REQUIRED_MESSAGE),
 });

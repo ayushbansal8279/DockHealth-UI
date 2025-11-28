@@ -1,8 +1,8 @@
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 import palette from 'styles/palette';
 import isNil from 'ramda/src/isNil';
 
-export const VTask = styled('div')`
+export const VTask = styled.div`
   display: flex;
   ${({
     $workflow,
@@ -85,7 +85,7 @@ export const VTask = styled('div')`
   }
 `;
 
-export const QuickAddContainer = styled('div')`
+export const QuickAddContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   ${({ $width }: any) => (isNil($width) ? '' : `width: ${$width};`)}
   ${({ hasCustomOffset, isNarrowView }: any) =>
@@ -103,7 +103,7 @@ export const QuickAddContainer = styled('div')`
   }
 `;
 
-export const WorkflowQuickAddTaskContainer = styled('div')`
+export const WorkflowQuickAddTaskContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   width: ${({ $width }: any) => $width};
   ${({ disableLeftOffset, isNarrowView }: any) =>

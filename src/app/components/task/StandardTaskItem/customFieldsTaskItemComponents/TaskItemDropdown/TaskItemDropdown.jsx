@@ -20,7 +20,7 @@ const TaskItemDropdown = ({
 
   const filteredOptions = useMemo(() => {
     return initialOptions.filter(({ name }) =>
-      name.toLowerCase().includes(searchTerm.toLowerCase()),
+      name?.toLowerCase().includes(searchTerm?.toLowerCase()),
     );
   }, [initialOptions, searchTerm]);
 

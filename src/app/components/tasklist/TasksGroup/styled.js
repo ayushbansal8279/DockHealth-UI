@@ -79,6 +79,8 @@ export const TasksGroupHeader = styled.div`
 
 export const TasksGroupLabel = styled.p`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
@@ -102,26 +104,37 @@ export const TasksGroupLabelName = styled.span`
 `;
 
 export const TasksGroupNumericalBadgeContainer = styled.div`
-  height: 20px;
-  border-radius: 2px;
-  border: 1px solid ${palette.iron};
+  height: 30px;
+  border-radius: 12px;
   background: ${palette.whiteSmoke};
-  padding: 4px 7px 4px 7px;
-  gap: 7px;
-  margin-left: 6px;
-  margin-top: 2px;
-  opacity: 0px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border: 1px solid ${palette.iron};
+
+  &:first-of-type {
+    background: linear-gradient(135deg, #e3f2fd 0%, #d1e9f6 100%);
+    border: 1px solid rgba(66, 133, 244, 0.15);
+  }
 `;
 
-export const TasksGroupTaskCount = styled(Typography)`
-  color: ${palette.shadowBlue};
-  font-family: Outfit;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 11.19px;
-  &.MuiTypography-root {
-    text-align: center;
-  }
+export const TasksGroupTaskCount = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #5a6c7d;
+  font-weight: 600;
+  font-size: 11px;
+`;
+
+export const TasksGroupTaskCountIcon = styled.img`
+  width: 15px;
+  height: 15px;
+  filter: invert(40%) sepia(15%) saturate(360%) hue-rotate(160deg)
+    brightness(95%) contrast(95%);
 `;
 
 export const TasksGroupLabelCounter = styled.span`

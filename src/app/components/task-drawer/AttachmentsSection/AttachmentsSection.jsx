@@ -123,7 +123,7 @@ const AttachmentsSection = ({
         {...getInputProps()}
       />
       <Grid container>
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <Spacing vertical={3} />
           <Title>Files</Title>
         </Grid>
@@ -140,13 +140,13 @@ const AttachmentsSection = ({
             )}
           </OutfitTypography>
         )}
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <Spacing vertical={2} />
         </Grid>
         {!disabled && (
           <Grid
             item
-            xs={12}
+            size={12}
             container
             alignContent="center"
             {...getRootProps({ style: { outline: 'none' } })}
@@ -224,7 +224,7 @@ const AttachmentsSection = ({
             </div>
           ))}
         {currentTaskAttachments?.length > 0 && (
-          <Grid item xs={12}>
+          <Grid item size={12}>
             <div>
               <Button
                 variant="text"

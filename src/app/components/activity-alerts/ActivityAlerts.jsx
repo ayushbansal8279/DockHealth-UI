@@ -78,23 +78,26 @@ const listenRealTimeAlerts = (
   const currentUserIdentifier = currentUser.userIdentifier;
   const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
 
-  const pusher = initializePusher();
-  let channel = pusher?.channel(channelName);
-  if (!channel || !channel.subscribed) {
-    channel = pusher?.subscribe(channelName);
-  }
-  if (channel) {
-    channel.bind('activity-alert', ({ alert }) => {
-      if (alert) {
-        if (isOpen) {
-          getActivityAlerts();
-        } else {
-          sessionStorage.setItem('hasUnreadAlerts', true);
-          setHasUnreadAlertsState(true);
-        }
+  initializePusher().then((pusher) => {
+    if (pusher) {
+      let channel = pusher?.channel(channelName);
+      if (!channel || !channel.subscribed) {
+        channel = pusher?.subscribe(channelName);
       }
-    });
-  }
+      if (channel) {
+        channel.bind('activity-alert', ({ alert }) => {
+          if (alert) {
+            if (isOpen) {
+              getActivityAlerts();
+            } else {
+              sessionStorage.setItem('hasUnreadAlerts', true);
+              setHasUnreadAlertsState(true);
+            }
+          }
+        });
+      }
+    }
+  });
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity

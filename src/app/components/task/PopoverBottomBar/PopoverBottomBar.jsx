@@ -34,6 +34,23 @@ const Button = styled.button`
   }
 `;
 
+const RemoveButton = styled.button`
+  width: auto;
+  padding: ${spacing.tiny} 0;
+  color: ${palette.midnightBlue};
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  &:not(:first-of-type) {
+    margin-left: ${spacing.small};
+  }
+
+  &:not(:last-of-type) {
+    margin-right: ${spacing.small};
+  }
+`;
+
 export const PlusButton = styled(Button)`
   &:before {
     display: inline-block;
@@ -43,6 +60,7 @@ export const PlusButton = styled(Button)`
   }
 `;
 
+PopoverBottomBar.RemoveButton = RemoveButton;
 PopoverBottomBar.Button = Button;
 
 PopoverBottomBar.PlusButton = PlusButton;

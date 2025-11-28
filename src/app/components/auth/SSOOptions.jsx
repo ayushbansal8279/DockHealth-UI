@@ -40,7 +40,7 @@ const SSOOptions = () => {
       <Spacing vertical={4} />
       <Grid container columnSpacing={2}>
         {ssoURLGoogle && (
-          <Grid item xs={4}>
+          <Grid item size={4}>
             <StyledPaper>
               <ListItemText>
                 <Spacing vertical={2} />
@@ -55,7 +55,7 @@ const SSOOptions = () => {
           </Grid>
         )}
 
-        <Grid item xs={4}>
+        <Grid item size={4}>
           <StyledPaper>
             <ListItemText>
               <Spacing vertical={2} />
@@ -69,7 +69,7 @@ const SSOOptions = () => {
             </ListItemText>
           </StyledPaper>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item size={4}>
           <StyledPaper>
             <ListItemText>
               <Spacing vertical={2} />

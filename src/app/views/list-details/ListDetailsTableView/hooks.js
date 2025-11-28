@@ -78,7 +78,6 @@ const initializeListDetailsViewHooks = () => {
   const prevTaskCounters = usePrevious(taskCounters);
   const prevParams = usePrevious(params);
 
-  const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
 
   const dispatch = useDispatch();
@@ -456,13 +455,19 @@ const initializeListDetailsViewHooks = () => {
 
   useEffect(() => {
     if (currentUserIdentifier) {
-      const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
-      const ch = pusher.current.subscribe(channelName);
-      setChannel(ch);
+      initializePusher().then((pusher) => {
+        if (pusher) {
+          const channelName = `private-dock-user-channel-${currentUserIdentifier}`;
+          const ch = pusher?.subscribe(channelName);
+          if (ch) {
+            setChannel(ch);
+          }
 
-      return () => {
-        if (ch) ch.unsubscribe(channelName);
-      };
+          return () => {
+            if (ch) ch.unsubscribe(channelName);
+          };
+        }
+      });
     }
 
     return () => {};

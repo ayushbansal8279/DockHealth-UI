@@ -88,9 +88,9 @@ const CreateListForm = () => {
             />
             <Spacing vertical={5} />
           </Grid>
-          <Grid item xs={6} />
-          <Grid item xs={6} spacing={0} container alignItems="center">
-            <Grid item xs={6}>
+          <Grid item size={6} />
+          <Grid item size={6} spacing={0} container alignItems="center">
+            <Grid item size={6}>
               <OutfitTypography weight="400" align="center">
                 <div
                   style={{ cursor: 'pointer', fontSize: '17px' }}
@@ -100,7 +100,7 @@ const CreateListForm = () => {
                 </div>
               </OutfitTypography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item size={6}>
               <Button
                 uppercase={false}
                 id="loginButton"

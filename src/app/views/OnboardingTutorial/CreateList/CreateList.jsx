@@ -82,10 +82,10 @@ const CreateList = () => {
           spacing={1}
           sx={{ paddingTop: 5, paddingLeft: 5, paddingRight: 5 }}
         >
-          <Grid item xs={6} sx={{ padding: 5, height: 0.99 }}>
+          <Grid item size={6} sx={{ padding: 5, height: 0.99 }}>
             {renderCreateListStep()}
           </Grid>
-          <Grid item xs={6} sx={{ padding: 0 }}>
+          <Grid item size={6} sx={{ padding: 0 }}>
             <OnboardingGrid />
           </Grid>
         </Grid>

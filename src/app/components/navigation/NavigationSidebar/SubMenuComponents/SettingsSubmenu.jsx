@@ -28,7 +28,11 @@ import {
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { isPlanTrial } from 'helpers/subscription-helper';
+import {
+  isPlanTrial,
+  isPlanStandard,
+  isPlanPremium,
+} from 'helpers/subscription-helper';
 import { SubMenuLink } from './styled';
 
 const { ADMIN, OWNER } = UserOrganizationRole;
@@ -64,6 +68,8 @@ const SettingsSubmenu = () => {
   const organization = useSelector(organizationSelector);
   const subscription = organization?.subscriptionDetails;
   const isInTrial = isPlanTrial(subscription);
+  const isStandardPlan = isPlanStandard(subscription);
+  const isPremiumPlan = isPlanPremium(subscription);
 
   const isApiAllowed = organization?.availableFeatures?.includes('API');
 
@@ -73,7 +79,9 @@ const SettingsSubmenu = () => {
       {!isInTrial && (
         <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
       )}
-      <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
+      {(isInTrial || isStandardPlan || isPremiumPlan) && (
+        <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
+      )}
       {automationMeteringAvailable && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to="/settings/metering">Metering</SubMenuLink>

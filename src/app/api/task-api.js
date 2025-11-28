@@ -112,6 +112,23 @@ export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
     });
 }
 
+export function reassignTask(reassignRequest) {
+  return axios
+    .patch(`task/reassign`, reassignRequest)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((error) => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ?? 'Error in reassigning task.',
+      });
+      throw error;
+    });
+}
+
 export function updateTaskMetaData(taskIdentifier, dataToUpdate) {
   return axios
     .patch(`task/metadata/${taskIdentifier}`, dataToUpdate)
@@ -624,6 +641,12 @@ export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
 
 export function updateTasksLink(link) {
   return axios.put(`task/link`, link).then(({ data }) => data);
+}
+
+export function reconnectTaskLink(sourceTaskIdentifier, payload) {
+  return axios
+    .patch(`task/link/${sourceTaskIdentifier}`, payload)
+    .then(({ data }) => data);
 }
 
 export function shareTask(

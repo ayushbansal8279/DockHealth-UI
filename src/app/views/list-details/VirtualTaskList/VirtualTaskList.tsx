@@ -9,6 +9,7 @@ import React, {
 import { useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import { TaskStatus } from 'helpers/task-helpers';
+import { getTaskCount, getPatientCount } from 'components/tasklist/TasksGroup/helper';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
 import VListGroup from 'views/list-details/VirtualTaskList/VirtualSegment/VListGroup/VListGroup';
 import VTask from 'views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
@@ -31,6 +32,7 @@ import {
   currentListTasksStatusSelector,
   patientSelector,
 } from '@/app/selectors/patient-details-selectors';
+import VListSpacer from './VirtualSegment/VListSpacer/VListSpacer';
 
 export interface Props {
   groupedTasks: any[];
@@ -388,40 +390,50 @@ function VirtualTaskList({
 
   const nodes = useMemo(() => {
     if (origin === 'PATIENT') {
-      return groupedTasks.map((group, index: number) => {
-        const patientTasks = group?.tasks;
-        const patientTaskIdentifiers = patientTasks?.map(
-          (task: any) => task?.identifier,
-        );
+      return groupedTasks
+        .map((group, index: number) => {
+          const patientTasks = group?.tasks;
+          const patientTaskIdentifiers = patientTasks?.map(
+            (task: any) => task?.identifier,
+          );
 
-        return createNode(
-          'DEFAULT_PATIENT_TASK_GROUP',
-          VListGroup,
-          'ListGroup',
-          false,
-          {
-            name: 'Default',
-            taskGroupIdentifier: 'DEFAULT_PATIENT_TASK_GROUP',
-            bgColor: false,
-            groupTaskCounts: patientTasks?.length,
-            tasksCount: patientTasks?.length,
-            isLastGroupOfList: false,
-            origin,
-          },
-          createGroupChildren(
-            origin,
-            patientTaskIdentifiers,
-            index,
-            listGroups?.length || 0,
+          return createNode(
             'DEFAULT_PATIENT_TASK_GROUP',
+            VListGroup,
+            'ListGroup',
             false,
+            {
+              name: 'Default',
+              taskGroupIdentifier: 'DEFAULT_PATIENT_TASK_GROUP',
+              bgColor: false,
+              groupTaskCounts: patientTasks?.length,
+              tasksCount: patientTasks?.length,
+              isLastGroupOfList: false,
+              origin,
+            },
+            createGroupChildren(
+              origin,
+              patientTaskIdentifiers,
+              index,
+              listGroups?.length || 0,
+              'DEFAULT_PATIENT_TASK_GROUP',
+              false,
+              false,
+              undefined,
+              patientTaskIdentifiers,
+            ),
+            true,
+          );
+        })
+        .concat(
+          createNode(
+            uniqueId().toString(),
+            VListSpacer,
+            'ListSpacer',
             false,
-            undefined,
-            patientTaskIdentifiers,
+            {},
           ),
-          true,
         );
-      });
     } else {
       return listGroups
         .map((group: any, index: number) => {
@@ -436,6 +448,9 @@ function VirtualTaskList({
               groupedTask.groupIdentifier === group.taskGroupIdentifier,
           );
 
+          const groupTaskCounts = getTaskCount(group?.metrics);
+          const numberOfPatients = getPatientCount(group?.metrics);
+
           return createNode(
             group.taskGroupIdentifier,
             VListGroup,
@@ -445,7 +460,8 @@ function VirtualTaskList({
               name: group.groupName,
               taskGroupIdentifier: group.taskGroupIdentifier,
               bgColor: !(index % 2 === 0),
-              groupTaskCounts: group?.metricValue,
+              groupTaskCounts,
+              numberOfPatients,
               tasksCount: groupTasks?.length,
               isLastGroupOfList: index === listGroups?.length - 1,
               origin,
@@ -472,6 +488,13 @@ function VirtualTaskList({
             {},
             [],
             true,
+          ),
+          createNode(
+            uniqueId().toString(),
+            VListSpacer,
+            'ListSpacer',
+            false,
+            {},
           ),
         );
     }

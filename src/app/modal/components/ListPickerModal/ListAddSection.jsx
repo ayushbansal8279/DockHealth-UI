@@ -63,12 +63,12 @@ const ListAddSection = ({
           />
         </div>
         <Grid container direction="row" spacing={2}>
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <Button variant="secondary" onClick={onCancel}>
               Cancel
             </Button>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <Button type="submit">Save</Button>
           </Grid>
         </Grid>
