@@ -192,6 +192,7 @@ const PersonDetailsTasks = ({
                     dragAndDropDisabled
                     iconColorActive={iconColorActive}
                     origin={TaskOrigin.PERSON}
+                    subtasksDisabled
                   />
                 ))}
               </>
