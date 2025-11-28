@@ -200,15 +200,13 @@ function UserGroupView() {
           </PageContentHeader> */}
           {groupIdentifier && groupIdentifier !== 'ALL' && (
             <PageContentHeader>
-              <Grid container wrap="nowrap">
-                <AddEntitiesContainer>
-                  {isOrganizationAdmin && !isViewOnly && (
-                    <AddButton onClick={onEditUserGroup}>
-                      Manage User Group
-                    </AddButton>
-                  )}
-                </AddEntitiesContainer>
-              </Grid>
+              <AddEntitiesContainer>
+                {isOrganizationAdmin && !isViewOnly && (
+                  <AddButton onClick={onEditUserGroup}>
+                    Manage User Group
+                  </AddButton>
+                )}
+              </AddEntitiesContainer>
             </PageContentHeader>
           )}
 

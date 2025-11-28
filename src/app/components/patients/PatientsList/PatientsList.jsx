@@ -208,6 +208,19 @@ const PatientsList = ({
       }),
     [patients],
   );
+  useEffect(() => {
+    const savedScroll = sessionStorage.getItem('patients-scroll');
+
+    if (savedScroll) {
+      // wait a moment so grid renders rows
+      setTimeout(() => {
+        const grid = document.querySelector('.MuiDataGrid-virtualScroller');
+        if (grid) {
+          grid.scrollTop = Number(savedScroll);
+        }
+      }, 50);
+    }
+  }, []);
 
   useEffect(() => {
     if (patientsList?.listDetails?.listDisplayColumns) {
@@ -417,6 +430,9 @@ const PatientsList = ({
         <PatientCell
           onClick={async () => {
             const { fromEMR, patientIdentifier } = row;
+            const grid = document.querySelector('.MuiDataGrid-virtualScroller'); // inner scroll area
+            const scrollTop = grid?.scrollTop || 0;
+
             if (fromEMR) {
               const patient = await lookupEMRPatient(patientIdentifier);
 
@@ -436,6 +452,7 @@ const PatientsList = ({
               });
               sessionStorage.setItem('navigation-from', pathname);
             }
+            sessionStorage.setItem('patients-scroll', scrollTop);
           }}
           className="patient-cell"
         >
