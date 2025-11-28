@@ -40,10 +40,12 @@ import { FilesViewType, PATIENT_FILES_VIEW_TYPE, ScanStatus } from './helpers';
 import { currentFolderIdentifierSelector, currentProfileIdentifierSelector } from '@/app/selectors/profile-selector';
 import { getProfileFolderStructureHierarchy } from '@/app/api/profile-api';
 import { createProfileAttachmentsPath } from '@/app/routing/helpers/paths';
+import { FileContext } from '@/app/helpers/task-helpers';
 
 const ProfileAttachments = () => {
 
-  const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector)
+  const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
+  const currentProfileIdentifier = useSelector(currentProfileIdentifierSelector);
   const [activeViewType, setActiveViewType] = useState(
     localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
   );
@@ -538,6 +540,8 @@ const ProfileAttachments = () => {
             hideAttachmentPreview={hideAttachmentPreview}
             isAttachmentPreviewOpen={isAttachmentPreviewOpen}
             attachmentsLoading={attachmentsLoading}
+            context={FileContext.OBJECT}
+            contextIdentifier={currentProfileIdentifier}
           />
         </DropzoneContainer>
       )}

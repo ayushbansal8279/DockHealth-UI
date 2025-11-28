@@ -5,8 +5,19 @@ import equals from 'ramda/src/equals';
 import range from 'ramda/src/range';
 import startsWith from 'ramda/src/startsWith';
 import T from 'ramda/src/T';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
+import { Cropper } from 'react-advanced-cropper';
+import 'react-advanced-cropper/dist/style.css';
 import DownloadIcon from 'img/download.svg';
+import {
+  Crop as CropIcon,
+  Refresh as ResetIcon,
+  RotateLeft as RotateLeftIcon,
+  RotateRight as RotateRightIcon,
+  ZoomIn as ZoomInIcon,
+  ZoomOut as ZoomOutIcon,
+  Save as SaveIcon,
+} from '@mui/icons-material';
 import {
   AttachmentPreviewAudio,
   AttachmentPreviewContent,
@@ -23,8 +34,16 @@ import {
   StyledPdfDocument,
   StyledPdfPage,
   UnsupportedFileContainer,
+  CropperContainer,
+  CropperControlsContainer,
+  CropperButton,
+  SaveButton,
+  StyledEditIcon,
+  StyledCancelIcon,
 } from './styled';
-
+import { useDispatch } from 'react-redux';
+import saveEditedAttachment from './helper';
+import { updatePatientAttachment } from '@/app/actions/patient-details-actions';
 
 const PREVIEW_DISPLAY_TYPES = {
   AUDIO: 'AUDIO',
@@ -41,13 +60,9 @@ const AttachmentPreview = React.memo((props) => {
     hideAttachmentPreview,
     isAttachmentPreviewOpen,
     attachmentsLoading,
+    context,
+    contextIdentifier,
   } = props;
-  const [numberOfPdfPages, setNumberOfPdfPages] = useState(0);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onPdfLoadSuccess = useCallback(({ numPages }) => {
-    setNumberOfPdfPages(numPages);
-  }, []);
 
   const {
     attachmentIdentifier: currentAttachmentIdentifier,
@@ -55,6 +70,137 @@ const AttachmentPreview = React.memo((props) => {
     fileName,
     contentType: attachmentContentType,
   } = attachment || {};
+
+  const [numberOfPdfPages, setNumberOfPdfPages] = useState(0);
+  const [isCropperMode, setIsCropperMode] = useState(false);
+  const [croppedImage, setCroppedImage] = useState(null);
+  const [isCropperReady, setIsCropperReady] = useState(false);
+  const cropperRef = useRef(null);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onPdfLoadSuccess = useCallback(({ numPages }) => {
+    setNumberOfPdfPages(numPages);
+  }, []);
+
+  const handleCropperToggle = useCallback(() => {
+    setIsCropperMode((prev) => !prev);
+    setCroppedImage(null);
+    setIsCropperReady(false);
+  }, []);
+
+  const handleCropperReady = useCallback(() => {
+    setIsCropperReady(true);
+
+    const cropper = cropperRef.current;
+    if (!cropper) return;
+
+    setTimeout(() => {
+      try {
+        const image = cropper.getImage();
+        if (image) {
+          const { width, height } = image;
+          cropper.setCoordinates({ left: 0, top: 0, width, height });
+        }
+      } catch (error) {
+        const coords = cropper.getCoordinates?.();
+        if (coords) cropper.setCoordinates(coords);
+      }
+    }, 50);
+  }, []);
+
+  const handleCrop = useCallback(() => {
+    if (!isCropperReady) {
+      return;
+    }
+
+    if (cropperRef.current) {
+      try {
+        const canvas = cropperRef.current.getCanvas();
+        if (canvas) {
+          const croppedDataUrl = canvas.toDataURL('image/png', 1.0);
+          setCroppedImage(croppedDataUrl);
+          setIsCropperMode(false);
+        } else {
+          const canvasWithOptions = cropperRef.current.getCanvas({
+            width: 512,
+            height: 512,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high',
+          });
+          if (canvasWithOptions) {
+            const croppedDataUrl = canvasWithOptions.toDataURL(
+              'image/png',
+              1.0,
+            );
+            setCroppedImage(croppedDataUrl);
+            setIsCropperMode(false);
+          }
+        }
+      } catch (error) {
+        console.error('Error getting canvas:', error);
+      }
+    } else {
+      console.error('Cropper ref is null');
+    }
+  }, [isCropperReady]);
+
+  const handleReset = useCallback(() => {
+    setCroppedImage(null);
+    if (cropperRef.current) {
+      cropperRef.current.reset();
+    }
+  }, []);
+
+  const handleRotateLeft = useCallback(() => {
+    if (cropperRef.current) {
+      cropperRef.current.rotateImage(-90);
+    }
+  }, []);
+
+  const handleRotateRight = useCallback(() => {
+    if (cropperRef.current) {
+      cropperRef.current.rotateImage(90);
+    }
+  }, []);
+
+  const dispatch = useDispatch();
+
+  const handleEditSave = useCallback(() => {
+    if (cropperRef.current) {
+      const canvas = cropperRef.current.getCanvas();
+      canvas.toBlob((blob) => {
+        const originalFileName = fileName || 'edited.png';
+        const renamedFileName = originalFileName.replace(
+          /(\.[\w\d_-]+)$/i,
+          '_original$1',
+        );
+
+        const file = new File([blob], originalFileName, { type: 'image/png' });
+
+        saveEditedAttachment(
+          dispatch,
+          context,
+          file,
+          originalFileName,
+          contextIdentifier,
+          hideAttachmentPreview,
+          attachment,
+        );
+      });
+    }
+  }, [dispatch, context, fileName, contextIdentifier, hideAttachmentPreview]);
+
+  const handleZoomIn = useCallback(() => {
+    if (cropperRef.current) {
+      cropperRef.current.zoomImage(1.2);
+    }
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    if (cropperRef.current) {
+      cropperRef.current.zoomImage(0.8);
+    }
+  }, []);
 
   const displayType = cond([
     [startsWith('audio/'), always(PREVIEW_DISPLAY_TYPES.AUDIO)],
@@ -96,15 +242,44 @@ const AttachmentPreview = React.memo((props) => {
           direction="row"
           justify="center"
           alignItems="center"
+          style={{ gap: '0.25rem' }}
         >
-          <AttachmentPreviewHeaderAnchor download={fileName} href={fileSource}>
-            <AttachmentPreviewHeaderIconContainer>
-              <img src={DownloadIcon} alt="Download" />
-            </AttachmentPreviewHeaderIconContainer>
-            <AttachmentPreviewHeaderLabel>
-              Download
-            </AttachmentPreviewHeaderLabel>
-          </AttachmentPreviewHeaderAnchor>
+          {displayType === PREVIEW_DISPLAY_TYPES.IMAGE && (
+            <>
+              <CropperButton onClick={handleCropperToggle}>
+                {!isCropperMode && <StyledEditIcon />}
+                {isCropperMode ? (
+                  <>
+                    <StyledCancelIcon />
+                    Cancel
+                  </>
+                ) : (
+                  'Edit'
+                )}
+              </CropperButton>
+              {isCropperMode && (
+                <SaveButton onClick={handleEditSave}>
+                  <SaveIcon
+                    style={{ marginRight: '0.4rem', fontSize: '16px' }}
+                  />
+                  Save
+                </SaveButton>
+              )}
+              <div style={{ marginLeft: '1rem' }}>
+                <AttachmentPreviewHeaderAnchor
+                  download={fileName}
+                  href={fileSource}
+                >
+                  <AttachmentPreviewHeaderIconContainer>
+                    <img src={DownloadIcon} alt="Download" />
+                  </AttachmentPreviewHeaderIconContainer>
+                  <AttachmentPreviewHeaderLabel>
+                    Download
+                  </AttachmentPreviewHeaderLabel>
+                </AttachmentPreviewHeaderAnchor>
+              </div>
+            </>
+          )}
         </AttachmentPreviewHeaderSection>
         <AttachmentPreviewHeaderSection direction="row" justify="flex-end">
           <AttachmentPreviewHeaderButton onClick={hideAttachmentPreview} big>
@@ -114,9 +289,73 @@ const AttachmentPreview = React.memo((props) => {
       </AttachmentPreviewHeader>
       <AttachmentPreviewContent>
         {displayType === PREVIEW_DISPLAY_TYPES.IMAGE && (
-          <AttachmentPreviewFlexContainer>
-            <AttachmentPreviewImage alt="Attachment" src={fileSource} />
-          </AttachmentPreviewFlexContainer>
+          <>
+            {isCropperMode && (
+              <CropperControlsContainer>
+                <CropperButton onClick={handleCrop} disabled={!isCropperReady}>
+                  <CropIcon
+                    style={{ marginRight: '0.2rem', fontSize: '16px' }}
+                  />
+                  Crop {!isCropperReady ? '(Loading...)' : ''}
+                </CropperButton>
+                <CropperButton onClick={handleReset}>
+                  <ResetIcon
+                    style={{ marginRight: '0.2rem', fontSize: '16px' }}
+                  />
+                  Reset
+                </CropperButton>
+                <CropperButton onClick={handleRotateLeft}>
+                  <RotateLeftIcon
+                    style={{ marginRight: '0.2rem', fontSize: '16px' }}
+                  />
+                  Rotate Left
+                </CropperButton>
+                <CropperButton onClick={handleRotateRight}>
+                  <RotateRightIcon
+                    style={{ marginRight: '0.2rem', fontSize: '16px' }}
+                  />
+                  Rotate Right
+                </CropperButton>
+                <CropperButton onClick={handleZoomIn}>
+                  <ZoomInIcon
+                    style={{ marginRight: '0.2rem', fontSize: '16px' }}
+                  />
+                  Zoom In
+                </CropperButton>
+                <CropperButton onClick={handleZoomOut}>
+                  <ZoomOutIcon
+                    style={{ marginRight: '0.2rem', fontSize: '16px' }}
+                  />
+                  Zoom Out
+                </CropperButton>
+              </CropperControlsContainer>
+            )}
+            {isCropperMode ? (
+              <CropperContainer>
+                <Cropper
+                  ref={cropperRef}
+                  src={fileSource}
+                  style={{ height: '400px', width: '100%' }}
+                  backgroundWrapperProps={{
+                    scaleImage: true,
+                    moveImage: true,
+                  }}
+                  checkOrientation={false}
+                  transitions={true}
+                  onReady={handleCropperReady}
+                />
+              </CropperContainer>
+            ) : (
+              <>
+                <AttachmentPreviewFlexContainer>
+                  <AttachmentPreviewImage
+                    alt="Attachment"
+                    src={croppedImage || fileSource}
+                  />
+                </AttachmentPreviewFlexContainer>
+              </>
+            )}
+          </>
         )}
         {displayType === PREVIEW_DISPLAY_TYPES.AUDIO && (
           <AttachmentPreviewFlexContainer>

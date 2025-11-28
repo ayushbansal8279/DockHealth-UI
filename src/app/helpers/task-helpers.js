@@ -43,6 +43,12 @@ export const TaskOrigin = {
   GLOBAL: 'GLOBAL',
 };
 
+export const FileContext = {
+  TASK: 'TASK',
+  WORKFLOW: 'WORKFLOW',
+  PATIENT: 'PATIENT',
+  OBJECT: 'OBJECT',
+};
 export const TaskPriority = {
   NONE: 'NONE',
   LOW: 'LOW',
