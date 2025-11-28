@@ -89,7 +89,7 @@ import { updatePatientDetails } from 'actions/patient-details-actions';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { getSubtaskStylingLink } from './helpers';
+import { getSubtaskStylingLink, PatientFieldTooltip } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
 import TaskItemDescription from './TaskItemComponents/TaskItemDescription';
@@ -1460,26 +1460,30 @@ const TaskItem = React.memo(
                     width={getWidth(PatientTaskItemColumn.GENDER)}
                     order={getColumnOrder(PatientTaskItemColumn.GENDER)}
                   >
-                    <TaskItemDropdown
-                      readOnly={isPatientDataReadOnly}
-                      value={patient?.gender}
-                      onChange={handlePatientUpdate('gender')}
-                      field={{
-                        options: [
-                          {
-                            identifier: 'male',
-                            name: 'male',
-                            color: '#00A2E5',
-                          },
-                          {
-                            identifier: 'female',
-                            name: 'female',
-                            color: '#00A2E5',
-                          },
-                        ],
-                        displayOptions: ['TASK_REQUIRED'],
-                      }}
-                    />
+                    <PatientFieldTooltip patient={patient}>
+                      <div>
+                        <TaskItemDropdown
+                          readOnly={isPatientDataReadOnly}
+                          value={patient?.gender}
+                          onChange={handlePatientUpdate('gender')}
+                          field={{
+                            options: [
+                              {
+                                identifier: 'male',
+                                name: 'male',
+                                color: '#00A2E5',
+                              },
+                              {
+                                identifier: 'female',
+                                name: 'female',
+                                color: '#00A2E5',
+                              },
+                            ],
+                            displayOptions: ['TASK_REQUIRED'],
+                          }}
+                        />
+                      </div>
+                    </PatientFieldTooltip>
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.GENDER),
                 )}
@@ -1494,11 +1498,15 @@ const TaskItem = React.memo(
                     width={getWidth(PatientTaskItemColumn.DOB)}
                     order={getColumnOrder(PatientTaskItemColumn.DOB)}
                   >
-                    <TaskItemDate
-                      value={patient?.dob}
-                      onChange={handlePatientUpdate('dob')}
-                      readOnly={isPatientDataReadOnly}
-                    />
+                    <PatientFieldTooltip patient={patient}>
+                      <div>
+                        <TaskItemDate
+                          value={patient?.dob}
+                          onChange={handlePatientUpdate('dob')}
+                          readOnly={isPatientDataReadOnly}
+                        />
+                      </div>
+                    </PatientFieldTooltip>
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.DOB),
                 )}
@@ -1513,11 +1521,15 @@ const TaskItem = React.memo(
                     width={getWidth(PatientTaskItemColumn.EMAIL)}
                     order={getColumnOrder(PatientTaskItemColumn.EMAIL)}
                   >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={patient?.email}
-                      onChange={handlePatientUpdate('email')}
-                    />
+                    <PatientFieldTooltip patient={patient}>
+                      <div>
+                        <TaskItemText
+                          readOnly={isPatientDataReadOnly}
+                          value={patient?.email}
+                          onChange={handlePatientUpdate('email')}
+                        />
+                      </div>
+                    </PatientFieldTooltip>
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.EMAIL),
                 )}
@@ -1532,16 +1544,23 @@ const TaskItem = React.memo(
                     width={getWidth(PatientTaskItemColumn.MRN)}
                     order={getColumnOrder(PatientTaskItemColumn.MRN)}
                   >
-                    {emrPatientLink && (
-                      <PatientMRNAnchor
-                        href={emrPatientLink?.replace('{mrn}', patient?.mrn)}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {patient?.mrn}
-                      </PatientMRNAnchor>
-                    )}
-                    {!emrPatientLink && <span>{patient?.mrn}</span>}
+                    <PatientFieldTooltip patient={patient}>
+                      <div>
+                        {emrPatientLink && (
+                          <PatientMRNAnchor
+                            href={emrPatientLink?.replace(
+                              '{mrn}',
+                              patient?.mrn,
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {patient?.mrn}
+                          </PatientMRNAnchor>
+                        )}
+                        {!emrPatientLink && <span>{patient?.mrn}</span>}
+                      </div>
+                    </PatientFieldTooltip>
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MRN),
                 )}
@@ -1556,11 +1575,15 @@ const TaskItem = React.memo(
                     width={getWidth(PatientTaskItemColumn.MOBILE_PHONE)}
                     order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
                   >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={formatPhoneNumber(patient?.phoneMobile ?? '')}
-                      onChange={handlePatientUpdate('phoneMobile')}
-                    />
+                    <PatientFieldTooltip patient={patient}>
+                      <div>
+                        <TaskItemText
+                          readOnly={isPatientDataReadOnly}
+                          value={formatPhoneNumber(patient?.phoneMobile ?? '')}
+                          onChange={handlePatientUpdate('phoneMobile')}
+                        />
+                      </div>
+                    </PatientFieldTooltip>
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE),
                 )}
@@ -1575,11 +1598,15 @@ const TaskItem = React.memo(
                     width={getWidth(PatientTaskItemColumn.HOME_PHONE)}
                     order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
                   >
-                    <TaskItemText
-                      readOnly={isPatientDataReadOnly}
-                      value={formatPhoneNumber(patient?.phoneHome ?? '')}
-                      onChange={handlePatientUpdate('phoneHome')}
-                    />
+                    <PatientFieldTooltip patient={patient}>
+                      <div>
+                        <TaskItemText
+                          readOnly={isPatientDataReadOnly}
+                          value={formatPhoneNumber(patient?.phoneHome ?? '')}
+                          onChange={handlePatientUpdate('phoneHome')}
+                        />
+                      </div>
+                    </PatientFieldTooltip>
                   </TaskItemCell>,
                   getColumnOrder(PatientTaskItemColumn.HOME_PHONE),
                 )}
