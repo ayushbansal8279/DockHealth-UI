@@ -12,8 +12,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import partial from 'ramda/src/partial';
 import { Box, Dialog, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
+import { userHasWorkspacesFeatureSelector } from 'selectors/user-selectors';
 import AlertMessages from 'alert/AlertMessages';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import {
@@ -143,6 +144,7 @@ const EditCustomFieldModal = ({
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
 
   const validationSchema = useMemo(() => {
     return object().shape({
@@ -671,7 +673,7 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
-                    {isCreatingNewField && (
+                    {isCreatingNewField && workspacesAvailable && (
                       <ScopeAndWorkspaceFields
                         workspaceIdentifier={workspaceIdentifier}
                       />

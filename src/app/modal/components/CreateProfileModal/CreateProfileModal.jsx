@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Grid } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import { userHasWorkspacesFeatureSelector } from 'selectors/user-selectors';
 import FormInput from 'components/common/Input/FormInput';
 import { createProfileType, editProfileType } from 'api/profile-type-api';
 import AlertMessages from 'alert/AlertMessages';
@@ -35,6 +36,7 @@ const CreateProfileModal = ({
   // const isCreatingNewField = !template;
   const [, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
@@ -145,7 +147,7 @@ const CreateProfileModal = ({
                   <Grid item size={12}>
                     <FormInput name="description" label="Description" />
                   </Grid>
-                  {isCreatingNewField && (
+                  {isCreatingNewField && workspacesAvailable && (
                     <ScopeAndWorkspaceFields
                       workspaceIdentifier={workspaceIdentifier}
                     />
