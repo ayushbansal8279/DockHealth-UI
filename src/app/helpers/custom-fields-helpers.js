@@ -116,3 +116,23 @@ export const stringToRegex = (str) => {
   const flags = match[2];
   return new RegExp(pattern, flags);
 };
+
+export const enrichGroupsWithFields = (groups, allProfileFieldTypes) => {
+  return groups.map((group) => {
+    if (!group.fields) {
+      return group;
+    }
+
+    const enrichedFields = group.fields.map((field) => {
+      const matchingField = allProfileFieldTypes?.find(
+        (customField) =>
+          customField.identifier === field.fieldReferenceId ||
+          customField.customFieldIdentifier === field.fieldReferenceId,
+      );
+
+      return matchingField ? { ...field, ...matchingField } : field;
+    });
+
+    return { ...group, fields: enrichedFields };
+  });
+};

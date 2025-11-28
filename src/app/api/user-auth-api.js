@@ -53,6 +53,46 @@ const inMemoryStorage = (() => {
   };
 })();
 
+const selectiveStorage = (() => {
+  let memoryStorage = {};
+
+  return {
+    getItem: (key) => {
+      if (key.includes('deviceKey') 
+        || key.includes('deviceGroupKey')
+        || key.includes('randomPasswordKey')
+        || key.includes('clockDrift')
+        || key.includes('LastAuthUser')) {
+        return localStorage.getItem(key);
+      }
+      return memoryStorage[key] || null;
+    },
+    setItem: (key, value) => {
+      // Store device keys in localStorage
+      if (key.includes('deviceKey') 
+        || key.includes('deviceGroupKey')
+        || key.includes('randomPasswordKey')
+        || key.includes('clockDrift')
+        || key.includes('LastAuthUser')) {
+        localStorage.setItem(key, value);
+      } else {
+        memoryStorage[key] = value;
+      }
+    },
+    removeItem: (key) => {
+      localStorage.removeItem(key);
+      delete memoryStorage[key];
+    },
+    clear: () => {
+      localStorage.clear();
+      Object.keys(memoryStorage).forEach((key) => {
+        delete memoryStorage[key];
+      });
+      memoryStorage = {};
+    },
+  };
+})();
+
 Amplify.configure({
   // To get the AWS Credentials, you need to configure
   // the Auth module with your Cognito Federated Identity Pool
@@ -61,7 +101,7 @@ Amplify.configure({
     userPoolId: import.meta.env.VITE_AWS_USERPOOLID,
     userPoolWebClientId: import.meta.env.VITE_AWS_CLIENTAPP,
     authenticationFlowType: 'USER_SRP_AUTH',
-    storage: inMemoryStorage,
+    storage: selectiveStorage,
   },
 });
 
@@ -147,6 +187,24 @@ export function resendConfirmationCode(userData) {
 export function changePassword(oldPassword, newPassword) {
   const { userAuth } = store.getState().userState;
   return Auth.changePassword(userAuth, oldPassword, newPassword);
+}
+
+/**
+ * Check if secure cookie is available by making a lightweight request
+ * @returns {Promise<boolean>} Promise that resolves to true if cookie is available, false otherwise
+ */
+async function isSecureCookieAvailable() {
+  try {
+    // Make a lightweight HEAD request to check if cookie is valid
+    // This avoids fetching full user details if cookie is not available
+    await axios.head('user/me', {
+      withCredentials: true,
+    });
+    return true;
+  } catch (error) {
+    // If the request fails (401, 403, etc.), cookie is not available or invalid
+    return false;
+  }
 }
 
 /**
@@ -399,60 +457,70 @@ export function rememberDevice() {
 }
 
 export async function isAuthenticated() {
-  if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
-    const userData = {
-      username: sessionStorage.getItem('SSO_USEREMAIL'),
-    };
+  // if (sessionStorage.getItem('EnterpriseUserFlag') === 'true') {
+  //   const userData = {
+  //     username: sessionStorage.getItem('SSO_USEREMAIL'),
+  //   };
 
-    if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
-      return { isLoggedIn: true, user: userData };
-    }
+  //   if (sessionStorage.getItem('SSO_ACCESSTOKEN')) {
+  //     return { isLoggedIn: true, user: userData };
+  //   }
 
-    return { isLoggedIn: false, user: userData };
-  }
+  //   return { isLoggedIn: false, user: userData };
+  // }
 
   // First, check if we have authenticated user details from cookie-based auth
   if (authenticatedUserDetails) {
     return { isLoggedIn: true, user: authenticatedUserDetails };
   }
 
-  // If we don't have user details, try to fetch them using the cookie
-  try {
-    const userDetails = await fetchAuthenticatedUserDetails();
-    return { isLoggedIn: true, user: userDetails };
-  } catch (cookieError) {
-    // Cookie-based auth failed, fall back to Cognito authentication
-    log('Cookie-based authentication failed, attempting Cognito auth:', cookieError);
-
+  // Check if secure cookie is available before attempting to fetch user details
+  const cookieAvailable = await isSecureCookieAvailable();
+  if (!cookieAvailable) {
+    log('Secure cookie is not available');
+  } else {
+    // Cookie is available, try to fetch user details
     try {
-      const user = await Auth.currentAuthenticatedUser({
-        bypassCache: false,
-      });
-      const authData = await Auth.currentSession();
-      const accessToken = authData.accessToken.jwtToken;
-
-      // If we have a Cognito token but no cookie, exchange it
-      if (accessToken) {
-        try {
-          await exchangeTokenForCookie(accessToken);
-          // After successful exchange, user details should be stored
-          if (authenticatedUserDetails) {
-            return { isLoggedIn: true, user: authenticatedUserDetails };
-          }
-        } catch (exchangeError) {
-          log('Token exchange failed:', exchangeError);
-          return { isLoggedIn: false, user: null };
-        }
-      }
-
-      return { isLoggedIn: true, user };
-    } catch (cognitoError) {
-      log('Cognito authentication failed:', cognitoError);
-      // No valid cookie and no valid Cognito session
-      authenticatedUserDetails = null;
-      return { isLoggedIn: false, user: null };
+      const userDetails = await fetchAuthenticatedUserDetails();
+      return { isLoggedIn: true, user: userDetails };
+    } catch (cookieError) {
+      // Cookie-based auth failed, fall back to Cognito authentication
+      log('Cookie-based authentication failed', cookieError);
     }
   }
+
+  try {
+    const user = await Auth.currentAuthenticatedUser({
+      bypassCache: false,
+    });
+    const authData = await Auth.currentSession();
+    const accessToken = authData.accessToken.jwtToken;
+
+    // If we have a Cognito token but no cookie, exchange it
+    if (accessToken) {
+      try {
+        await exchangeTokenForCookie(accessToken);
+        // After successful exchange, user details should be stored
+        if (authenticatedUserDetails) {
+          return { isLoggedIn: true, user: authenticatedUserDetails };
+        }
+      } catch (exchangeError) {
+        log('Token exchange failed:', exchangeError);
+        return { isLoggedIn: false, user: null };
+      }
+    }
+
+    return { isLoggedIn: true, user };
+  } catch (cognitoError) {
+    log('Cognito authentication failed:', cognitoError);
+    // No valid cookie and no valid Cognito session
+    authenticatedUserDetails = null;
+    return { isLoggedIn: false, user: null };
+  }
+}
+
+export function isUserAlreadyAuthenticated() {
+  return authenticatedUserDetails !== null;
 }
 
 export function forgotPassword(userData) {
@@ -622,7 +690,7 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
       const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}oidc`;
       const authData = `grant_type=authorization_code&code=${authCode}&iss=${iss}`;
 
-      await axios.post(`${authUrl}/token`, authData).then((response) => {
+      await axios.post(`${authUrl}/token`, authData).then(async (response) => {
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;
         const organizationIdentifier = response?.data.organizationIdentifier;
@@ -654,6 +722,14 @@ export function getEnterpriseAccessTokensByAuthCode(authCode, iss) {
           });
         } catch {
           // do nothing
+        }
+        // Fetch and store user details using the newly set cookie
+        try {
+          await fetchAuthenticatedUserDetails();
+          resolve();
+        } catch (error) {
+          log('Token exchange succeeded but user details fetch failed:', error);
+          resolve();
         }
       });
       try {
@@ -852,7 +928,7 @@ export function checkSSO(email) {
         import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
       }auth/checkSSO`;
       const response = await axios.get(
-        `${checkSSOUrl}?email=${encodeURIComponent(email)}`,
+        `${checkSSOUrl}?email=${encodeURIComponent(email)}`, { withCredentials: false },
       );
       const issuer = response?.data.issuer;
       log(`issuer: ${issuer}`);

@@ -8,12 +8,17 @@ class Logout extends PureComponent {
   componentDidMount = () => {
     const { currentUser, history } = this.props;
 
-    const pusherForPresence = initializePusherForPresence();
     const presenceChannelName = `presence-dock-users-${currentUser.organizationIdentifier}`;
-    let presenceChannel = pusherForPresence?.channel(presenceChannelName);
-    if (!presenceChannel || !presenceChannel.subscribed) {
-      presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
-    }
+    let pusherForPresence = null;
+    initializePusherForPresence().then((pusher) => {
+      if (pusher) {
+        pusherForPresence = pusher;
+        let presenceChannel = pusherForPresence?.channel(presenceChannelName);
+        if (!presenceChannel || !presenceChannel.subscribed) {
+          presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
+        }
+      }
+    });
 
     return UserAuthApi.logout(history)
       .then(() => {

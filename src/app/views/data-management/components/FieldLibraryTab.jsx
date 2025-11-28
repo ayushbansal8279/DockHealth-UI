@@ -16,9 +16,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
-import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { TabContent, ToolbarStack, DataGridContainer } from '../styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { openModal } from '@/app/modal/actions';
@@ -27,6 +28,7 @@ import AlertMessages from '@/app/alert/AlertMessages';
 import {
   deleteCustomField,
   getAllCustomFields,
+  duplicateCustomField,
 } from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
 import { TargetType, ContextType } from '@/app/helpers/custom-fields-helpers';
@@ -96,7 +98,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     try {
       setLoading(true);
       setError(null);
-      const fields = await getAllCustomFields(workspaceIdentifier);
+      const fields = await getAllCustomFields(workspaceIdentifier, true);
       setFieldLibrary(fields || []);
     } catch (err) {
       setError(err.message);
@@ -179,6 +181,9 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleMenuExited = () => {
     setSelectedField(null);
   };
 
@@ -195,13 +200,26 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     handleMenuClose();
   };
 
+  const handleDuplicateFieldClick = async (field) => {
+    if (!field?.identifier) return;
+
+    try {
+      const duplicatedField = await duplicateCustomField(field.identifier);
+      dispatch(showGlobalAlert(AlertMessages.CREATED));
+      setFieldLibrary((prev) => [...prev, duplicatedField]);
+    } catch (error) {
+      console.error('Error duplicating field:', error);
+      dispatch(showGlobalErrorAlert());
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
         field: 'fieldType',
         headerName: 'Type',
-        width: 80,
-        flex: 0,
+        flex: 0.2,
+        minWidth: 60,
         sortable: false,
         filterable: false,
         renderCell: (params) => {
@@ -209,46 +227,38 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
           return (
             <Tooltip title={fieldTypeInfo.placeholder} arrow>
               <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                width="100%"
-                height="100%"
+                sx={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid #e0e0e0',
+                }}
               >
-                <Box
-                  sx={{
-                    width: '32px',
-                    height: '32px',
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '1px solid #e0e0e0',
-                  }}
-                >
-                  {fieldTypeInfo.img ? (
-                    <img
-                      src={fieldTypeInfo.img}
-                      alt={fieldTypeInfo.placeholder}
-                      style={{
-                        width: '20px',
-                        height: '20px',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        fontSize: '12px',
-                        color: '#666',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      ?
-                    </Box>
-                  )}
-                </Box>
+                {fieldTypeInfo.img ? (
+                  <img
+                    src={fieldTypeInfo.img}
+                    alt={fieldTypeInfo.placeholder}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      objectFit: 'contain',
+                    }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      fontSize: '12px',
+                      color: '#666',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    ?
+                  </Box>
+                )}
               </Box>
             </Tooltip>
           );
@@ -257,14 +267,14 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'name',
         headerName: 'Field Name',
-        width: 250,
         flex: 1.25,
+        minWidth: 200,
       },
       {
         field: 'contextType',
         headerName: 'Category',
-        width: 150,
         flex: 1,
+        minWidth: 100,
         renderCell: (params) => {
           const category = getCategoryFromContextType(params.value);
           return category || '';
@@ -273,8 +283,8 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'profileTypeDetails',
         headerName: 'Objects',
-        width: 200,
         flex: 1.5,
+        minWidth: 200,
         renderCell: (params) => {
           const profileTypeNames = getProfileTypeNames(params.value);
 
@@ -334,17 +344,17 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'validationRegexDescription',
         headerName: 'Format',
-        width: 150,
         flex: 1,
+        minWidth: 250,
         renderCell: (params) => {
           return params.value || '';
         },
       },
       {
         field: 'actions',
-        headerName: 'Actions',
-        width: 80,
-        flex: 0,
+        headerName: 'Options',
+        minWidth: 80,
+        flex: 0.2,
         sortable: false,
         filterable: false,
         renderCell: (params) => (
@@ -369,8 +379,16 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   );
 
   const filteredFields = useMemo(() => {
+    let filtered = fieldLibrary;
+
+    if (isWorkspace) {
+      filtered = filtered.filter(
+        (field) => field.contextType !== ContextType.PREDEFINED,
+      );
+    }
+
     if (!searchPhrase) {
-      return [...fieldLibrary].sort((a, b) => {
+      return [...filtered].sort((a, b) => {
         if (
           a.contextType === ContextType.PREDEFINED &&
           b.contextType !== ContextType.PREDEFINED
@@ -387,7 +405,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       });
     }
 
-    return fieldLibrary
+    return filtered
       .filter((field) => {
         const searchLower = searchPhrase.toLowerCase();
         const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
@@ -424,6 +442,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   }, [
     fieldLibrary,
     searchPhrase,
+    isWorkspace,
     getProfileTypeNames,
     getCategoryFromContextType,
   ]);
@@ -482,6 +501,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        onExited={handleMenuExited}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -491,34 +511,51 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
           horizontal: 'right',
         }}
       >
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem
+            onClick={() => {
+              handleEditFieldClick(selectedField);
+              handleMenuClose();
+            }}
+          >
+            <ListItemIcon>
+              <EditIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Edit</ListItemText>
+          </MenuItem>
+        )}
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem onClick={handleChangeScopeClick}>
+            <ListItemIcon>
+              <SwapHorizIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Change Scope</ListItemText>
+          </MenuItem>
+        )}
         <MenuItem
           onClick={() => {
-            handleEditFieldClick(selectedField);
+            handleDuplicateFieldClick(selectedField);
             handleMenuClose();
           }}
         >
           <ListItemIcon>
-            <EditIcon fontSize="small" />
+            <FileCopyIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
+          <ListItemText>Duplicate</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleChangeScopeClick}>
-          <ListItemIcon>
-            <SwapHorizIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Change Scope</ListItemText>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleDeleteFieldClick(selectedField);
-            handleMenuClose();
-          }}
-        >
-          <ListItemIcon>
-            <DeleteIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Delete</ListItemText>
-        </MenuItem>
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem
+            onClick={() => {
+              handleDeleteFieldClick(selectedField);
+              handleMenuClose();
+            }}
+          >
+            <ListItemIcon>
+              <DeleteIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Delete</ListItemText>
+          </MenuItem>
+        )}
       </Menu>
     </TabContent>
   );

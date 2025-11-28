@@ -14,7 +14,7 @@ import { capitalize } from 'helpers/capitalize';
 import { getTemplateColumns } from './helpers';
 import { ViewContainer, AddButtonWrapper, AddButton, PlusIcon } from './styled';
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const PAGE_SIZE = 30;
 

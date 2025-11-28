@@ -12,7 +12,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useStore, getSmoothStepPath } from '@xyflow/react';
+import { useStore, getSmoothStepPath, useReactFlow } from '@xyflow/react';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
@@ -21,6 +21,7 @@ import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 import { LabelsWrapper } from './styled';
 import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
+import { getEdgeParams } from '../LinkPath/helpers';
 
 const DecisionTaskLink = (props) => {
   const {
@@ -33,17 +34,26 @@ const DecisionTaskLink = (props) => {
     sourcePosition,
     targetPosition,
     data,
+    selected,
   } = props;
   const { outcome, link } = data;
   const { taskOutcomeIdentifier, name: outcomeName } = outcome || {};
   const { delayPeriod, delayPeriodUnit } = link || {};
+  const { getNodes } = useReactFlow();
+  const nodes = getNodes();
+  const sourceNode = nodes.find((n) => n.id === sourceTaskIdentifier);
+  const targetNode = nodes.find((n) => n.id === targetTaskIdentifier);
+  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
+    sourceNode,
+    targetNode,
+  );
   const [, edgeCenterX, edgeCenterY] = getSmoothStepPath({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
+    sourceX: selected ? sourceX : sx,
+    sourceY: selected ? sourceY : sy,
+    sourcePosition: selected ? sourcePosition : sourcePos,
+    targetX: selected ? targetX : tx,
+    targetY: selected ? targetY : ty,
+    targetPosition: selected ? targetPosition : targetPos,
   });
   const inputReference = useRef(null);
   const edgeLabelReference = useRef(null);

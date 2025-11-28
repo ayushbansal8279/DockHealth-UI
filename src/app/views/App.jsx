@@ -128,66 +128,69 @@ class App extends PureComponent {
     const { userProfile: previousUserProfile } = previousUserState;
     const { userProfile } = userState;
 
-    const pusherForPresence = initializePusherForPresence();
-    this.pusherForPresence = pusherForPresence;
-    if (isEmpty(previousUserProfile) && !isEmpty(userProfile)) {
-      const presenceChannelName = `presence-dock-users-${userProfile.organizationIdentifier}`;
-      this.presenceChannelName = presenceChannelName;
-      let presenceChannel = pusherForPresence?.channel(presenceChannelName);
-      if (
-        pusherForPresence &&
-        (!presenceChannel || !presenceChannel.subscribed)
-      ) {
-        presenceChannel = pusherForPresence?.subscribe(presenceChannelName);
+    initializePusherForPresence().then((pusher) => {
+      if (pusher) {
+        this.pusherForPresence = pusher;
+        if (isEmpty(previousUserProfile) && !isEmpty(userProfile)) {
+          const presenceChannelName = `presence-dock-users-${userProfile.organizationIdentifier}`;
+          this.presenceChannelName = presenceChannelName;
+          let presenceChannel = this.pusherForPresence?.channel(presenceChannelName);
+          if (
+            this.pusherForPresence &&
+            (!presenceChannel || !presenceChannel.subscribed)
+          ) {
+            presenceChannel = this.pusherForPresence?.subscribe(presenceChannelName);
 
-        presenceChannel.bind('pusher:subscription_succeeded', ({ members }) => {
-          const formattedMembers = Object.keys(members)?.map((memberKey) => ({
-            ...members[memberKey],
-            userIdentifier: memberKey,
-            idle: false,
-          }));
+            presenceChannel.bind('pusher:subscription_succeeded', ({ members }) => {
+              const formattedMembers = Object.keys(members)?.map((memberKey) => ({
+                ...members[memberKey],
+                userIdentifier: memberKey,
+                idle: false,
+              }));
 
-          setActiveUsers(formattedMembers);
-        });
+              setActiveUsers(formattedMembers);
+            });
 
-        presenceChannel.bind('pusher:member_added', (member) => {
-          addActiveUser({
-            ...member,
-            userIdentifier: member.id,
-            idle: false,
-          });
-        });
+            presenceChannel.bind('pusher:member_added', (member) => {
+              addActiveUser({
+                ...member,
+                userIdentifier: member.id,
+                idle: false,
+              });
+            });
 
-        presenceChannel.bind('pusher:member_removed', (member) => {
-          removeActiveUser({
-            ...member,
-            userIdentifier: member.id,
-          });
-        });
+            presenceChannel.bind('pusher:member_removed', (member) => {
+              removeActiveUser({
+                ...member,
+                userIdentifier: member.id,
+              });
+            });
 
-        presenceChannel.bind(
-          'client-event-dock-user-idle',
-          (data, metadata) => {
-            // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
-            if (data.idle) {
-              setIdleStateForUser(
-                {
-                  userIdentifier: metadata.user_id,
-                },
-                true,
-              );
-            } else {
-              setIdleStateForUser(
-                {
-                  userIdentifier: metadata.user_id,
-                },
-                false,
-              );
-            }
-          },
-        );
+            presenceChannel.bind(
+              'client-event-dock-user-idle',
+              (data, metadata) => {
+                // console.log('idle user:', presenceChannel.members.get(metadata.user_id).info);
+                if (data.idle) {
+                  setIdleStateForUser(
+                    {
+                      userIdentifier: metadata.user_id,
+                    },
+                    true,
+                  );
+                } else {
+                  setIdleStateForUser(
+                    {
+                      userIdentifier: metadata.user_id,
+                    },
+                    false,
+                  );
+                }
+              },
+            );
+          }
+        }
       }
-    }
+    });
     ampli.identify(
       userProfile?.email,
       userProfile?.identifier,

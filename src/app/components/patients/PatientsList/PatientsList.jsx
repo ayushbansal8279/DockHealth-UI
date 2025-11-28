@@ -15,7 +15,7 @@ import {
 } from '@mui/x-data-grid-premium';
 import * as ActionTypes from 'actions/action-types';
 import * as PatientsActions from 'actions/patients-actions';
-import { Grid, Link } from '@mui/material';
+import { Link } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
@@ -73,7 +73,7 @@ import NumberEditCell from '../../common/DataGridEditCells/NumberEditCell';
 import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
 import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
 import PatientListLabels from '../../common/PatientListLabels/PatientListLabels';
-import ReusableDataGrid from '../../custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { convertToSimpleString } from '@/app/helpers/markdown-helper';
 
 const renderColumnHeader = (props) => {
@@ -386,8 +386,14 @@ const PatientsList = ({
   const defaultColumns = [
     {
       field: 'isSelected',
-      headerName: '',
+      headerName: 'SELECT',
       sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      disableExport: true,
+      disableReorder: true,
+      groupable: false,
+      hideable: false,
       renderHeader: () =>
         renderCheckboxColumnHeader({
           isListChecked,
@@ -464,8 +470,7 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: (value) =>
-        value ? moment(value).format('MM/DD/YYYY') : '',
+      valueGetter: (value) => (value ? moment(value).format('MM/DD/YYYY') : ''),
       valueSetter: (value, row) => {
         const formattedDate = value ? moment(value).format('MM/DD/YYYY') : null;
         return { ...row, dob: formattedDate };

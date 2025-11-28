@@ -61,7 +61,6 @@ const PatientDetailsView = () => {
   const { pathname } = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
-  const pusher = useRef(initializePusher());
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
@@ -226,20 +225,25 @@ const PatientDetailsView = () => {
     let ch;
 
     if (currentUserIdentifier) {
-      ch = pusher.current?.subscribe(channelName);
-      if (ch) {
-        ch.bind('task-update', taskCallback);
-        ch.bind('task-bundle-update', taskBundleCallback);
-      }
+      initializePusher().then((pusher) => {
+        if (pusher) {
+          ch = pusher?.subscribe(channelName);
+          if (ch) {
+            ch.bind('task-update', taskCallback);
+            ch.bind('task-bundle-update', taskBundleCallback);
+          }
+          return () => {
+            if (ch) {
+              ch.unbind('task-update', taskCallback);
+              ch.unbind('task-bundle-update', taskBundleCallback);
+              ch.unsubscribe(channelName);
+            }
+          };
+        }
+      });
     }
 
-    return () => {
-      if (ch) {
-        ch.unbind('task-update', taskCallback);
-        ch.unbind('task-bundle-update', taskBundleCallback);
-        ch.unsubscribe(channelName);
-      }
-    };
+    return () => {};
   }, [currentUserIdentifier, patientIdentifier, dispatch]);
 
   const activeTabPath = useMemo(() => {

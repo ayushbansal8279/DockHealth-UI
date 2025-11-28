@@ -1,5 +1,9 @@
-import { TaskItemColumnWidth } from 'helpers/task-helpers';
+import {
+  TaskItemColumnWidth,
+  PatientTaskItemColumn,
+} from 'helpers/task-helpers';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
+import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 
 export const TaskHeaderColumn = {
   DESCRIPTION: 'TASK_DESCRIPTION',
@@ -222,4 +226,22 @@ export const reorderColumns = (list, startIndex, endIndex) => {
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
   return result;
+};
+
+export const getColumnType = (column) => {
+  const patientIdentifiers = Object.values(PatientTaskItemColumn);
+  
+  if (
+    patientIdentifiers.includes(column.identifier) ||
+    column.targetType === 'PATIENT' ||
+    column._customFieldType === CUSTOM_FIELD_TYPES.PATIENT
+  ) {
+    return 'Patient';
+  }
+  
+  if (column.targetType === 'TASK') {
+    return 'Task';
+  }
+  
+  return null;
 };

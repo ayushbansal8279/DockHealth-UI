@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import ToolbarButton from 'components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
-import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { TabContent, ToolbarStack, DataGridContainer } from '../styled';
 import { openModal, closeModal } from '@/app/modal/actions';
 import { showGlobalErrorAlert } from '@/app/alert/actions';
@@ -152,12 +152,14 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         field: 'name',
         headerName: 'Object Name',
         flex: 0.5,
+        minWidth: 150,
         renderHeader: renderColumnHeader,
       },
       {
         field: 'description',
         headerName: 'Description',
         flex: 1,
+        minWidth: 300,
         renderHeader: renderColumnHeader,
         renderCell: (params) => {
           return params.value || '';
@@ -166,8 +168,8 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'contextType',
         headerName: 'Type',
-        width: 150,
         flex: 0.2,
+        minWidth: 100,
         renderHeader: renderColumnHeader,
         renderCell: (params) => {
           return params.value
@@ -227,7 +229,7 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   );
 
   const filteredObjects = useMemo(() => {
-    const filtered = !searchPhrase
+    let filtered = !searchPhrase
       ? objects
       : objects.filter(
           (obj) =>
@@ -237,6 +239,12 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
               .includes(searchPhrase.toLowerCase()) ||
             obj.contextType?.toLowerCase().includes(searchPhrase.toLowerCase()),
         );
+
+    if (isWorkspace) {
+      filtered = filtered.filter(
+        (obj) => obj.contextType !== ContextType.PREDEFINED,
+      );
+    }
 
     return [...filtered].sort((a, b) => {
       if (
@@ -253,7 +261,7 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       }
       return 0;
     });
-  }, [objects, searchPhrase]);
+  }, [objects, searchPhrase, isWorkspace]);
 
   if (loading) {
     return (

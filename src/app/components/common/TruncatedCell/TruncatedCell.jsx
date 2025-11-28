@@ -12,4 +12,8 @@ const TruncatedCell = ({ content, tooltipText, placement = 'top' }) => {
   );
 };
 
+export const renderTruncatedCell = (content, tooltipText) => (
+  <TruncatedCell content={content} tooltipText={tooltipText} />
+);
+
 export default TruncatedCell;

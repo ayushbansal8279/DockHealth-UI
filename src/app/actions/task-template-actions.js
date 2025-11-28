@@ -385,6 +385,14 @@ export function linkTasks(source, target, options, outcomeName) {
   };
 }
 
+export function reconnectTaskLink(newEdge, oldEdge) {
+  return {
+    type: ActionTypes.RECONNECT_TASK_LINK,
+    newEdge,
+    oldEdge,
+  };
+}
+
 export function addTemporaryLink(
   linkType,
   sourceId,

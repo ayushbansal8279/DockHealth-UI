@@ -92,7 +92,9 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   };
 
   const subType =
-    type === NodeType.STANDARD && description.includes('[System]')
+    type === NodeType.DECISION && description.includes('[System]')
+      ? 'AUTOMATION'
+      : type === NodeType.STANDARD && description.includes('[System]')
       ? 'AUTOMATION'
       : type === NodeType.STANDARD && description.includes('[Agent]')
       ? 'AGENT'
