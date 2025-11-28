@@ -223,6 +223,10 @@ function Virtualized({
           <Virtuoso
             // @ts-ignore
             // scrollerRef={provided.innerRef}
+            increaseViewportBy={{ top: 600, bottom: 600 }}
+            defaultItemHeight={70}
+            useWindowScroll={false}
+            overscan={300}
             style={{ height: '100%' }}
             data={flatNodes}
             context={context}
