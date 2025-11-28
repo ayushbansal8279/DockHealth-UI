@@ -8,7 +8,6 @@ import {
 } from 'selectors/mega-filter-selectors';
 import {
   getQuickFilters,
-  selectFiltersForMegaFilter,
   selectQuickFilter,
   showAddQuickFilterOption,
   createQuickFilter,
@@ -47,14 +46,15 @@ const UserDetailsFilters = () => {
     selectedFilters,
     isFetching,
     tasks: taskIdentifiers,
-    tasksCount: selectedTab === TaskStatus.INCOMPLETE ? taskCounters.incomplete : taskCounters.complete,
+    tasksCount:
+      selectedTab === TaskStatus.INCOMPLETE
+        ? taskCounters.incomplete
+        : taskCounters.complete,
     status: selectedTab === TaskStatus.INCOMPLETE ? 'INCOMPLETE' : 'COMPLETE',
   });
 
   const handleFilterChange = (filters) => {
-    dispatch(
-      filterUserDetailsTasks(filters, userIdentifier),
-    );
+    dispatch(filterUserDetailsTasks(filters, userIdentifier));
   };
 
   const handleFilterOpen = () => {
@@ -81,16 +81,9 @@ const UserDetailsFilters = () => {
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
-      dispatch(
-        selectFiltersForMegaFilter(
-          filtersSetup,
-          userIdentifier,
-          selectedTab,
-          id,
-        ),
-      );
+      dispatch(filterUserDetailsTasks(filtersSetup, userIdentifier));
     },
-    [dispatch, selectedTab, userIdentifier],
+    [dispatch, userIdentifier],
   );
 
   const handleQuickFilterCreate = useCallback(

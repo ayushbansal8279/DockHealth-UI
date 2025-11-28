@@ -22,6 +22,7 @@ import {
   userPreferenceSelectedFiltersSelector,
   userPreferenceSelectedQuickFilterSelector,
 } from '../selectors/user-preference-selectors';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 
 function* initializeUserTasks(status) {
   yield put(PersonDetailsActions.getUserTaskCounters());
@@ -64,7 +65,8 @@ function* filterUserDetailsTasks(payload) {
   const partialDetails = {
     selectedFilters,
   };
-  const status = '';
+  const status = yield select(currentTasksStatusSelector) ||
+    TaskStatus.INCOMPLETE;
   const selectedQuickFilter = null;
 
   const preferences = yield call(
@@ -87,6 +89,7 @@ function* filterUserDetailsTasks(payload) {
       selectedQuickFilter,
     ),
   );
+  yield call(getUserTasks, { status });
 }
 
 function* initializeUserDetailsState({ currentTasksStatus }) {
