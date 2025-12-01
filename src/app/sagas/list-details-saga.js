@@ -172,18 +172,18 @@ function* getTasksGroupsList() {
 
 function* getCurrentListTasks() {
   try {
-    const sort = yield select(taskDetailsSortSelector);
+    const sort = yield select(userPreferenceSortSelector);
     const status = yield select(userPreferenceStatusSelector);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
 
+    if (!taskListIdentifier) {
+      return;
+    }
     let groups = yield call(getGroupsByListId, taskListIdentifier, status);
     yield put({
       type: ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
       groups,
     });
-    if (!taskListIdentifier) {
-      return;
-    }
     if (!groups || isEmpty(groups)) {
       const action = yield take(
         (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
