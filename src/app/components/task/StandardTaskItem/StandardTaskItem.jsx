@@ -74,6 +74,7 @@ const Task = React.memo(
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
+    const hasRequestedSubtasks = useRef(false);
 
     // const pulledTask = useSelector((state) =>
     //   taskDetailsSelector(state, taskItemIdentifier),
@@ -100,12 +101,12 @@ const Task = React.memo(
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
     const { changeViewType } = useContext(TaskViewContext);
-    const collapse = useContext(CollapseContext);
+    const { getOrDefault, set } = useContext(CollapseContext);
     const taskActions = useActions(TaskActions);
     const isSlimView = changeViewType === 'SLIM_VIEW';
     const defaultCollapsed = isSlimView; // SLIM: true, FULL: false
     // collapseMap value or default based on view
-    const isCollapsed = collapse.getOrDefault(taskIdentifier, defaultCollapsed);
+    const isCollapsed = getOrDefault(taskIdentifier, defaultCollapsed);
     const areSubtasksOpen = !isCollapsed;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,39 +142,50 @@ const Task = React.memo(
     //   ],
     // );
 
-    const handleToggleSubtasks = useCallback(() => {
-      const nextCollapsed = !isCollapsed;
-      const nextAreOpen = !nextCollapsed;
+    const ensureSubtasksLoaded = useCallback(() => {
+      if (hasRequestedSubtasks.current) return;
+
       if (
-        nextAreOpen &&
         subTasksCount > 0 &&
         isEmpty(renderedSubtasks) &&
         !subtasksDisabled &&
         !isFullView
       ) {
+        hasRequestedSubtasks.current = true;
         dispatch(loadSubTasks(task));
       }
-      // Save new collapsed state to context
-      if (subTasksCount > 0) {
-        collapse.set(taskIdentifier, nextCollapsed);
-      }
     }, [
-      changeViewType,
-      collapse,
-      taskIdentifier,
       subTasksCount,
       renderedSubtasks,
       subtasksDisabled,
-      isFullView,
       dispatch,
       task,
+      isFullView,
     ]);
+
+    const handleToggleSubtasks = useCallback(() => {
+      const nextCollapsed = !isCollapsed;
+      const nextAreOpen = !nextCollapsed;
+      if (nextAreOpen) {
+        ensureSubtasksLoaded();
+      }
+      // Save new collapsed state to context
+      if (subTasksCount > 0) {
+        set(taskIdentifier, nextCollapsed);
+      }
+    }, [isCollapsed, ensureSubtasksLoaded, subTasksCount, set, taskIdentifier]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleUpdateTask = useCallback(
       compose(dispatch, TaskActions.partialUpdateTask),
       [dispatch],
     );
+
+    useEffect(() => {
+      if (areSubtasksOpen) {
+        ensureSubtasksLoaded();
+      }
+    }, [areSubtasksOpen, ensureSubtasksLoaded]);
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
