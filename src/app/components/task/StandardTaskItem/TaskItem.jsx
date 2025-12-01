@@ -669,11 +669,8 @@ const TaskItem = React.memo(
             highlightTasksOfTheSameParent(
               task?.parentTaskIdentifier || task?.taskIdentifier,
             );
-          } else if (isOpen) {
-            // eslint-disable-next-line sonarjs/no-gratuitous-expressions
-            switchOpen(!isOpen);
           } else {
-            switchOpen(true);
+            switchOpen();
           }
         }
       },

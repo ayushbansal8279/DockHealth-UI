@@ -74,7 +74,6 @@ const Task = React.memo(
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
-    const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
 
     // const pulledTask = useSelector((state) =>
     //   taskDetailsSelector(state, taskItemIdentifier),
@@ -100,8 +99,14 @@ const Task = React.memo(
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
-    const { tasks, handleAddTask } = useContext(TaskViewContext);
+    const { changeViewType } = useContext(TaskViewContext);
+    const collapse = useContext(CollapseContext);
     const taskActions = useActions(TaskActions);
+    const isSlimView = changeViewType === 'SLIM_VIEW';
+    const defaultCollapsed = isSlimView; // SLIM: true, FULL: false
+    // collapseMap value or default based on view
+    const isCollapsed = collapse.getOrDefault(taskIdentifier, defaultCollapsed);
+    const areSubtasksOpen = !isCollapsed;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     // const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
@@ -109,33 +114,60 @@ const Task = React.memo(
 
     const dispatch = useDispatch();
 
-    const collapse = useContext(CollapseContext);
+    // const handleSetSubtasksOpen = useCallback(
+    //   (areOpen) => {
+    //     if (
+    //       subTasksCount > 0 &&
+    //       isEmpty(renderedSubtasks) &&
+    //       !subtasksDisabled &&
+    //       !isFullView &&
+    //       areOpen
+    //     ) {
+    //       dispatch(loadSubTasks(task));
+    //     }
+    //     // setAreSubtasksOpen(areOpen);
+    //     collapse.set(taskIdentifier, !areOpen);
+    //     // collapse.set(taskKey(taskIdentifier), nextCollapsed);
+    //   },
+    //   [
+    //     subTasksCount,
+    //     renderedSubtasks,
+    //     subtasksDisabled,
+    //     isFullView,
+    //     collapse,
+    //     taskIdentifier,
+    //     dispatch,
+    //     task,
+    //   ],
+    // );
 
-    const handleSetSubtasksOpen = useCallback(
-      (areOpen) => {
-        if (
-          subTasksCount > 0 &&
-          isEmpty(renderedSubtasks) &&
-          !subtasksDisabled &&
-          !isFullView &&
-          areOpen
-        ) {
-          dispatch(loadSubTasks(task));
-        }
-        setAreSubtasksOpen(areOpen);
-        collapse.set(taskIdentifier, !areOpen);
-      },
-      [
-        subTasksCount,
-        renderedSubtasks,
-        subtasksDisabled,
-        isFullView,
-        collapse,
-        taskIdentifier,
-        dispatch,
-        task,
-      ],
-    );
+    const handleToggleSubtasks = useCallback(() => {
+      const nextCollapsed = !isCollapsed;
+      const nextAreOpen = !nextCollapsed;
+      if (
+        nextAreOpen &&
+        subTasksCount > 0 &&
+        isEmpty(renderedSubtasks) &&
+        !subtasksDisabled &&
+        !isFullView
+      ) {
+        dispatch(loadSubTasks(task));
+      }
+      // Save new collapsed state to context
+      if (subTasksCount > 0) {
+        collapse.set(taskIdentifier, nextCollapsed);
+      }
+    }, [
+      changeViewType,
+      collapse,
+      taskIdentifier,
+      subTasksCount,
+      renderedSubtasks,
+      subtasksDisabled,
+      isFullView,
+      dispatch,
+      task,
+    ]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleUpdateTask = useCallback(
@@ -143,54 +175,15 @@ const Task = React.memo(
       [dispatch],
     );
 
-    // useEffect(() => {
-    //   if (origin === 'PATIENT') {
-    //     if (viewType === 'FULL_VIEW') {
-    //       handleSetSubtasksOpen(true);
-    //     } else {
-    //       handleSetSubtasksOpen(false);
-    //     }
-    //   }
-    // }, [handleSetSubtasksOpen, origin, viewType]);
-
-    // useEffect(() => {
-    //   // if (isFullView) handleSetSubtasksOpen(true);
-    //   // else setAreSubtasksOpen(false);
-    //   if (viewType === 'FULL_VIEW') {
-    //     if (!tasks.includes(taskIdentifier)) {
-    //       handleSetSubtasksOpen(true);
-    //       handleAddTask(taskIdentifier);
-    //     } else {
-    //       setAreSubtasksOpen(!collapse.get(taskIdentifier));
-    //     }
-    //   } else if (viewType === 'SLIM_VIEW') {
-    //     if (!tasks.includes(taskIdentifier)) {
-    //       handleSetSubtasksOpen(false);
-    //       handleAddTask(taskIdentifier);
-    //     } else {
-    //       setAreSubtasksOpen(!collapse.get(taskIdentifier));
-    //     }
-    //   } else {
-    //     handleSetSubtasksOpen(false);
-    //   }
-    // }, [
-    //   collapse,
-    //   handleAddTask,
-    //   handleSetSubtasksOpen,
-    //   taskIdentifier,
-    //   tasks,
-    //   viewType,
-    // ]);
-
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
         const timer = setTimeout(() => {
-          handleSetSubtasksOpen(true);
+          handleToggleSubtasks();
         }, 0);
         return () => clearTimeout(timer);
       }
     }, [
-      handleSetSubtasksOpen,
+      handleToggleSubtasks,
       areSubtasksOpen,
       subtaskQuickAddOpen,
       isFullView,
@@ -275,7 +268,7 @@ const Task = React.memo(
             patient={parentPatient}
             taskGroupIdentifier={taskGroupIdentifier}
             isOpen={areSubtasksOpen}
-            switchOpen={handleSetSubtasksOpen}
+            switchOpen={handleToggleSubtasks}
             dragHandleProps={dragHandleProps}
             onTaskUpdate={handleUpdateTask}
             isDragging={isDragging}
@@ -300,7 +293,7 @@ const Task = React.memo(
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             isLastTaskOfGroup={isLastTaskOfGroup}
             isFirstTaskOfGroup={isFirstTaskOfGroup}
-            viewType={viewType}
+            viewType={changeViewType}
             isDragPreview={isDragPreview}
             isFirstTaskOfWorkflow={isFirstTaskOfWorkflow}
             isFirstSubTaskOfParentTask={isFirstSubTaskOfParentTask}

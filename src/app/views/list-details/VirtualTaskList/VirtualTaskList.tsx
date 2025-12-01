@@ -40,13 +40,13 @@ export interface Props {
 }
 
 export const CollapseContext = createContext<{
-  get: (id: string) => boolean;
+  getOrDefault: (id: string, defaultCollapsed: boolean) => boolean;
   set: (id: string, value: boolean) => void;
   workflowIdentifierMap: any[];
   handleAddWorkflowIdentifier: (identifier: any) => void;
   handleRemoveWorkflowIdentifier: (identifier: any) => void;
 }>({
-  get: (id: string) => false,
+  getOrDefault: (id: string, defaultCollapsed: boolean) => defaultCollapsed,
   set: (id: string, value: boolean) => {},
   workflowIdentifierMap: [],
   handleAddWorkflowIdentifier: (identifier: any) => {},
@@ -151,9 +151,14 @@ function VirtualTaskList({
   origin,
 }: Props) {
   const [collapseMap, collapseDispatch] = useReducer(
-    (map: Record<string, boolean>, [id, value]: [string, boolean]) => {
-      map[id] = value;
-      return { ...map };
+    (map: Record<string, boolean>, action: { id: string; value: boolean }) => {
+      // avoid unnecessary renders
+      if (map[action.id] === action.value) return map;
+
+      return {
+        ...map,
+        [action.id]: action.value,
+      };
     },
     {},
   );
@@ -507,8 +512,9 @@ function VirtualTaskList({
   ]);
 
   const contextValue = {
-    get: (id: string) => !!collapseMap[id],
-    set: (id: string, value: boolean) => collapseDispatch([id, value]),
+    getOrDefault: (id: string, defaultCollapsed: boolean): boolean =>
+      collapseMap[id] !== undefined ? collapseMap[id] : defaultCollapsed,
+    set: (id: string, value: boolean) => collapseDispatch({ id, value }),
     workflowIdentifierMap,
     handleAddWorkflowIdentifier,
     handleRemoveWorkflowIdentifier,

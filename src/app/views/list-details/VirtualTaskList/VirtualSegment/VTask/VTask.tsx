@@ -72,8 +72,11 @@ function VTask(
 ) {
   const dispatch = useDispatch();
   const parentTaskReference = useRef(null);
-  const { get, workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
-    useContext(CollapseContext);
+  const {
+    getOrDefault,
+    workflowIdentifierMap,
+    handleRemoveWorkflowIdentifier,
+  } = useContext(CollapseContext);
   const { changeViewType } = useContext(TaskViewContext);
   const pulledTask = useSelector((state) => {
     // @ts-ignore
@@ -145,7 +148,7 @@ function VTask(
   );
 
   const contextValue = {
-    isVirtualListWorkflowOpen: get(identifier),
+    isVirtualListWorkflowOpen: getOrDefault(identifier, false),
   };
 
   const {
@@ -176,7 +179,7 @@ function VTask(
         disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
         bgColor={bgColor}
         isLastTaskOfGroup={isLastTaskOfGroup}
-        virtualListWorkflowOpen={get(identifier)}
+        virtualListWorkflowOpen={getOrDefault(identifier, false)}
         subtaskQuickAddOpen={subtaskQuickAddOpen}
         addWorkflowTask={addWorkflowTask}
         subTaskExpanded={!metadata.collapsed && subTasksCount}
