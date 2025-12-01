@@ -300,10 +300,8 @@ const AddTaskDrawerContent = (props) => {
                 setDueDate={setDueDate}
                 defaultDueDateIntent={dueDateIntent}
                 setDueDateIntent={setDueDateIntent}
-                addTaskDrawerRecurringSchedule={addTaskDrawerRecurringSchedule}
-                setAddTaskDrawerRecurringSchedule={
-                  setAddTaskDrawerRecurringSchedule
-                }
+                recurringSchedule={addTaskDrawerRecurringSchedule}
+                setRecurringSchedule={setAddTaskDrawerRecurringSchedule}
               />
             </div>
           </Grid>
