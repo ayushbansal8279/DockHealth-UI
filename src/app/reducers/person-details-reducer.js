@@ -16,6 +16,7 @@ const initialState = {
     key: null,
     order: null,
   },
+  searchTerm: '',
 };
 
 const mapTasksSuccess = (task) => ({
@@ -88,6 +89,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
       return {
         ...state,
         isFetching: true,
+        searchTerm: action.searchTerm || '',
       };
     }
 

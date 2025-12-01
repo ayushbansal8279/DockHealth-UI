@@ -50,6 +50,11 @@ export const sortSelector = createSelector(
   ({ sort }) => sort,
 );
 
+export const searchTermSelector = createSelector(
+  personStateSelector,
+  ({ searchTerm }) => searchTerm,
+);
+
 export const userTaskDetailsSelector = createSelector(
   personStateSelector,
   (_, taskId) => taskId,
