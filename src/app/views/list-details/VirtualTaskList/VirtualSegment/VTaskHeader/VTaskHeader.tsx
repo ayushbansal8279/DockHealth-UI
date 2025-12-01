@@ -15,6 +15,7 @@ import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import * as Sc from './styled';
 import { taskDetailsSortSelector } from 'selectors/list-details-selectors';
+import { patientTasksSortSelector } from 'selectors/patient-details-selectors';
 import palette from '@/app/styles/palette';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
@@ -28,6 +29,8 @@ export interface Props extends Segment {
   isLastGroupOfList: boolean;
   isLoadingGroup: boolean;
   origin: string;
+  sort?: any;
+  onSortChange?: (key: string, order: string) => void;
 }
 
 function VTaskHeader(
@@ -40,16 +43,23 @@ function VTaskHeader(
     bgColor,
     isLoadingGroup,
     origin,
+    sort: sortProp,
+    onSortChange: onSortChangeProp,
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const dispatch = useDispatch();
-  const sort = useSelector(taskDetailsSortSelector);
-  const onSortChange = compose(
+  const listSort = useSelector(taskDetailsSortSelector);
+  const patientSort = useSelector(patientTasksSortSelector);
+  const listOnSortChange = compose(
     dispatch,
     ListDetailsActions.sortListDetailsTasks,
   );
+
+  const sort =
+    sortProp ?? (origin === TaskOrigin.PATIENT ? patientSort : listSort);
+  const onSortChange = onSortChangeProp ?? listOnSortChange;
   // @ts-ignore
   const { bulkEditEnabled } = useContext(BulkEditContext);
   const isGroupSelected = useSelector(
@@ -58,8 +68,7 @@ function VTaskHeader(
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
-  const percentage =
-    ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
+  const percentage = ((droppableHeaderWidth ?? 0) / screenWidth) * 100;
   const groupHasMultipleAssignees = false;
 
   const handleGroupSelect = useCallback(() => {
@@ -73,7 +82,7 @@ function VTaskHeader(
   return (
     <div
       style={{
-        width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+        width: percentage > 90 ? `${(droppableHeaderWidth ?? 0) + 70}` : '100%',
         paddingBottom:
           isLastGroupOfList && groupWithZeroTask && !bgColor ? '20px' : '0px',
         background: bgColor ? palette.aliceBlue : '',
@@ -82,6 +91,7 @@ function VTaskHeader(
       {isLoadingGroup ? (
         <TasksSkeletonLoader rows={4} />
       ) : (
+        // @ts-ignore - styled component type issues
         <Sc.VTaskHeader
           ref={ref}
           {...register}
@@ -89,13 +99,19 @@ function VTaskHeader(
           $template={isTaskTemplate}
           bgColor={bgColor}
           groupWithZeroTask={groupWithZeroTask}
-          disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
-          disableRightOffset={originConfig[origin]?.disableRightOffset ?? false}
+          disableLeftOffset={
+            originConfig[origin as keyof typeof originConfig]
+              ?.disableLeftOffset ?? false
+          }
+          disableRightOffset={
+            originConfig[origin as keyof typeof originConfig]
+              ?.disableRightOffset ?? false
+          }
         >
-          {/* @ts-ignore */}
           {groupWithZeroTask ? (
             <></>
           ) : (
+            // @ts-ignore - TasksHeader props type issues
             <TasksHeader
               bulkEditEnabled={bulkEditEnabled}
               sort={sort}
@@ -105,7 +121,11 @@ function VTaskHeader(
               isGroupSelected={isGroupSelected}
               onGroupSelect={handleGroupSelect}
               pageBackground={bgColor ? palette.aliceBlue : ''}
-              origin={TaskOrigin.LIST}
+              origin={
+                (origin === TaskOrigin.PATIENT
+                  ? TaskOrigin.PATIENT
+                  : TaskOrigin.LIST) as any
+              }
               listPageGroupHeader
               isWidthGreaterThanHundredPercent={percentage > 90}
             />

@@ -38,6 +38,8 @@ export interface Props {
   groupedTasks: any[];
   showClearSortFiltersModal: any;
   origin: any;
+  sort?: any;
+  onSortChange?: (key: string, order: string) => void;
 }
 
 export const CollapseContext = createContext<{
@@ -150,6 +152,8 @@ function VirtualTaskList({
   groupedTasks,
   showClearSortFiltersModal,
   origin,
+  sort: sortProp,
+  onSortChange: onSortChangeProp,
 }: Props) {
   const [collapseMap, collapseDispatch] = useReducer(
     (map: Record<string, boolean>, [id, value]: [string, boolean]) => {
@@ -301,6 +305,8 @@ function VirtualTaskList({
     hasMore: boolean = false,
     listTaskGroup?: any,
     patientTaskIdentifiers?: string[],
+    sort?: any,
+    onSortChange?: (key: string, order: string) => void,
   ): Node[] => {
     const children = [
       createNode(
@@ -329,6 +335,8 @@ function VirtualTaskList({
           isLastGroupOfList: index === listGroupsLength - 1,
           isLoadingGroup,
           origin,
+          sort,
+          onSortChange,
         },
         [],
         true,
@@ -421,6 +429,8 @@ function VirtualTaskList({
               false,
               undefined,
               patientTaskIdentifiers,
+              sortProp,
+              onSortChangeProp,
             ),
             true,
           );
@@ -475,6 +485,9 @@ function VirtualTaskList({
               listTaskGroup?.isLoadingGroup,
               listTaskGroup?.hasMore,
               listTaskGroup,
+              undefined,
+              sortProp,
+              onSortChangeProp,
             ),
             true,
           );
