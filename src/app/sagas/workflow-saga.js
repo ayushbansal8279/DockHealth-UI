@@ -1,4 +1,4 @@
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import { all, call, put, select, takeEvery, delay } from 'redux-saga/effects';
 import pluck from 'ramda/src/pluck';
 import * as TemplateBundleApi from 'api/template-bundle-api';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
@@ -10,7 +10,15 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { multipleTaskDetailsSelector } from '../selectors/list-details-selectors';
 import { patientMultipleTaskDetailsSelector } from '../selectors/patient-details-selectors';
-import { isWorkflowDrawerOpenSelector } from '../selectors/workflow-drawer-selectors';
+import {
+  isWorkflowDrawerOpenSelector,
+  workflowIdentifierSelector,
+} from '../selectors/workflow-drawer-selectors';
+import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
+import { TaskStatus } from '../helpers/task-helpers';
+import * as TemplateBundleActions from 'actions/template-bundle-actions';
+import { TASK_DISAPPEAR_DELAY } from '../helpers/task-update-helper';
+import { userPreferenceStatusSelector } from '../selectors/user-preference-selectors';
 
 function* duplicateWorkflow({ identifier, includeAttachments }) {
   try {
@@ -55,7 +63,37 @@ function* suspendWorkflow({ taskWorkflowIdentifier }) {
       type: ActionTypes.SUSPEND_WORKFLOW_SUCCESS,
       taskWorkflowIdentifier,
     });
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
+    yield put(showGlobalAlert(AlertMessages.WORKFLOW_SUSPENDED));
+
+    const workflow = yield call(
+      TemplateBundleApi.getTemplateBundle,
+      taskWorkflowIdentifier,
+    );
+
+    const currentTasksStatus = yield select(userPreferenceStatusSelector);
+
+    if (currentTasksStatus === TaskStatus.INCOMPLETE) {
+      yield delay(TASK_DISAPPEAR_DELAY);
+      yield put(
+        TemplateBundleActions.completeTemplateBundle(taskWorkflowIdentifier),
+      );
+    } else {
+      yield put({
+        type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
+        bundleIdentifier: taskWorkflowIdentifier,
+        dataToUpdate: workflow,
+      });
+    }
+
+    const isWorkflowDrawerOpen = yield select(isWorkflowDrawerOpenSelector);
+    if (isWorkflowDrawerOpen) {
+      const currentWorkflowIdentifier = yield select(
+        workflowIdentifierSelector,
+      );
+      if (currentWorkflowIdentifier === taskWorkflowIdentifier) {
+        yield put(WorkflowDrawerActions.getDrawerWorkflowDetails());
+      }
+    }
   } catch {
     yield all([
       put({
