@@ -82,7 +82,11 @@ const UserTasksToolbar = ({ searchValue, setSearchValue }) => {
         />
         <UserDetailsFilters />
         <Box mx={0.5} />
-        <HeaderSearch value={searchValue} onChange={handleSearchValueChange} />
+        <HeaderSearch
+          value={searchValue}
+          onChange={handleSearchValueChange}
+          needEnterToSearch
+        />
       </Box>
     </ToolbarContainer>
   );
