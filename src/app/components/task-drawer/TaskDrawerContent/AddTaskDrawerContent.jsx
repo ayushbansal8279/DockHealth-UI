@@ -99,6 +99,9 @@ const AddTaskDrawerContent = (props) => {
     ) || {};
   const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
+  const [addTaskDrawerRecurringSchedule, setAddTaskDrawerRecurringSchedule] =
+    useState(null);
+
   useEffect(() => {
     const fetchList = async () => {
       const lists = await getSharedTaskListsWithCurrentUser(userIdentifier);
@@ -177,7 +180,14 @@ const AddTaskDrawerContent = (props) => {
         .filter(([_, value]) => value !== null && value !== '')
         .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
       try {
-        await dispatch(TaskActions.saveTask(filteredData));
+        dispatch(
+          TaskActions.saveTask(
+            filteredData,
+            false,
+            addTaskDrawerRecurringSchedule,
+          ),
+        );
+
         closeTaskDrawer();
         dispatch(getDashboardTasks());
       } catch (error) {
@@ -290,6 +300,8 @@ const AddTaskDrawerContent = (props) => {
                 setDueDate={setDueDate}
                 defaultDueDateIntent={dueDateIntent}
                 setDueDateIntent={setDueDateIntent}
+                recurringSchedule={addTaskDrawerRecurringSchedule}
+                setRecurringSchedule={setAddTaskDrawerRecurringSchedule}
               />
             </div>
           </Grid>

@@ -39,6 +39,9 @@ const DueDatePicker = ({
   allSelectedWorkflowIdentifiers,
   bulkEditDueDate = false,
   onClearDateClick,
+  addTaskDrawer,
+  addTaskDrawerRecurringSchedule,
+  setAddTaskDrawerRecurringSchedule,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [recurringSectionVisible, showRecurringSection, hideRecurringSection] =
@@ -210,6 +213,11 @@ const DueDatePicker = ({
               allSelectedTasksIdentifiers={allSelectedTasksIdentifiers}
               allSelectedWorkflowIdentifiers={allSelectedWorkflowIdentifiers}
               bulkEditDueDate={bulkEditDueDate}
+              addTaskDrawer={addTaskDrawer}
+              addTaskDrawerRecurringSchedule={addTaskDrawerRecurringSchedule}
+              setAddTaskDrawerRecurringSchedule={
+                setAddTaskDrawerRecurringSchedule
+              }
             />
           ) : (
             <>
