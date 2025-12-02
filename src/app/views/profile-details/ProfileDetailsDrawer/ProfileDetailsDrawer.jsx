@@ -387,7 +387,9 @@ const ProfileDetailsDrawer = ({
                   })}
                   <SaveWrapper>
                     <CancelButton onClick={onClose}>Close</CancelButton>
-                    <ConfirmButton type="submit">Save</ConfirmButton>
+                    <ConfirmButton type="submit" disabled={!editMode}>
+                      Save
+                    </ConfirmButton>
                   </SaveWrapper>
                 </form>
               </FormProvider>
