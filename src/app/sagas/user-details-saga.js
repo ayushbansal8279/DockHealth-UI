@@ -12,6 +12,7 @@ import {
   userIdentifierSelector,
   sortSelector,
   currentTasksStatusSelector,
+  searchTermSelector,
 } from 'selectors/person-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { TaskStatus } from 'helpers/task-helpers';
@@ -148,22 +149,34 @@ function* getUserTaskCounters() {
   }
 }
 
-function* getTasks(status) {
+function* getTasks(status, searchTerm) {
   const [userIdentifier, filters, sort] = yield all([
     select(userIdentifierSelector),
     select(selectedFiltersInMegaFilterSelector),
     select(sortSelector),
   ]);
 
-  return yield filters && !isEmpty(filters)
-    ? call(UserApi.getUserFilteredTasks, userIdentifier, sort, filters, status)
-    : call(UserApi.getUserTasks, userIdentifier, sort, status);
+  const hasFilters = filters && !isEmpty(filters);
+  const hasSearchTerm = searchTerm && searchTerm.length > 0;
+
+  if (hasSearchTerm || hasFilters) {
+    return yield call(
+      UserApi.getUserFilteredTasks,
+      userIdentifier,
+      sort,
+      filters || {},
+      status,
+      searchTerm,
+    );
+  } else {
+    return yield call(UserApi.getUserTasks, userIdentifier, sort, status);
+  }
 }
 
-function* getUserTasks({ status }) {
+function* getUserTasks({ status, searchTerm }) {
   try {
     const taskStatus = status || TaskStatus.INCOMPLETE;
-    const tasks = yield call(getTasks, taskStatus);
+    const tasks = yield call(getTasks, taskStatus, searchTerm);
     yield put({
       type: ActionTypes.GET_USER_TASKS_SUCCESS,
       tasks,
@@ -176,29 +189,36 @@ function* getUserTasks({ status }) {
 }
 
 function* selectFiltersFromMegaFilter({ id, status }) {
-  const [userIdentifier, currentStatus] = yield all([
+  const [userIdentifier, currentStatus, searchTerm] = yield all([
     select(userIdentifierSelector),
     select(currentTasksStatusSelector),
+    select(searchTermSelector),
   ]);
   if (userIdentifier === id && currentStatus === status) {
     yield all([
       // put(PersonDetailsActions.getUserTaskFilterOptions()),
-      put(PersonDetailsActions.getUserTasks(status)),
+      put(PersonDetailsActions.getUserTasks(status, searchTerm)),
     ]);
   }
 }
 
 function* sortUserTasks() {
-  const currentStatus = yield select(currentTasksStatusSelector);
+  const [currentStatus, searchTerm] = yield all([
+    select(currentTasksStatusSelector),
+    select(searchTermSelector),
+  ]);
 
-  yield put(PersonDetailsActions.getUserTasks(currentStatus));
+  yield put(PersonDetailsActions.getUserTasks(currentStatus, searchTerm));
 }
 
 function* refreshUserTasks() {
-  const currentStatus = yield select(currentTasksStatusSelector);
+  const [currentStatus, searchTerm] = yield all([
+    select(currentTasksStatusSelector),
+    select(searchTermSelector),
+  ]);
   yield put(PersonDetailsActions.getUserTaskCounters());
 
-  yield put(PersonDetailsActions.getUserTasks(currentStatus));
+  yield put(PersonDetailsActions.getUserTasks(currentStatus, searchTerm));
 }
 
 function* getUserTaskFilterOptions() {

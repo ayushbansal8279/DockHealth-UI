@@ -70,6 +70,14 @@ const PersonDetailsView = () => {
     );
   }, [userIdentifier, tabName, dispatch]);
 
+  useEffect(() => {
+    if (userIdentifier && searchValue !== undefined) {
+      const taskStatus = tabName?.toUpperCase() || TaskStatus.INCOMPLETE;
+      dispatch(PersonDetailsActions.getUserTasks(taskStatus, searchValue));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue, userIdentifier, tabName]);
+
   const refreshTab = () => {
     dispatch(PersonDetailsActions.refreshUserTasks());
   };

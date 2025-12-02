@@ -147,18 +147,27 @@ export function getUserFilteredTasks(
   sortBy,
   selectedFilters,
   status,
+  searchTerm,
 ) {
+  const params = {
+    status,
+    sortBy: sortBy?.key || undefined,
+    sortDirection: sortBy?.order || undefined,
+  };
+
+  const payload = {
+    ...mapSelectedOptionsToRequestPayload(selectedFilters),
+  };
+
+  if (searchTerm) {
+    payload.searchTerm = searchTerm;
+  }
+
   return axios
     .post(
       `task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}`,
-      mapSelectedOptionsToRequestPayload(selectedFilters),
-      {
-        params: {
-          status,
-          sortBy: sortBy?.key || undefined,
-          sortDirection: sortBy?.order || undefined,
-        },
-      },
+      payload,
+      { params },
     )
     .then(({ data }) => data.tasks);
 }
@@ -192,12 +201,8 @@ export const UserBulkActions = {
 };
 
 export const userBulkCreateTask = (payload) => {
-  const {
-    assignedTo,
-    taskListIdentifier,
-    taskGroupIdentifier,
-    description,
-  } = payload;
+  const { assignedTo, taskListIdentifier, taskGroupIdentifier, description } =
+    payload;
   const body = {
     bulkOperationType: UserBulkActions.CREATE_TASK,
     taskDescription: description,
@@ -214,7 +219,7 @@ export const userBulkCreateTask = (payload) => {
         error?.response?.data?.errorMessage ??
         error?.message ??
         'Failed to create task. Please try again.';
-        
+
       throw new Error(message);
     });
 };
@@ -254,8 +259,8 @@ export function getUserActivity(userIdentifier, fromDateTime, toDateTime) {
       params: {
         fromDateTime,
         toDateTime,
-        userIdentifier
+        userIdentifier,
       },
     })
     .then((response) => response.data);
-};
+}
