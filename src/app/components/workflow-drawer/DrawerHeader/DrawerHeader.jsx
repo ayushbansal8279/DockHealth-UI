@@ -84,6 +84,22 @@ const DrawerHeader = () => {
           ),
       },
       {
+        name: 'Suspend',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('DeleteConfirmation', {
+              title: 'Suspend workflow',
+              description:
+                'Suspending a workflow will delete any pending/inactive tasks',
+              confirm: () => {
+                dispatch(WorkflowActions.suspendWorkflow(identifier));
+                dispatch(ModalActions.closeModal());
+              },
+              confirmButtonText: 'Suspend',
+            }),
+          ),
+      },
+      {
         name: 'Delete',
         onClick: () =>
           dispatch(

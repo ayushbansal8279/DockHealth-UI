@@ -24,6 +24,7 @@ const AlertMessages = {
   UNARCHIVED: 'Restored',
   RECOVERED: 'Recovered',
   WORKFLOW_CREATED: 'Workflow created',
+  WORKFLOW_SUSPENDED: 'Workflow suspended',
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',
   FAX_SENT: 'Fax Sent',

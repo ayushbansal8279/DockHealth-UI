@@ -23,6 +23,22 @@ export function deleteWorkflow(identifier) {
   return axios.delete(`task/workflow/${identifier}`).then(({ data }) => data);
 }
 
+export function suspendWorkflow(taskWorkflowIdentifier) {
+  return axios
+    .patch(`task/workflow/suspend/${taskWorkflowIdentifier}`)
+    .then(({ data }) => data)
+    .catch((error) => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error suspending workflow. Please try again.',
+      });
+      throw error;
+    });
+}
+
 export function addWorkflowComment(workflowIdentifier, comment) {
   return axios
     .post(`task/comment/${workflowIdentifier}`, comment)

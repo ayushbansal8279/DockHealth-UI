@@ -460,6 +460,21 @@ const TaskTemplateGroupHeader = ({
     }
   };
 
+  const handleSuspend = () => {
+    dispatch(
+      ModalActions.openModal('DeleteConfirmation', {
+        title: 'Suspend workflow',
+        description:
+          'Suspending a workflow will delete any pending/inactive tasks',
+        confirm: () => {
+          dispatch(WorkflowActions.suspendWorkflow(identifier));
+          dispatch(ModalActions.closeModal());
+        },
+        confirmButtonText: 'Suspend',
+      }),
+    );
+  };
+
   const handleDelete = () => {
     if (restrictions?.delete !== DISABLED) {
       dispatch(
@@ -1593,6 +1608,7 @@ const TaskTemplateGroupHeader = ({
           handleMoveToList={handleMoveToList}
           handleMoveGroupTask={handleMoveGroupTask}
           handleDuplicate={handleDuplicate}
+          handleSuspend={handleSuspend}
           handleDelete={handleDelete}
           showCompletedTasks={showCompletedTasks}
           showIncompleteTasks={showIncompleteTasks}
