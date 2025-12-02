@@ -19,6 +19,7 @@ import * as CustomFieldApi from 'api/custom-fields-api';
 import { convertDefaultFields } from '@/app/components/profile-builder/helper';
 import { getProfileDetails, editProfileDetails } from '@/app/api/profile-api';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
+import { getAllProfileTypes } from '@/app/api/profile-type-api';
 import { getProfileName } from '../../custom-profile-details/helpers';
 import ProfileDrawerLoader from './ProfileDrawerLoader';
 import { DrawerWrapper } from '@/app/components/patients/PatientDrawer/styled';
@@ -32,7 +33,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { mergeDeepRight } from 'ramda';
 import { updatePatientDetails } from '@/app/actions/patient-details-actions';
-import { ProfileStatus } from 'helpers/profile-helpers';
 import { createProfileMenuOptions } from './profile-drawer-helper';
 import {
   createPatientMenuOptions,
@@ -106,17 +106,27 @@ const ProfileDetailsDrawer = ({
 
   const fetchPatientCustomGroups = async () => {
     try {
-      const [
-        customGroups,
-        allCustomFields,
-        defaultFields,
-        genderIdentityOptions,
-      ] = await Promise.all([
-        CustomFieldApi.searchCustomFiledGroups(context),
-        CustomFieldApi.getAllPatientCustomFields(),
-        CustomFieldApi.getDefauldFields(context),
-        getGenderIdentityOptions(),
-      ]);
+      const [profileTypes, customGroups, defaultFields, genderIdentityOptions] =
+        await Promise.all([
+          getAllProfileTypes('PREDEFINED'),
+          CustomFieldApi.searchCustomFiledGroups(context),
+          CustomFieldApi.getDefauldFields(context),
+          getGenderIdentityOptions(),
+        ]);
+
+      const patientProfileType = profileTypes.find(
+        (pt) => pt.name.toLowerCase() === 'patient',
+      );
+
+      if (!patientProfileType) {
+        console.error('Patient profile type not found');
+        setLoading(false);
+        return;
+      }
+
+      const allCustomFields = await getAllProfileFieldTypes(
+        patientProfileType.identifier,
+      );
 
       setDefaultFields(defaultFields);
       setAllCustomFields(allCustomFields);
@@ -189,7 +199,7 @@ const ProfileDetailsDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { register, handleSubmit, getValues } = formMethods;
+  const { handleSubmit } = formMethods;
   const formReference = useRef(null);
 
   const updateProfile = useCallback(
@@ -227,6 +237,7 @@ const ProfileDetailsDrawer = ({
     const processedCustomFields = processCustomFields(
       unmappedFields,
       allCustomFields,
+      true,
     );
 
     const finalPatientData = { ...updatedPatientData };
