@@ -16,7 +16,10 @@ import {
 } from './styled';
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import * as CustomFieldApi from 'api/custom-fields-api';
-import { convertDefaultFields } from '@/app/components/profile-builder/helper';
+import {
+  convertDefaultFields,
+  getDefaultsRefrenceIds,
+} from '@/app/components/profile-builder/helper';
 import { getProfileDetails, editProfileDetails } from '@/app/api/profile-api';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileName } from '../../custom-profile-details/helpers';
@@ -127,7 +130,23 @@ const ProfileDetailsDrawer = ({
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
-      const enrichedGroups = enrichCategoryGroups(customGroups, customFields);
+      let groupsToUse = customGroups;
+      if (!customGroups || customGroups.length === 0) {
+        const defaultGroupFields = getDefaultsRefrenceIds(
+          defaultFields,
+          context,
+        ).filter((field) => field !== null);
+        groupsToUse = [
+          {
+            name: 'Default Group',
+            fields: defaultGroupFields,
+            isDefault: true,
+            displayOrder: 0,
+          },
+        ];
+      }
+
+      const enrichedGroups = enrichCategoryGroups(groupsToUse, customFields);
 
       const processedGroups = addFieldOptionsInDefaultCategory(
         enrichedGroups,
