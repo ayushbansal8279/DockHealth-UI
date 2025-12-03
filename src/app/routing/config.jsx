@@ -111,6 +111,7 @@ const ApproveDisapproveUser = lazy(() =>
   import('views/auth/ApproveDisapproveUser'),
 );
 const UnEnrolledUser = lazy(() => import('views/auth/UnEnrolledUser'));
+const PendingUser = lazy(() => import('views/auth/PendingUser'));
 const SelfEnrolledUser = lazy(() => import('views/auth/SelfEnrolledUser'));
 const ResetPasswordSuccess = lazy(() =>
   import('views/auth/ResetPasswordSuccess'),
@@ -574,6 +575,10 @@ export const AUTH_ROUTES = [
   {
     path: '/unEnrolledUser',
     RouteComponent: UnEnrolledUser,
+  },
+  {
+    path: '/pendingUser',
+    RouteComponent: PendingUser,
   },
   {
     path: '/resetPasswordEmailSent',

@@ -7,10 +7,12 @@ import { getCurrentUserNotificationPreferences } from 'actions/user-actions';
 import { getUserByEmail } from 'api/user-auth-api';
 import { captureLocalTimezone } from 'api/user-api';
 import { useMobile as checkIsMobile } from 'helpers/utility-functions';
+import { UserStatus } from 'helpers/user-helper';
 // import { openModal } from 'modal/actions';
 import {
   EULA_PATH,
   UNENROLLED_USER,
+  PENDING_USER_PATH,
   HOME_PATH,
   DEFAULT_REDIRECT_PATH,
   SUBS_SETTINGS_PATH,
@@ -64,6 +66,10 @@ const checkUserAccountState = async ({
 
     if (data?.organizationIdentifier === '') {
       return UNENROLLED_USER;
+    }
+
+    if (data?.userStatus === UserStatus.PENDING) {
+      return PENDING_USER_PATH;
     }
 
     if (
