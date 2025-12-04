@@ -56,6 +56,8 @@ function* initializeDashboardView() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
+    yield put(MegaFilterActions.clearFiltersForMegaFilter());
+
     const preferences = yield call(
       UserPreferenceApi.getUserPreference,
       UserPreferenceContextType.HOME,
