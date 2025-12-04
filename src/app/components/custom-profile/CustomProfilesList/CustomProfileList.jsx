@@ -212,6 +212,35 @@ const CustomProfileListContent = ({
   ]);
 
   useEffect(() => {
+    hasInitializedDefaultColumns.current = false;
+  }, [profileTypeIdentifier]);
+
+  useEffect(() => {
+    if (
+      !hasInitializedDefaultColumns.current &&
+      profileTypeFields.length > 0 &&
+      (!filters || filters.length === 0)
+    ) {
+      const profileNameFields = profileTypeFields
+        .filter((field) => field.displayOptions?.includes('PROFILE_NAME'))
+        .map((field) => field.identifier);
+
+      if (profileNameFields.length > 0) {
+        setFilters(profileNameFields);
+        dispatch(
+          updateProfileListPreferences(
+            {
+              listDisplayColumns: profileNameFields,
+            },
+            profileTypeIdentifier,
+          ),
+        );
+      }
+      hasInitializedDefaultColumns.current = true;
+    }
+  }, [profileTypeFields, filters, profileTypeIdentifier, dispatch]);
+
+  useEffect(() => {
     fetchProfilesInternal();
   }, [fetchProfilesInternal]);
 
@@ -442,6 +471,7 @@ const CustomProfileListContent = ({
   };
 
   const buttonReference = useRef(null);
+  const hasInitializedDefaultColumns = useRef(false);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
 
   const handlePopoverOpen = () => {
