@@ -150,11 +150,12 @@ export function profileBulkEditCustomFields(
   };
 }
 
-export function getProfiles(profileTypeIdentifier, profileStatus) {
+export function getProfiles(profileTypeIdentifier, profileStatus, customFetch) {
   return {
     type: ActionTypes.GET_PROFILES,
     profileTypeIdentifier,
     profileStatus,
+    customFetch,
   };
 }
 

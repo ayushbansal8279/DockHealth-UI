@@ -350,8 +350,9 @@ function* profileBulkDelete({
   }
 }
 
-function* getProfiles({ profileTypeIdentifier, profileStatus }) {
+function* getProfiles({ profileTypeIdentifier, profileStatus, customFetch }) {
   try {
+    let profiles;
     const queryType =
       profileStatus === ProfileStatus.ACTIVE
         ? ProfileQueryType.ACTIVE_PROFILES
@@ -359,11 +360,15 @@ function* getProfiles({ profileTypeIdentifier, profileStatus }) {
         ? ProfileQueryType.ARCHIVED_PROFILES
         : ProfileQueryType.ALL_PROFILES;
 
-    const profiles = yield call(
-      ProfileApi.getAllProfiles,
-      profileTypeIdentifier,
-      queryType,
-    );
+    if (customFetch) {
+      profiles = yield call(customFetch, queryType);
+    } else {
+      profiles = yield call(
+        ProfileApi.getAllProfiles,
+        profileTypeIdentifier,
+        queryType,
+      );
+    }
 
     yield put({
       type: ActionTypes.GET_PROFILES_SUCCESS,

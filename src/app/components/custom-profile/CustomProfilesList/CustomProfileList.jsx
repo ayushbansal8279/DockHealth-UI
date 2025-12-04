@@ -168,9 +168,9 @@ const CustomProfileListContent = ({
 
   const fetchProfilesInternal = useCallback(
     (status = profileStatus) => {
-      dispatch(getProfiles(profileTypeIdentifier, status));
+      dispatch(getProfiles(profileTypeIdentifier, status, fetchProfiles));
     },
-    [dispatch, profileTypeIdentifier, profileStatus],
+    [dispatch, profileTypeIdentifier, profileStatus, fetchProfiles],
   );
 
   const fetchProfileTypesInternal = useCallback(() => {
