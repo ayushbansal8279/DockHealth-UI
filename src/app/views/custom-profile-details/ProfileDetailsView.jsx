@@ -125,7 +125,7 @@ const ProfileDetailsView = () => {
     getPatientForProfile(profileIdentifier).then((patients) => {
       setPatients(patients);
     });
-  }, []);
+  }, [profileIdentifier]);
 
   useEffect(() => {
     getRelationshipTypes(profileTypeIdentifier).then((data) => {
@@ -206,6 +206,11 @@ const ProfileDetailsView = () => {
   useEffect(() => {
     const baseTabs = [...TABS_CONFIG];
 
+    const filteredBaseTabs = baseTabs.filter(
+      (tab) =>
+        !(tab.mainPath === 'patients' && (!patients || patients.length === 0)),
+    );
+
     const relationshipTabs = relationshipTypes.map((relationshipType) => ({
       label: relationshipType.name,
       mainPath: `relationships/${relationshipType.identifier}`,
@@ -214,8 +219,8 @@ const ProfileDetailsView = () => {
       exact: true,
     }));
 
-    setTabsConfiguration([...baseTabs, ...relationshipTabs]);
-  }, [relationshipTypes, profileTypeIdentifier, profileIdentifier, history]);
+    setTabsConfiguration([...filteredBaseTabs, ...relationshipTabs]);
+  }, [relationshipTypes, profileTypeIdentifier, profileIdentifier, patients]);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax
