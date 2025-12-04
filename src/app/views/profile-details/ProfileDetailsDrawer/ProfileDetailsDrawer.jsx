@@ -69,6 +69,7 @@ const ProfileDetailsDrawer = ({
   profileTypeIdentifier,
   profileIdentifier,
   patient,
+  onUpdate,
 }) => {
   const [title, setTitle] = useState('');
   const [profileValues, setProfileValues] = useState([]);
@@ -233,6 +234,9 @@ const ProfileDetailsDrawer = ({
           dispatch(showGlobalAlert(AlertMessages.SAVED));
           const profile = await getProfileDetails(profileIdentifier);
           setProfileValues(profile?.fields);
+          if (onUpdate) {
+            onUpdate(profile);
+          }
         })
         .catch((error) => {
           dispatch(
@@ -240,7 +244,7 @@ const ProfileDetailsDrawer = ({
           );
         });
     },
-    [profileIdentifier, profileTypeFields, dispatch],
+    [profileIdentifier, profileTypeFields, dispatch, onUpdate],
   );
 
   const updatePatient = (data) => {
