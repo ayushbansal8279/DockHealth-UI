@@ -47,58 +47,93 @@ const MegaFilter = ({
 
   useEffect(() => {
     const data = {};
-    if (selectedFilters && filters) {
+
+    const hasQuickFilter =
+      selectedQuickFilter &&
+      typeof selectedQuickFilter === 'string' &&
+      selectedQuickFilter !== '';
+
+    if (
+      !hasQuickFilter &&
+      selectedFilters &&
+      filters &&
+      Object.keys(selectedFilters).length > 0
+    ) {
       for (const key in selectedFilters) {
         if (key !== '') {
-          const users = filters
+          const filterOptions = filters
             .flatMap((item) => item.id === key && item.options)
             .filter((item) => typeof item !== 'boolean');
 
-          const options = selectedFilters[key].options.map((item) => {
-            if (item?.includes('DATE_RANGE')) {
-              let foundOption = users.find((user) => user.key === item);
-              foundOption = {
-                ...foundOption,
-                dateStart: selectedFilters[key].dateStart,
-                dateEnd: selectedFilters[key].dateEnd,
-              };
-              return foundOption;
+          if (filterOptions.length > 0 && selectedFilters[key].options) {
+            const options = selectedFilters[key].options
+              .map((item) => {
+                if (item?.includes('DATE_RANGE')) {
+                  let foundOption = filterOptions.find(
+                    (option) => option.key === item,
+                  );
+                  if (foundOption) {
+                    foundOption = {
+                      ...foundOption,
+                      dateStart: selectedFilters[key].dateStart,
+                      dateEnd: selectedFilters[key].dateEnd,
+                    };
+                  }
+                  return foundOption;
+                }
+                if (
+                  item?.includes('DATE_SINGLE') ||
+                  item?.includes('SINGLE_DATE')
+                ) {
+                  let foundOption = filterOptions.find(
+                    (option) => option.key === item,
+                  );
+                  if (foundOption) {
+                    foundOption = {
+                      ...foundOption,
+                      date: selectedFilters[key].date,
+                    };
+                  }
+                  return foundOption;
+                }
+                if (item?.includes('NUMBER_RANGE')) {
+                  let foundOption = filterOptions.find(
+                    (option) => option.key === item,
+                  );
+                  if (foundOption) {
+                    foundOption = {
+                      ...foundOption,
+                      numberStart: selectedFilters[key].numberStart,
+                      numberEnd: selectedFilters[key].numberEnd,
+                    };
+                  }
+                  return foundOption;
+                }
+                if (item?.includes('SINGLE_NUMBER')) {
+                  let foundOption = filterOptions.find(
+                    (option) => option.key === item,
+                  );
+                  if (foundOption) {
+                    foundOption = {
+                      ...foundOption,
+                      singleNumber: selectedFilters[key].singleNumber,
+                    };
+                  }
+                  return foundOption;
+                }
+                return filterOptions.find((option) => option.key === item);
+              })
+              .filter((option) => option !== undefined);
+
+            if (options.length > 0) {
+              data[key] = options;
             }
-            if (
-              item?.includes('DATE_SINGLE') ||
-              item?.includes('SINGLE_DATE')
-            ) {
-              let foundOption = users.find((user) => user.key === item);
-              foundOption = {
-                ...foundOption,
-                date: selectedFilters[key].date,
-              };
-              return foundOption;
-            }
-            if (item?.includes('NUMBER_RANGE')) {
-              let foundOption = users.find((user) => user.key === item);
-              foundOption = {
-                ...foundOption,
-                numberStart: selectedFilters[key].numberStart,
-                numberEnd: selectedFilters[key].numberEnd,
-              };
-              return foundOption;
-            }
-            if (item?.includes('SINGLE_NUMBER')) {
-              let foundOption = users.find((user) => user.key === item);
-              foundOption = {
-                ...foundOption,
-                singleNumber: selectedFilters[key].singleNumber,
-              };
-              return foundOption;
-            }
-            return users.find((user) => user.key === item);
-          });
-          data[key] = options;
+          }
         }
       }
-      setFinalFilter(data);
     }
+
+    setFinalFilter(data);
   }, [selectedFilters, filters, selectedQuickFilter]);
 
   const clearFilters = useCallback(() => {
