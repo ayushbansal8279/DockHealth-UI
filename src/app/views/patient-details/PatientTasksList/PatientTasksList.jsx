@@ -576,6 +576,8 @@ const PatientTasksListView = React.memo(() => {
                           groupedTasks={virtualTaskListData}
                           showClearSortFiltersModal={false}
                           origin={TaskOrigin.PATIENT}
+                          sort={sort}
+                          onSortChange={sortPatientTasks}
                         />
                       </TaskViewContext.Provider>
                     </BulkEditSection>
