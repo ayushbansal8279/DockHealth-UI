@@ -365,7 +365,10 @@ const TasksGroup = ({
                 <TasksGroupNumericalBadgeContainer>
                   <TasksGroupTaskCount>
                     <PatientsIcon width="15px" />
-                    <div>{numberOfPatients} patients</div>
+                    <div>
+                      {numberOfPatients}{' '}
+                      {numberOfPatients === 1 ? 'patient' : 'patients'}
+                    </div>
                   </TasksGroupTaskCount>
                 </TasksGroupNumericalBadgeContainer>
               </Box>

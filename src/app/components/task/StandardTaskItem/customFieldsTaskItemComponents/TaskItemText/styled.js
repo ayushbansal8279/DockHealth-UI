@@ -31,6 +31,9 @@ export const AddPlaceholder = styled.div`
 export const TextValue = styled.div`
   font-family: inherit;
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   &:hover {
     & ${AddPlaceholder} {
       opacity: 1;
