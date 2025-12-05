@@ -6,6 +6,14 @@ export const MainContainer = styled.div`
   margin: 10px 60px 0 80px;
   border: 2px solid ${palette.iron};
   border-radius: 4px;
+
+  @media (max-width: 1920px) {
+    margin: 10px 40px 0 40px;
+  }
+
+  @media (max-width: 1024px) {
+    margin: 10px 20px 0 20px;
+  }
 `;
 
 export const CategoryHeader = styled.div`

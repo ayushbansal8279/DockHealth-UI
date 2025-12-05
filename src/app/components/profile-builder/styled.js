@@ -36,6 +36,14 @@ export const PlayGroungWrapper = styled.div`
   @media (max-width: 1500px) {
     width: 60%;
   }
+
+  @media (max-width: 1920px) {
+    padding: ${spacing.huge} ${spacing.regular};
+  }
+
+  @media (max-width: 1024px) {
+    padding: ${spacing.regular} ${spacing.small};
+  }
 `;
 
 export const ProfileBuilderContainer = styled.div`

@@ -18,6 +18,14 @@ export const CategoryDropper = styled.div`
   letter-spacing: 0.3px;
   color: ${palette.coolGrey1};
   border-radius: 4px;
+
+  @media (max-width: 1920px) {
+    margin: 30px 40px 0 40px;
+  }
+
+  @media (max-width: 1024px) {
+    margin: 20px 20px 0 20px;
+  }
 `;
 
 export const NewCategoryContainer = styled.div`
@@ -28,6 +36,14 @@ export const NewCategoryContainer = styled.div`
   align-items: center;
   color: ${palette.coolGrey1};
   border: 2px solid ${palette.iron};
+
+  @media (max-width: 1920px) {
+    margin: 30px 40px 0 40px;
+  }
+
+  @media (max-width: 1024px) {
+    margin: 20px 20px 0 20px;
+  }
 `;
 
 export const NewCategoryWrapper = styled.div`
