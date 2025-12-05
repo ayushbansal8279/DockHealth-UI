@@ -16,9 +16,13 @@ import {
 } from './styled';
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import * as CustomFieldApi from 'api/custom-fields-api';
-import { convertDefaultFields } from '@/app/components/profile-builder/helper';
+import {
+  convertDefaultFields,
+  getDefaultsRefrenceIds,
+} from '@/app/components/profile-builder/helper';
 import { getProfileDetails, editProfileDetails } from '@/app/api/profile-api';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
+import { getAllProfileTypes } from '@/app/api/profile-type-api';
 import { getProfileName } from '../../custom-profile-details/helpers';
 import ProfileDrawerLoader from './ProfileDrawerLoader';
 import { DrawerWrapper } from '@/app/components/patients/PatientDrawer/styled';
@@ -32,7 +36,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { mergeDeepRight } from 'ramda';
 import { updatePatientDetails } from '@/app/actions/patient-details-actions';
-import { ProfileStatus } from 'helpers/profile-helpers';
 import { createProfileMenuOptions } from './profile-drawer-helper';
 import {
   createPatientMenuOptions,
@@ -66,6 +69,7 @@ const ProfileDetailsDrawer = ({
   profileTypeIdentifier,
   profileIdentifier,
   patient,
+  onUpdate,
 }) => {
   const [title, setTitle] = useState('');
   const [profileValues, setProfileValues] = useState([]);
@@ -106,17 +110,27 @@ const ProfileDetailsDrawer = ({
 
   const fetchPatientCustomGroups = async () => {
     try {
-      const [
-        customGroups,
-        allCustomFields,
-        defaultFields,
-        genderIdentityOptions,
-      ] = await Promise.all([
-        CustomFieldApi.searchCustomFiledGroups(context),
-        CustomFieldApi.getAllPatientCustomFields(),
-        CustomFieldApi.getDefauldFields(context),
-        getGenderIdentityOptions(),
-      ]);
+      const [profileTypes, customGroups, defaultFields, genderIdentityOptions] =
+        await Promise.all([
+          getAllProfileTypes('PREDEFINED'),
+          CustomFieldApi.searchCustomFiledGroups(context),
+          CustomFieldApi.getDefauldFields(context),
+          getGenderIdentityOptions(),
+        ]);
+
+      const patientProfileType = profileTypes.find(
+        (pt) => pt.name.toLowerCase() === 'patient',
+      );
+
+      if (!patientProfileType) {
+        console.error('Patient profile type not found');
+        setLoading(false);
+        return;
+      }
+
+      const allCustomFields = await getAllProfileFieldTypes(
+        patientProfileType.identifier,
+      );
 
       setDefaultFields(defaultFields);
       setAllCustomFields(allCustomFields);
@@ -127,7 +141,23 @@ const ProfileDetailsDrawer = ({
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
-      const enrichedGroups = enrichCategoryGroups(customGroups, customFields);
+      let groupsToUse = customGroups;
+      if (!customGroups || customGroups.length === 0) {
+        const defaultGroupFields = getDefaultsRefrenceIds(
+          defaultFields,
+          context,
+        ).filter((field) => field !== null);
+        groupsToUse = [
+          {
+            name: 'Default Group',
+            fields: defaultGroupFields,
+            isDefault: true,
+            displayOrder: 0,
+          },
+        ];
+      }
+
+      const enrichedGroups = enrichCategoryGroups(groupsToUse, customFields);
 
       const processedGroups = addFieldOptionsInDefaultCategory(
         enrichedGroups,
@@ -189,7 +219,7 @@ const ProfileDetailsDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { register, handleSubmit, getValues } = formMethods;
+  const { handleSubmit } = formMethods;
   const formReference = useRef(null);
 
   const updateProfile = useCallback(
@@ -204,6 +234,9 @@ const ProfileDetailsDrawer = ({
           dispatch(showGlobalAlert(AlertMessages.SAVED));
           const profile = await getProfileDetails(profileIdentifier);
           setProfileValues(profile?.fields);
+          if (onUpdate) {
+            onUpdate(profile);
+          }
         })
         .catch((error) => {
           dispatch(
@@ -211,7 +244,7 @@ const ProfileDetailsDrawer = ({
           );
         });
     },
-    [profileIdentifier, profileTypeFields, dispatch],
+    [profileIdentifier, profileTypeFields, dispatch, onUpdate],
   );
 
   const updatePatient = (data) => {
@@ -227,6 +260,7 @@ const ProfileDetailsDrawer = ({
     const processedCustomFields = processCustomFields(
       unmappedFields,
       allCustomFields,
+      true,
     );
 
     const finalPatientData = { ...updatedPatientData };
@@ -376,7 +410,9 @@ const ProfileDetailsDrawer = ({
                   })}
                   <SaveWrapper>
                     <CancelButton onClick={onClose}>Close</CancelButton>
-                    <ConfirmButton type="submit">Save</ConfirmButton>
+                    <ConfirmButton type="submit" disabled={!editMode}>
+                      Save
+                    </ConfirmButton>
                   </SaveWrapper>
                 </form>
               </FormProvider>

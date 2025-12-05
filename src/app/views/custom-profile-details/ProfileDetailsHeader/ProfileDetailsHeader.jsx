@@ -182,7 +182,7 @@ const ProfileDetailsHeader = () => {
                             target="_blank"
                             rel="noreferrer"
                           >
-                            {field.profileTypeFieldName}
+                            {field.values?.[0]}
                           </a>
                         )}
                         {(field.profileTypeFieldType === FieldType.DATE ||
@@ -190,8 +190,8 @@ const ProfileDetailsHeader = () => {
                             FieldType.DATE_TIME) && (
                           <>
                             <DateLabel
-                              date={field.value}
-                              dueDateIntent={field.dateTimeIntent}
+                              date={field.values?.[0]}
+                              dueDateIntent={field.dateTimeIntents?.[0]}
                             />
                           </>
                         )}
@@ -252,6 +252,9 @@ const ProfileDetailsHeader = () => {
             context={'PROFILETYPE'}
             profileTypeIdentifier={profileTypeIdentifier}
             profileIdentifier={profileIdentifier}
+            onUpdate={() => {
+              fetchProfile();
+            }}
           />
         </>
       )}

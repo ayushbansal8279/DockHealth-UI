@@ -21,7 +21,11 @@ export function mapFieldsFromIdentifiers(mappings, data) {
   return { mappedFields, unmappedFields };
 }
 
-export function processCustomFields(unmappedFields, allCustomFields) {
+export function processCustomFields(
+  unmappedFields,
+  allCustomFields,
+  useCustomFieldIdentifier = false,
+) {
   return Object.keys(unmappedFields)
     .map((key) => {
       const customField = allCustomFields.find(
@@ -30,17 +34,22 @@ export function processCustomFields(unmappedFields, allCustomFields) {
 
       if (!customField) return null;
 
+      const identifierToUse =
+        useCustomFieldIdentifier && customField.customFieldIdentifier
+          ? customField.customFieldIdentifier
+          : key;
+
       if (
         customField.fieldType === 'RELATIONSHIP' ||
         customField.fieldType === 'MULTI_SELECT'
       ) {
         return {
-          customFieldIdentifier: key,
+          customFieldIdentifier: identifierToUse,
           values: unmappedFields[key],
         };
       } else {
         return {
-          customFieldIdentifier: key,
+          customFieldIdentifier: identifierToUse,
           value: unmappedFields[key],
         };
       }

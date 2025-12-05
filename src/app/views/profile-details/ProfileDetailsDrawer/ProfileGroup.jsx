@@ -23,8 +23,12 @@ const ProfileGroup = ({ category, profileValues, editMode, context }) => {
       {category?.fields?.map((field) => {
         const record =
           profileValues.find((pd) => {
-            if (context === 'PATIENT')
-              return pd.customFieldIdentifier === field.fieldReferenceId;
+            if (context === 'PATIENT') {
+              const identifier = field.customFieldIdentifier
+                ? field.customFieldIdentifier
+                : field.identifier;
+              return identifier === pd.customFieldIdentifier;
+            }
             if (context === 'PROFILETYPE')
               return field.fieldReferenceId === pd.profileTypeFieldIdentifier;
             return false;

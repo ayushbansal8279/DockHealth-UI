@@ -5,11 +5,19 @@ import { noop, showAlert } from '../helpers/utility-functions';
 import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 
-export function getAllCustomFields(workspaceIdentifier, hidden = false) {
+export function getAllCustomFields(
+  workspaceIdentifier,
+  hidden = false,
+  includeProfileTypeDetails = false,
+) {
+  const params = { hidden };
+  if (includeProfileTypeDetails) {
+    params.includeProfileTypeDetails = true;
+  }
   return axios
     .get(`custom/field`, {
       ...withWorkspaceHeaders(workspaceIdentifier),
-      params: { hidden },
+      params,
     })
     .then(({ data }) => data)
     .catch((error) => {

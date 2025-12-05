@@ -27,6 +27,7 @@ import * as MegaFilterActions from 'actions/mega-filter-actions';
 
 function* initializeUserTasks(status) {
   yield put(PersonDetailsActions.getUserTaskCounters());
+  yield put(clearFiltersForMegaFilter());
 
   const userIdentifier = yield select(userIdentifierSelector);
   const preferences = yield call(
@@ -44,7 +45,7 @@ function* initializeUserTasks(status) {
     userPreferenceSelectedQuickFilterSelector,
   );
 
-  if (selectedFilters && !isEmpty(selectedFilters))
+  if (selectedFilters && !isEmpty(selectedFilters)) {
     yield put(
       selectFiltersForMegaFilter(
         selectedFilters,
@@ -53,8 +54,7 @@ function* initializeUserTasks(status) {
         selectedQuickFilter,
       ),
     );
-  else {
-    yield put(clearFiltersForMegaFilter());
+  } else {
     yield put(PersonDetailsActions.getUserTasks(status));
   }
 }
