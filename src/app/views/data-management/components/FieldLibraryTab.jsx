@@ -31,7 +31,8 @@ import {
   duplicateCustomField,
 } from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
-import { TargetType, ContextType } from '@/app/helpers/custom-fields-helpers';
+import { ContextType } from '@/app/helpers/custom-fields-helpers';
+import { ProfileTypeCell } from './ProfileTypeCell';
 
 const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const dispatch = useDispatch();
@@ -98,7 +99,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     try {
       setLoading(true);
       setError(null);
-      const fields = await getAllCustomFields(workspaceIdentifier, true);
+      const fields = await getAllCustomFields(workspaceIdentifier, true, true);
       setFieldLibrary(fields || []);
     } catch (err) {
       setError(err.message);
@@ -284,62 +285,12 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         field: 'profileTypeDetails',
         headerName: 'Objects',
         flex: 1.5,
-        minWidth: 200,
-        renderCell: (params) => {
-          const profileTypeNames = getProfileTypeNames(params.value);
-
-          if (profileTypeNames.length === 0) {
-            return '';
-          }
-
-          return (
-            <Box
-              display="flex"
-              alignItems="center"
-              height="100%"
-              gap={0.5}
-              flexWrap="wrap"
-            >
-              {profileTypeNames.slice(0, 2).map((name, index) => (
-                <Chip
-                  key={index}
-                  label={name}
-                  size="small"
-                  sx={{
-                    backgroundColor: '#f5f5f5',
-                    color: '#333',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    height: '24px',
-                    '& .MuiChip-label': {
-                      padding: '0 8px',
-                      fontWeight: 500,
-                    },
-                  }}
-                />
-              ))}
-              {profileTypeNames.length > 2 && (
-                <Chip
-                  label={`+${profileTypeNames.length - 2}`}
-                  size="small"
-                  sx={{
-                    backgroundColor: '#f5f5f5',
-                    color: '#333',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    height: '24px',
-                    '& .MuiChip-label': {
-                      padding: '0 8px',
-                      fontWeight: 500,
-                    },
-                  }}
-                />
-              )}
-            </Box>
-          );
-        },
+        minWidth: 250,
+        renderCell: (params) => (
+          <ProfileTypeCell
+            profileTypeNames={getProfileTypeNames(params.value)}
+          />
+        ),
       },
       {
         field: 'validationRegexDescription',

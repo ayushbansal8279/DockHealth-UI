@@ -168,9 +168,9 @@ const CustomProfileListContent = ({
 
   const fetchProfilesInternal = useCallback(
     (status = profileStatus) => {
-      dispatch(getProfiles(profileTypeIdentifier, status));
+      dispatch(getProfiles(profileTypeIdentifier, status, fetchProfiles));
     },
-    [dispatch, profileTypeIdentifier, profileStatus],
+    [dispatch, profileTypeIdentifier, profileStatus, fetchProfiles],
   );
 
   const fetchProfileTypesInternal = useCallback(() => {
@@ -210,6 +210,35 @@ const CustomProfileListContent = ({
     fetchProfileTypeFieldsInternal,
     fetchFiltersInternal,
   ]);
+
+  useEffect(() => {
+    hasInitializedDefaultColumns.current = false;
+  }, [profileTypeIdentifier]);
+
+  useEffect(() => {
+    if (
+      !hasInitializedDefaultColumns.current &&
+      profileTypeFields.length > 0 &&
+      (!filters || filters.length === 0)
+    ) {
+      const profileNameFields = profileTypeFields
+        .filter((field) => field.displayOptions?.includes('PROFILE_NAME'))
+        .map((field) => field.identifier);
+
+      if (profileNameFields.length > 0) {
+        setFilters(profileNameFields);
+        dispatch(
+          updateProfileListPreferences(
+            {
+              listDisplayColumns: profileNameFields,
+            },
+            profileTypeIdentifier,
+          ),
+        );
+      }
+      hasInitializedDefaultColumns.current = true;
+    }
+  }, [profileTypeFields, filters, profileTypeIdentifier, dispatch]);
 
   useEffect(() => {
     fetchProfilesInternal();
@@ -442,6 +471,7 @@ const CustomProfileListContent = ({
   };
 
   const buttonReference = useRef(null);
+  const hasInitializedDefaultColumns = useRef(false);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
 
   const handlePopoverOpen = () => {
