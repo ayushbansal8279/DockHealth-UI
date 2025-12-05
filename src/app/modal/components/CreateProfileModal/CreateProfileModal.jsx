@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Grid } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import { userHasWorkspacesFeatureSelector } from 'selectors/user-selectors';
 import FormInput from 'components/common/Input/FormInput';
 import { createProfileType, editProfileType } from 'api/profile-type-api';
 import AlertMessages from 'alert/AlertMessages';
+import ScopeAndWorkspaceFields from '../common/ScopeAndWorkspaceFields/ScopeAndWorkspaceFields';
+import { shouldAddItemToList } from '../common/ScopeAndWorkspaceFields/scopeHelpers';
 import { CloseIconButton, CloseIcon } from '../styled';
 
 import {
@@ -33,6 +36,7 @@ const CreateProfileModal = ({
   // const isCreatingNewField = !template;
   const [, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
@@ -40,7 +44,7 @@ const CreateProfileModal = ({
     defaultValues: template,
   });
 
-  const { register, unregister, handleSubmit, setValue } = formMethods;
+  const { register, unregister, handleSubmit, setValue, watch } = formMethods;
 
   useEffect(() => {
     register('type');
@@ -78,11 +82,30 @@ const CreateProfileModal = ({
   };
 
   const handleAddSubmit = (data) => {
+    const currentScope = watch('scope');
+    const currentWorkspace = watch('selectedWorkspace');
+    if (currentScope === 'workspace' && !currentWorkspace) {
+      dispatch(showGlobalErrorAlert('Please select a workspace'));
+      return;
+    }
     setIsSaving(true);
-    createProfileType(data, workspaceIdentifier)
+    const finalWorkspaceIdentifier =
+      currentScope === 'workspace' ? currentWorkspace : null;
+    const { scope, selectedWorkspace, ...payloadData } = data;
+    createProfileType(payloadData, finalWorkspaceIdentifier)
       .then((addedField) => {
+        if (
+          shouldAddItemToList(
+            workspaceIdentifier,
+            currentScope,
+            currentWorkspace,
+          )
+        ) {
+          if (typeof onAdded === 'function') {
+            onAdded(addedField);
+          }
+        }
         dispatch(showGlobalAlert(AlertMessages.CREATED));
-        if (typeof onAdded === 'function') onAdded(addedField);
         setIsSaving(false);
         closeModal();
       })
@@ -124,6 +147,11 @@ const CreateProfileModal = ({
                   <Grid item size={12}>
                     <FormInput name="description" label="Description" />
                   </Grid>
+                  {isCreatingNewField && workspacesAvailable && (
+                    <ScopeAndWorkspaceFields
+                      workspaceIdentifier={workspaceIdentifier}
+                    />
+                  )}
                 </Grid>
               </Box>
             </FormScrollingContainer>

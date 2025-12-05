@@ -12,8 +12,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import partial from 'ramda/src/partial';
 import { Box, Dialog, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
+import { userHasWorkspacesFeatureSelector } from 'selectors/user-selectors';
 import AlertMessages from 'alert/AlertMessages';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import {
@@ -33,6 +34,8 @@ import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
 import * as ProfileTypeFieldsApi from 'api/profile-type-field-api';
 import { getAllCustomFieldsByTargetType } from 'api/custom-fields-api';
 import { sortAlphabetical } from 'helpers/custom-fields-helpers';
+import ScopeAndWorkspaceFields from '../common/ScopeAndWorkspaceFields/ScopeAndWorkspaceFields';
+import { shouldAddItemToList } from '../common/ScopeAndWorkspaceFields/scopeHelpers';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -141,6 +144,7 @@ const EditCustomFieldModal = ({
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
 
   const validationSchema = useMemo(() => {
     return object().shape({
@@ -370,14 +374,16 @@ const EditCustomFieldModal = ({
 
   const handleEditSubmit = (data) => {
     setIsSaving(true);
+    const { scope, selectedWorkspace, ...payloadData } = data;
+
     if (type === 'PROFILE') {
       const updatedField = {
         contextType: 'CUSTOM',
-        ...data,
+        ...payloadData,
         ...displayOptionsState,
         fieldCategoryType: 'PROFILE',
         relatedProfileType: {
-          identifier: data.relatedProfileType,
+          identifier: payloadData.relatedProfileType,
         },
         profileType: {
           identifier: profileTypeIdentifier,
@@ -409,15 +415,15 @@ const EditCustomFieldModal = ({
     } else {
       const updatedField = {
         ...customField,
-        ...data,
+        ...payloadData,
         ...displayOptionsState,
         targetType: type,
         contextType: 'CUSTOM',
         profileTypeIdentifier: {
-          identifier: data.profileTypeIdentifier,
+          identifier: payloadData.profileTypeIdentifier,
         },
         relatedProfileType: {
-          identifier: data.relatedProfileType,
+          identifier: payloadData.relatedProfileType,
         },
       };
       delete updatedField.validationRegexSelector;
@@ -425,7 +431,7 @@ const EditCustomFieldModal = ({
         updatedField,
         type,
         taskListIdentifier,
-        workspaceIdentifier,
+        null,
       )
         .then(() => {
           onUpdated({ ...updatedField, selectedProfileType });
@@ -440,23 +446,43 @@ const EditCustomFieldModal = ({
   };
 
   const handleAddSubmit = (data) => {
+    const currentScope = watch('scope');
+    const currentWorkspace = watch('selectedWorkspace');
+    if (currentScope === 'workspace' && !currentWorkspace) {
+      dispatch(showGlobalErrorAlert('Please select a workspace'));
+      return;
+    }
     setIsSaving(true);
+    const finalWorkspaceIdentifier =
+      currentScope === 'workspace' ? currentWorkspace : null;
+    const { scope, selectedWorkspace, ...payloadData } = data;
+
     if (type === 'PROFILE') {
       ProfileTypeFieldsApi.createProfileFieldType({
-        ...data,
+        ...payloadData,
         ...displayOptionsState,
         contextType: 'CUSTOM',
         fieldCategoryType: 'PROFILE',
         targetType: 'PROFILE',
         relatedProfileType: {
-          identifier: data.relatedProfileType,
+          identifier: payloadData.relatedProfileType,
         },
         profileType: {
           identifier: profileTypeIdentifier,
         },
       })
         .then((addedField) => {
-          onAdded({ ...addedField, selectedProfileType });
+          if (
+            shouldAddItemToList(
+              workspaceIdentifier,
+              currentScope,
+              currentWorkspace,
+            )
+          ) {
+            if (typeof onAdded === 'function') {
+              onAdded({ ...addedField, selectedProfileType });
+            }
+          }
           dispatch(showGlobalAlert(AlertMessages.CREATED));
           setIsSaving(false);
           closeModal();
@@ -467,23 +493,33 @@ const EditCustomFieldModal = ({
     } else {
       CustomFieldsApi.addCustomField(
         {
-          ...data,
+          ...payloadData,
           ...displayOptionsState,
           targetType: type,
           contextType: 'CUSTOM',
           profileTypeIdentifier: {
-            identifier: data.profileTypeIdentifier,
+            identifier: payloadData.profileTypeIdentifier,
           },
           relatedProfileType: {
-            identifier: data.relatedProfileType,
+            identifier: payloadData.relatedProfileType,
           },
         },
         type,
         taskListIdentifier,
-        workspaceIdentifier,
+        finalWorkspaceIdentifier,
       )
         .then((addedField) => {
-          onAdded(addedField);
+          if (
+            shouldAddItemToList(
+              workspaceIdentifier,
+              currentScope,
+              currentWorkspace,
+            )
+          ) {
+            if (typeof onAdded === 'function') {
+              onAdded(addedField);
+            }
+          }
           setIsSaving(false);
           closeModal();
         })
@@ -636,6 +672,11 @@ const EditCustomFieldModal = ({
                           label="Validation description"
                         />
                       </Grid>
+                    )}
+                    {isCreatingNewField && workspacesAvailable && (
+                      <ScopeAndWorkspaceFields
+                        workspaceIdentifier={workspaceIdentifier}
+                      />
                     )}
                     <Grid item size={6}>
                       <FormSelect
