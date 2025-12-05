@@ -14,6 +14,7 @@ export const HOME_UPCOMING_TASKS_PATH = '/core/home/upcoming-tasks';
 export const HOME_OVERDUE_TASKS_PATH = '/core/home/overdue-tasks';
 export const HOME_COMPLETED_TASKS_PATH = '/core/home/completed-tasks';
 export const UNENROLLED_USER = '/auth/unEnrolledUser';
+export const PENDING_USER_PATH = '/auth/pendingUser';
 export const DEFAULT_REDIRECT_PATH = '/auth/login';
 export const SUBS_SETTINGS_PATH = '/settings/subscriptions';
 export const SUBS_EXPIRED_PATH = '/settings/subscription-expired';
