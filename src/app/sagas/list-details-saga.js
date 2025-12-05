@@ -48,9 +48,7 @@ import {
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
-import {
-  cleanedSelectedFilters,
-} from 'helpers/mega-filter-helper';
+import { cleanedSelectedFilters } from 'helpers/mega-filter-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -465,6 +463,7 @@ function* initializeListDetailsTableState() {
   try {
     const { taskIdentifier } = yield select(locationParametersSelector);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+    yield put(MegaFilterActions.clearFiltersForMegaFilter());
 
     const preferences = yield call(
       UserPreferenceApi.getUserPreference,
@@ -485,14 +484,13 @@ function* initializeListDetailsTableState() {
     const sort = yield select(userPreferenceSortSelector);
 
     if (taskListIdentifier) {
-
       if (sort) {
         yield put(
           ListDetailsActions.setListDetailsTasksSort(sort.key, sort.order),
         );
       }
 
-      if (selectedFilters) {
+      if (selectedFilters && !isEmpty(selectedFilters)) {
         yield put(
           MegaFilterActions.selectFiltersForMegaFilter(
             selectedFilters,

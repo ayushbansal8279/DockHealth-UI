@@ -491,6 +491,8 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
+    yield put(MegaFilterActions.clearFiltersForMegaFilter());
+
     const preferences = yield call(
       UserPreferenceApi.getUserPreference,
       UserPreferenceContextType.PATIENT_LIST,
