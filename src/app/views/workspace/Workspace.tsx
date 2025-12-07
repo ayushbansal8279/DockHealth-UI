@@ -127,19 +127,34 @@ const Workspace = () => {
       </WorkspaceTabsContainer>
       <WorkspaceDetailsContainer>
         <Switch>
-          {tabsConfiguration?.map((route) => (
-            <RouteWrapper
-              key={route.mainPath}
-              path={`${path}/${route.mainPath}${
-                route.additionalPath ? `/${route.additionalPath}` : ''
-              }`}
-              RouteComponent={route.RouteComponent}
-              onEnter={undefined}
-              onLeave={undefined}
-              exact={undefined}
-              allowedToRoles={undefined}
-            />
-          ))}
+          {tabsConfiguration?.map((route) => {
+            const WrappedComponent = useMemo(() => {
+              if (route.isWorkspace) {
+                return (props: any) => (
+                  <route.RouteComponent
+                    {...props}
+                    workspaceIdentifier={workspaceIdentifier}
+                    isWorkspace
+                  />
+                );
+              }
+              return route.RouteComponent;
+            }, [route.RouteComponent, route.isWorkspace, workspaceIdentifier]);
+
+            return (
+              <RouteWrapper
+                key={route.mainPath}
+                path={`${path}/${route.mainPath}${
+                  route.additionalPath ? `/${route.additionalPath}` : ''
+                }`}
+                RouteComponent={WrappedComponent}
+                onEnter={undefined}
+                onLeave={undefined}
+                exact={undefined}
+                allowedToRoles={undefined}
+              />
+            );
+          })}
           <Redirect
             exact
             from={`${path}/patients`}

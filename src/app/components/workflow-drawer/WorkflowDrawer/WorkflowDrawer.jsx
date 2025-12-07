@@ -153,7 +153,7 @@ const WorkflowDrawer = () => {
             <WorkflowDrawerHeader />
             <SectionContainer>
               <Grid container spacing={1}>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <Typography sx={{ fontWeight: 'bold' }} component="span">
                     List:{' '}
                     <FiledInListName
@@ -173,7 +173,7 @@ const WorkflowDrawer = () => {
                     )}
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <NameSection
                     readOnly={
                       restrictions?.name === DISABLED ||
@@ -181,7 +181,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <DescriptionSection
                     readOnly={
                       restrictions?.description === DISABLED ||
@@ -189,7 +189,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <AssignedToSection
                     disabled={
                       restrictions?.assignedTo === DISABLED ||
@@ -197,7 +197,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} mb={1}>
+                <Grid item size={12} mb={1}>
                   <PatientSection
                     disabled={
                       !!isTemplateTask ||
@@ -207,7 +207,7 @@ const WorkflowDrawer = () => {
                     quickAddPatientEnabled={quickAddPatientEnabled}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <AnchorDateSection
                     disabled={
                       !!isTemplateTask ||
@@ -216,7 +216,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <StartDateSection
                     disabled={
                       !!isTemplateTask ||
@@ -225,7 +225,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <DueDateSection
                     disabled={
                       !!isTemplateTask ||
@@ -235,7 +235,7 @@ const WorkflowDrawer = () => {
                   />
                 </Grid>
                 {!isOverdue && (
-                  <Grid ml={18.5} xs={12}>
+                  <Grid ml={18.5} size={12}>
                     <ReminderSection
                       disabled={
                         !!isTemplateTask ||
@@ -245,7 +245,7 @@ const WorkflowDrawer = () => {
                     />
                   </Grid>
                 )}
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <PrioritySection
                     disabled={
                       restrictions?.priority === DISABLED ||
@@ -253,7 +253,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <StatusSection
                     disabled={
                       restrictions?.status === DISABLED ||
@@ -261,7 +261,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <LabelsSection
                     disabled={
                       restrictions?.labels === DISABLED ||

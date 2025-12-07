@@ -36,8 +36,8 @@ import debounce from 'lodash.debounce';
 import { getFilteredCountsForList } from '@/app/api/list-details-api';
 import {
   currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
 } from '@/app/selectors/task-list-selectors';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const NewFilterContainer = ({
   filters,
@@ -63,7 +63,7 @@ const NewFilterContainer = ({
 
   const currentUser = useSelector(userProfileSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
+  const taskListStatus = useSelector(userPreferenceStatusSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
   const sanitizedFilters = filters?.map((item) => {
@@ -81,19 +81,47 @@ const NewFilterContainer = ({
         const options = [];
         let dateStart = '';
         let dateEnd = '';
+        let date = '';
+        let numberStart = null;
+        let numberEnd = null;
+        let singleNumber = null;
         finalFilter[key].forEach((item) => {
           if (item?.key?.includes('DATE_RANGE')) {
             dateStart = item?.dateStart;
             dateEnd = item?.dateEnd;
             options.push(item?.key);
+          } else if (
+            item?.key?.includes('DATE_SINGLE') ||
+            item?.key?.includes('SINGLE_DATE')
+          ) {
+            date = item?.date;
+            options.push(item?.key);
+          } else if (item?.key?.includes('NUMBER_RANGE')) {
+            numberStart = item?.numberStart;
+            numberEnd = item?.numberEnd;
+            options.push(item?.key);
+          } else if (item?.key?.includes('SINGLE_NUMBER')) {
+            singleNumber = item?.singleNumber;
+            options.push(item?.key);
           } else {
             options.push(item?.key || '');
           }
         });
-        data[key] =
-          dateStart !== '' && dateEnd !== ''
-            ? { options, dateStart, dateEnd }
-            : { options };
+        data[key] = { options };
+        if (dateStart !== '' && dateEnd !== '') {
+          data[key].dateStart = dateStart;
+          data[key].dateEnd = dateEnd;
+        }
+        if (date !== '') {
+          data[key].date = date;
+        }
+        if (numberStart !== null && numberEnd !== null) {
+          data[key].numberStart = numberStart;
+          data[key].numberEnd = numberEnd;
+        }
+        if (singleNumber !== null) {
+          data[key].singleNumber = singleNumber;
+        }
       }
     }
     setDisable(hasItems);

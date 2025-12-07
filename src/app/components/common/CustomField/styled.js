@@ -8,12 +8,15 @@ export const CustomTextEditorContainer = styled.div`
 
 export const ColorIndicator = styled.div`
   display: block;
-  width: 6px;
-  height: 100%;
+  width: 8px;
+  height: 50px;
   background: ${(props) => props.color};
   position: absolute;
-  left: 0px;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 1;
+  border-radius: 6px;
 `;
 
 export const DescriptionError = styled.p`

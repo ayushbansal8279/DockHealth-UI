@@ -13,10 +13,9 @@ export function getQuickFilters(quickFilters) {
     .then(({ data }) =>
       data.map((f) => ({
         ...f,
-        selectedOptions:
-          f.contextType === 'PATIENTS'
-            ? mapRequestSelectedOptionsToStore(f.patientSelectedOptions)
-            : mapRequestSelectedOptionsToStore(f.selectedOptions),
+        selectedOptions: mapRequestSelectedOptionsToStore(
+          f.selectedOptions || f.patientSelectedOptions,
+        ),
       })),
     );
 }

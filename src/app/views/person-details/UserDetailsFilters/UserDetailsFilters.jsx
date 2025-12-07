@@ -27,6 +27,7 @@ import { TaskStatus } from 'helpers/task-helpers';
 import equals from 'ramda/src/equals';
 import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import { determineTaskCounts } from './helpers';
+import { filterUserDetailsTasks } from '@/app/actions/user-actions';
 
 const UserDetailsFilters = () => {
   const dispatch = useDispatch();
@@ -50,9 +51,9 @@ const UserDetailsFilters = () => {
     status: selectedTab === TaskStatus.INCOMPLETE ? 'INCOMPLETE' : 'COMPLETE',
   });
 
-  const handleFilterChange = (updatedFilters) => {
+  const handleFilterChange = (filters) => {
     dispatch(
-      selectFiltersForMegaFilter(updatedFilters, userIdentifier, selectedTab),
+      filterUserDetailsTasks(filters, userIdentifier),
     );
   };
 

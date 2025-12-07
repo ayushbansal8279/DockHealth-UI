@@ -22,7 +22,7 @@ const SupportSectionView = () => {
     <ViewLayout header={<BasicLayoutHeader title="Support" />}>
       <SupportViewContainer container>
         <SupportSectionViewVideos />
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <Spacing vertical={6} />
         </Grid>
         <SupportSectionViewFaq />

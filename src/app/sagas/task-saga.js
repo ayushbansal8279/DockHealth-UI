@@ -224,7 +224,6 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
         TemplateBundleActions.completeTemplateBundle(templateBundleIdentifier),
       );
     }
-
   } catch {
     yield put(showGlobalErrorAlert());
   }

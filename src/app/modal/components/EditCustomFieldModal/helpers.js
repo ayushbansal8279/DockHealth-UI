@@ -104,7 +104,7 @@ export const getAdditionalProfileOptions = ({
   handleDisplayOptionChange,
 }) => [
   {
-    label: 'Object Name',
+    label: 'Object name',
     key: 'PROFILE_NAME',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_NAME',
@@ -112,7 +112,7 @@ export const getAdditionalProfileOptions = ({
     onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_NAME'),
   },
   {
-    label: 'Object Header',
+    label: 'Object header',
     key: 'PROFILE_HEADER',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_HEADER',
@@ -121,6 +121,11 @@ export const getAdditionalProfileOptions = ({
   },
   ...commonOptions(displayOptionsState, handleDisplayOptionChange),
 ];
+
+export const getAdditionalGlobalOptions = ({
+  displayOptionsState,
+  handleDisplayOptionChange,
+}) => [...commonOptions(displayOptionsState, handleDisplayOptionChange)];
 
 export const getAdditionalOptions = ({
   displayOptionsState,
@@ -159,7 +164,10 @@ export const getAdditionalOptions = ({
     }
 
     case 'GLOBAL': {
-      return [];
+      return getAdditionalGlobalOptions({
+        displayOptionsState,
+        handleDisplayOptionChange,
+      });
     }
 
     default: {

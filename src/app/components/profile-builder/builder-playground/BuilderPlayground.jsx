@@ -24,6 +24,7 @@ const BuilderPlayground = ({ context, identifier }) => {
     setNewCategory,
     isNewCategory,
     isAddCategoryDrop,
+    setCustomGroups,
   } = useContext(ProfileBuilderContext);
   const { setNodeRef, isOver, active, over } = useDroppable({
     id: 'add-category-area',
@@ -37,7 +38,7 @@ const BuilderPlayground = ({ context, identifier }) => {
       context,
       name: value,
       fields: [],
-      isDefault: true,
+      isDefault: false,
     };
     if (context === 'PROFILETYPE') {
       newCategory.profileTypeIdentifier = identifier;
@@ -48,6 +49,7 @@ const BuilderPlayground = ({ context, identifier }) => {
 
       CustomFieldApi.saveCustomFiledGroup(newCategory).then((data) => {
         setSelectedCategories((prev) => [...prev, data]);
+        setCustomGroups((prev) => [...prev, data]);
       });
     }
     dispatch(showGlobalAlert(AlertMessages.CREATED));

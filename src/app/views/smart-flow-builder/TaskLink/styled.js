@@ -16,6 +16,6 @@ export const HardDependencyLabel = styled.div`
   align-items: center;
   width: 32px;
   height: 32px;
-  border-radius: 16px;
+  border-radius: 8px;
   background-color: ${palette.brightBlue};
 `;

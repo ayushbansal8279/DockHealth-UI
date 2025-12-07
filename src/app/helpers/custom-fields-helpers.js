@@ -25,6 +25,19 @@ export const CUSTOM_FIELD_TYPES = {
   PATIENT: 'PATIENT',
 };
 
+export const TargetType = {
+  GLOBAL: 'GLOBAL',
+  PATIENT: 'PATIENT',
+  PROFILE: 'PROFILE',
+  PROVIDER: 'PROVIDER',
+  TASK: 'TASK',
+};
+
+export const ContextType = {
+  PREDEFINED: 'PREDEFINED',
+  CUSTOM: 'CUSTOM',
+};
+
 export const sortAlphabetical = (array, propertyName = 'name') =>
   sort((a, b) => a?.[propertyName].localeCompare(b?.[propertyName]), array);
 
@@ -102,4 +115,24 @@ export const stringToRegex = (str) => {
   const pattern = match[1];
   const flags = match[2];
   return new RegExp(pattern, flags);
+};
+
+export const enrichGroupsWithFields = (groups, allProfileFieldTypes) => {
+  return groups.map((group) => {
+    if (!group.fields) {
+      return group;
+    }
+
+    const enrichedFields = group.fields.map((field) => {
+      const matchingField = allProfileFieldTypes?.find(
+        (customField) =>
+          customField.identifier === field.fieldReferenceId ||
+          customField.customFieldIdentifier === field.fieldReferenceId,
+      );
+
+      return matchingField ? { ...field, ...matchingField } : field;
+    });
+
+    return { ...group, fields: enrichedFields };
+  });
 };

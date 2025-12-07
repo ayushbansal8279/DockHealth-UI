@@ -19,6 +19,9 @@ import { showGlobalAlert, showGlobalErrorAlert } from '../alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal } from 'modal/actions';
 import { ProfileStatus, ProfileQueryType } from 'helpers/profile-helpers';
+import { cleanedSelectedFilters } from '../helpers/mega-filter-helper';
+import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
+import * as UserPreferenceApi from '../api/user-preference-api';
 
 function* getCurrentProfileFilterOptions() {
   try {
@@ -48,9 +51,27 @@ function* selectedProfileFilter({ payload }) {
     currentProfileTypeIdentifierSelector,
   );
   const status = '';
+  const selectedFilters = cleanedSelectedFilters(filters);
+  const partialDetails = {
+    selectedFilters,
+    selectedQuickFilter,
+  };
+
+  const preferences = yield call(
+    UserPreferenceApi.updateUserPreference,
+    UserPreferenceContextType.CUSTOM_OBJECT_LIST,
+    profileTypeIdentifier,
+    partialDetails,
+  );
+
+  yield put({
+    type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+    preferences,
+  });
+
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(
-      filters,
+      selectedFilters,
       profileTypeIdentifier,
       status,
       selectedQuickFilter,
@@ -329,8 +350,9 @@ function* profileBulkDelete({
   }
 }
 
-function* getProfiles({ profileTypeIdentifier, profileStatus }) {
+function* getProfiles({ profileTypeIdentifier, profileStatus, customFetch }) {
   try {
+    let profiles;
     const queryType =
       profileStatus === ProfileStatus.ACTIVE
         ? ProfileQueryType.ACTIVE_PROFILES
@@ -338,11 +360,15 @@ function* getProfiles({ profileTypeIdentifier, profileStatus }) {
         ? ProfileQueryType.ARCHIVED_PROFILES
         : ProfileQueryType.ALL_PROFILES;
 
-    const profiles = yield call(
-      ProfileApi.getAllProfiles,
-      profileTypeIdentifier,
-      queryType,
-    );
+    if (customFetch) {
+      profiles = yield call(customFetch, queryType);
+    } else {
+      profiles = yield call(
+        ProfileApi.getAllProfiles,
+        profileTypeIdentifier,
+        queryType,
+      );
+    }
 
     yield put({
       type: ActionTypes.GET_PROFILES_SUCCESS,
@@ -519,7 +545,10 @@ export default function* watchProfileDetail() {
   );
   yield takeEvery(ActionTypes.PROFILE_BULK_ARCHIVE, profileBulkArchive);
   yield takeEvery(ActionTypes.PROFILE_BULK_DELETE, profileBulkDelete);
-  yield takeEvery(ActionTypes.PROFILE_BULK_EDIT_CUSTOM_FIELDS, profileBulkEditCustomFields);
+  yield takeEvery(
+    ActionTypes.PROFILE_BULK_EDIT_CUSTOM_FIELDS,
+    profileBulkEditCustomFields,
+  );
   yield takeEvery(ActionTypes.PROFILE_BULK_UNARCHIVE, profileBulkUnarchive);
   yield takeEvery(ActionTypes.PROFILE_BULK_RECOVER, profileBulkRecover);
   yield takeEvery(ActionTypes.GET_PROFILES, getProfiles);

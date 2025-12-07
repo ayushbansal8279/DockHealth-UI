@@ -73,6 +73,7 @@ import {
   organizationWorkspaceLabelSelector,
 } from '@/app/selectors/organization-selectors';
 import pluralize from 'pluralize';
+import { PATIENT_DETAILS_PATH } from '@/app/routing/helpers/paths';
 
 export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
@@ -100,9 +101,14 @@ const SubmenuComponents = {
 };
 
 const NavigationSidebar = () => {
+  const isIframe = window.self !== window.top;
+  const location = useLocation();
+  if (isIframe && location.pathname.includes(PATIENT_DETAILS_PATH)) {
+    return null;
+  }
+
   const history = useHistory();
   const dispatch = useDispatch();
-  const location = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const organization = useSelector(organizationSelector);

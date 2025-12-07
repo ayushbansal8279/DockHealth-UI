@@ -7,7 +7,7 @@ export const Icon = styled.svg`
 `;
 
 export const CheckboxInput = styled.div`
-  width ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
   border-radius: ${({ isCircle }) => (isCircle ? '50%' : '2px')};
   border: ${(props) =>

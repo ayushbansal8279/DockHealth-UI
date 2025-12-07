@@ -27,7 +27,7 @@ import { getTemplateColumns } from './helpers';
 import { ViewContainer } from './styled';
 import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 // const PAGE_SIZE = 30;
 

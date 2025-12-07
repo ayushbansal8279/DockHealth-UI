@@ -7,13 +7,15 @@ import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getSmoothStepPath, useStore } from 'reactflow';
+import { getSmoothStepPath, useReactFlow, useStore } from '@xyflow/react';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
 import { LabelsWrapper, HardDependencyLabel } from './styled';
 import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { getEdgeParams } from '../LinkPath/helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskLink = (props) => {
@@ -27,15 +29,24 @@ const TaskLink = (props) => {
     sourcePosition,
     targetPosition,
     data: { link },
+    selected,
   } = props;
   const { isDependent, delayPeriod, delayPeriodUnit } = link || {};
+  const { getNodes } = useReactFlow();
+  const nodes = getNodes();
+  const sourceNode = nodes.find((n) => n.id === sourceTaskIdentifier);
+  const targetNode = nodes.find((n) => n.id === targetTaskIdentifier);
+  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
+    sourceNode,
+    targetNode,
+  );
   const [, edgeCenterX, edgeCenterY] = getSmoothStepPath({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
+    sourceX: selected ? sourceX : sx,
+    sourceY: selected ? sourceY : sy,
+    sourcePosition: selected ? sourcePosition : sourcePos,
+    targetX: selected ? targetX : tx,
+    targetY: selected ? targetY : ty,
+    targetPosition: selected ? targetPosition : targetPos,
   });
   const { 2: zoom } = useStore((store) => store.transform);
   const labelWrapperReference = useRef(null);
@@ -50,6 +61,13 @@ const TaskLink = (props) => {
       updateTasksLink({
         ...link,
         isDependent: !isDependent,
+        delayPeriod: null,
+        delayPeriodUnit: null,
+        delayIsBusinessDays: null,
+        timeRelative: null,
+        timeReference: null,
+        customFieldIdentifier: null,
+        customFieldName: null,
       }),
     );
   };
@@ -61,16 +79,16 @@ const TaskLink = (props) => {
         delayPeriod: null,
         delayPeriodUnit: null,
         delayIsBusinessDays: null,
+        timeRelative: null,
+        timeReference: null,
+        customFieldIdentifier: null,
+        customFieldName: null,
       }),
     );
   };
 
   const togglePeriodDelay = () => {
-    if (delayOptionsVisible) {
-      removeDelayPeriod();
-    } else {
-      openDelayPopover();
-    }
+    openDelayPopover();
   };
 
   const deleteLink = () => {
@@ -90,24 +108,21 @@ const TaskLink = (props) => {
   const menuOptions = [
     {
       key: 'dependency',
-      icon: <HardDependencyIcon size={11} />,
+      icon: <HardDependencyIcon size={20} stroke="black" />,
       label: `${isDependent ? 'Remove' : 'Make'} dependent`,
       onClick: toggleDependent,
     },
     {
       key: 'delay',
-      icon: <CalendarIcon size={11} />,
+      icon: <CalendarIcon size={20} fill="black" />,
       label: `${
-        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+        delayPeriod && delayPeriodUnit ? 'Edit' : 'Add'
       } time until task`,
-      onClick: () =>
-        delayPeriod && delayPeriodUnit
-          ? handleDelete(togglePeriodDelay, 'Remove time until task')
-          : togglePeriodDelay(),
+      onClick: () => togglePeriodDelay(),
     },
     {
       key: 'delete',
-      icon: <DeleteOutlineIcon style={{ height: 13 }} />,
+      icon: <DeleteIcon fontSize="small" color="inherit" />,
       label: `Delete link`,
       onClick: () => handleDelete(deleteLink, 'Delete link'),
     },
@@ -165,6 +180,10 @@ const TaskLink = (props) => {
                   link={link}
                   onSubmit={handleDelayPeriodSubmit}
                   onClose={closeDelayPopover}
+                  onRemove={() => {
+                    handleDelete(removeDelayPeriod, 'Remove time until task');
+                  }}
+                  removeButtonVisible={delayOptionsVisible}
                 />
               </Paper>
             </ClickAwayListener>

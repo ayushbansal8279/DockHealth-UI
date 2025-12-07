@@ -6,7 +6,7 @@ import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { dashboardTabNameSelector } from 'selectors/dashboard-selectors';
 import Calendar from 'components/common/Calendar/Calendar';
 
-const DashboardCalendar = ({ clearFilter }) => {
+const DashboardCalendar = () => {
   const dispatch = useDispatch();
   const { startDate, endDate } = useSelector(calendarDateRangeSelector);
   const tabName = useSelector(dashboardTabNameSelector);
@@ -15,7 +15,7 @@ const DashboardCalendar = ({ clearFilter }) => {
     if (tabName && startDate && endDate) {
       dispatch(DashboardActions.getDashboardCalendarTasks());
     }
-  }, [tabName, startDate, endDate, dispatch, clearFilter]);
+  }, [tabName, startDate, endDate, dispatch]);
 
   useEffect(() => {
     return () => {

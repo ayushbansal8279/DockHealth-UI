@@ -71,11 +71,11 @@ const ResetPassword = (props) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} alignItems="center" alignContent="center">
+      <Grid item size={12} alignItems="center" alignContent="center">
         <DockLogoImage />
         <Spacing vertical={5} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={12}>
         <ResetPasswordForm
           type="Confirm"
           onSubmit={onSubmit}

@@ -8,14 +8,13 @@ import { openModal, closeModal } from 'modal/actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userHasCustomProfilesFeatureSelector,
-  userHasProfileBuilderFeatureSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { capitalize } from 'helpers/capitalize';
 import { getTemplateColumns } from './helpers';
 import { ViewContainer, AddButtonWrapper, AddButton, PlusIcon } from './styled';
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const PAGE_SIZE = 30;
 
@@ -29,10 +28,6 @@ const ProfilesAndCustomFieldsView = () => {
 
   const userHasCustomProfilesAvailable = useSelector(
     userHasCustomProfilesFeatureSelector,
-  );
-
-  const profileBuilderFeatureAvailable = useSelector(
-    userHasProfileBuilderFeatureSelector,
   );
 
   useEffect(() => {
@@ -85,17 +80,6 @@ const ProfilesAndCustomFieldsView = () => {
     [history, customerTypeLabel],
   );
 
-  const onOpenProfileBuilder = useCallback(
-    ({ row: { id, name, identifier } }) => {
-      if (id.toLowerCase() === `${customerTypeLabel}s`) {
-        history.push(`/settings/object-builder/${id.toLowerCase()}`);
-        return;
-      }
-      history.push(`/settings/object-builder/objects/${identifier}`);
-    },
-    [history, customerTypeLabel],
-  );
-
   const onDeleteProfile = useCallback(
     ({ id }) => {
       const modalProps = {
@@ -119,16 +103,8 @@ const ProfilesAndCustomFieldsView = () => {
         onEditProfile,
         onDeleteProfile,
         onConfigureCustomFields,
-        onOpenProfileBuilder,
-        profileBuilderFeatureAvailable,
       }),
-    [
-      onEditProfile,
-      onDeleteProfile,
-      onConfigureCustomFields,
-      onOpenProfileBuilder,
-      profileBuilderFeatureAvailable,
-    ],
+    [onEditProfile, onDeleteProfile, onConfigureCustomFields],
   );
 
   let profileOptions = [

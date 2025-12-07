@@ -26,11 +26,11 @@ const ActivityAlertsSettingsRow = ({
   return (
     <ActivityAlertsSettingsItem>
       <Grid container>
-        <Grid item xs={6}>
+        <Grid item size={6}>
           <div>{label}</div>
           <span>{description}</span>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item size={3}>
           <CheckboxContainer>
             <BlueCheckbox
               checked={pushNotificationEnabled}
@@ -45,7 +45,7 @@ const ActivityAlertsSettingsRow = ({
             />
           </CheckboxContainer>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item size={3}>
           <CheckboxContainer>
             <BlueCheckbox
               checked={emailEnabled}
@@ -89,16 +89,16 @@ const ActivityAlertsSettings = ({
           <Grid container>
             <Grid
               item
-              xs={6}
+              size={6}
               alignItems="flex-start"
               justifyContent="flex-start"
             />
-            <Grid item xs={3}>
+            <Grid item size={3}>
               <ActivityAlertsSettingsItemsHeaderLabel>
                 IN APP
               </ActivityAlertsSettingsItemsHeaderLabel>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item size={3}>
               <ActivityAlertsSettingsItemsHeaderLabel>
                 EMAILS
               </ActivityAlertsSettingsItemsHeaderLabel>

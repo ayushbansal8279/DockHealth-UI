@@ -76,14 +76,14 @@ const LoginUser = (props) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} alignItems="center" alignContent="center">
+      <Grid item size={12} alignItems="center" alignContent="center">
         <DockLogoImage />
         <Spacing vertical={5} />
       </Grid>
-      <Grid item xs={12} alignItems="center" alignContent="center">
+      <Grid item size={12} alignItems="center" alignContent="center">
         <LoginFormUsername onSubmit={(form) => onSubmit(form, history)} />
       </Grid>
-      <Grid item xs={12} alignItems="center">
+      <Grid item size={12} alignItems="center">
         <Spacing vertical={2} />
         <SSOOptions />
         <Spacing vertical={5} />

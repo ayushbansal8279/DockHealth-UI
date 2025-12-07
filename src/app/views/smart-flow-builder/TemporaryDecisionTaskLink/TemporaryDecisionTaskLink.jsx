@@ -5,11 +5,12 @@ import {
   editTemporaryElement,
 } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
-import { getSmoothStepPath } from 'reactflow';
+import { getSmoothStepPath } from '@xyflow/react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const TemporaryDecisionTaskLink = (props) => {
   const {
@@ -37,7 +38,7 @@ const TemporaryDecisionTaskLink = (props) => {
   const menuOptions = [
     {
       key: 'delete',
-      icon: <DeleteOutlineIcon style={{ height: 13 }} />,
+      icon: <DeleteIcon fontSize="small" color="inherit" />,
       label: `Delete link`,
       onClick: () => {
         dispatch(deleteTemporaryElement(id));

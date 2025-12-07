@@ -51,7 +51,6 @@ const DashboardView = ({ tabName }) => {
     useState(null);
   const [openConfetti, setOpenConfetti] = useState(false);
   const [clearSearch, setClearSearch] = useState(false);
-  const [clearFilter, setClearFilter] = useState(false);
   const [isAddTaskDrawer, setAddTaskDrawer] = useState(false);
   const { usageState, orgUserRole } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
@@ -236,8 +235,6 @@ const DashboardView = ({ tabName }) => {
                   <DashboardHeader
                     clearSearch={clearSearch}
                     setClearSearch={setClearSearch}
-                    clearFilter={clearFilter}
-                    setClearFilter={setClearFilter}
                     currentUser={currentUser}
                     isAddTaskDrawer={isAddTaskDrawer}
                     setAddTaskDrawer={setAddTaskDrawer}
@@ -272,8 +269,6 @@ const DashboardView = ({ tabName }) => {
                     openTourModal={forceOpenTourModal}
                     customerTypeLabel={customerTypeLabel}
                     setClearSearch={setClearSearch}
-                    clearFilter={clearFilter}
-                    setClearFilter={setClearFilter}
                     isAddTaskDrawer={isAddTaskDrawer}
                     setAddTaskDrawer={setAddTaskDrawer}
                   />

@@ -99,6 +99,7 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
           dateEnd: v.dateEnd || null,
           dateStart: v.dateStart || null,
           dateOptions: v.options,
+          date: v.date || null,
         },
       };
     }
@@ -110,17 +111,32 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
       };
     }
 
-    if (v.dateStart || v.dateEnd) {
+    if (v.dateStart || v.dateEnd || v.date || v.numberStart !== undefined || v.numberEnd !== undefined || v.singleNumber !== undefined) {
+      const customField = {
+        customFieldIdentifier: k,
+        selectedOptionIdentifiers: v.options,
+      };
+      
+      if (v.dateStart || v.dateEnd || v.date) {
+        customField.dateStart = v.dateStart || null;
+        customField.dateEnd = v.dateEnd || null;
+        customField.date = v.date || null;
+      }
+      
+      if (v.numberStart !== undefined || v.numberEnd !== undefined) {
+        customField.numberStart = v.numberStart ?? null;
+        customField.numberEnd = v.numberEnd ?? null;
+      }
+      
+      if (v.singleNumber !== undefined) {
+        customField.singleNumber = v.singleNumber ?? null;
+      }
+      
       return {
         ...accumulator,
         customFields: [
           ...(accumulator.customFields || []),
-          {
-            customFieldIdentifier: k,
-            selectedOptionIdentifiers: v.options,
-            dateStart: v.dateStart || null,
-            dateEnd: v.dateEnd || null,
-          },
+          customField,
         ],
       };
     }
@@ -150,6 +166,7 @@ export function mapRequestSelectedOptionsToStore(selectedOptions) {
           dateEnd: v.dateEnd ? moment.utc(v.dateEnd).format("YYYY-MM-DD") : null,
           dateStart: v.dateStart ? moment.utc(v.dateStart).format("YYYY-MM-DD") : null,
           options: v.dateOptions,
+          date: v.date || null,
         },
       };
     }
@@ -165,10 +182,26 @@ export function mapRequestSelectedOptionsToStore(selectedOptions) {
     return {
       ...accumulator,
       ...Object.fromEntries(
-        v.map((c) => [
-          c.customFieldIdentifier,
-          { options: c.selectedOptionIdentifiers },
-        ]),
+        v.map((c) => {
+          const fieldData = { options: c.selectedOptionIdentifiers };
+          
+          if (c.dateStart || c.dateEnd || c.date) {
+            fieldData.dateStart = c.dateStart || null;
+            fieldData.dateEnd = c.dateEnd || null;
+            fieldData.date = c.date || null;
+          }
+          
+          if (c.numberStart !== undefined || c.numberEnd !== undefined) {
+            fieldData.numberStart = c.numberStart ?? null;
+            fieldData.numberEnd = c.numberEnd ?? null;
+          }
+          
+          if (c.singleNumber !== undefined) {
+            fieldData.singleNumber = c.singleNumber ?? null;
+          }
+          
+          return [c.customFieldIdentifier, fieldData];
+        }),
       ),
     };
   }, {});

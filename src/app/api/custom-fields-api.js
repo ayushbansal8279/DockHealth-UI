@@ -2,10 +2,23 @@ import axios from './axios-heydoc';
 import { log } from '../helpers/log';
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { noop, showAlert } from '../helpers/utility-functions';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
-export function getAllCustomFields() {
+
+export function getAllCustomFields(
+  workspaceIdentifier,
+  hidden = false,
+  includeProfileTypeDetails = false,
+) {
+  const params = { hidden };
+  if (includeProfileTypeDetails) {
+    params.includeProfileTypeDetails = true;
+  }
   return axios
-    .get(`custom/field`)
+    .get(`custom/field`, {
+      ...withWorkspaceHeaders(workspaceIdentifier),
+      params,
+    })
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -13,10 +26,16 @@ export function getAllCustomFields() {
     });
 }
 
-export function getAllPatientCustomFields(active = true, patientIdentifier) {
+export function getAllPatientCustomFields(
+  active = true,
+  patientIdentifier,
+  workspaceIdentifier,
+  includeHidden = false,
+) {
   return axios
     .get(`custom/field/getAll/PATIENT`, {
-      params: { active, targetIdentifier: patientIdentifier },
+      ...withWorkspaceHeaders(workspaceIdentifier),
+      params: { active, targetIdentifier: patientIdentifier, includeHidden },
     })
     .then(({ data }) => data)
     .catch((error) => {
@@ -25,10 +44,13 @@ export function getAllPatientCustomFields(active = true, patientIdentifier) {
     });
 }
 
-export function getAllTaskListCustomFields(taskListIdentifier) {
+export function getAllTaskListCustomFields(
+  taskListIdentifier,
+  includeHidden = false,
+) {
   return axios
     .get(`custom/field/getAll/TASK`, {
-      params: { taskListIdentifier },
+      params: { taskListIdentifier, includeHidden },
     })
     .then(({ data }) => data)
     .catch((error) => {
@@ -37,9 +59,11 @@ export function getAllTaskListCustomFields(taskListIdentifier) {
     });
 }
 
-export function getAllProviderCustomFields() {
+export function getAllProviderCustomFields(includeHidden = false) {
   return axios
-    .get(`custom/field/getAll/PROVIDER`)
+    .get(`custom/field/getAll/PROVIDER`, {
+      params: { includeHidden },
+    })
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -74,14 +98,23 @@ export function getAllTaskCustomFields(targetIdentifier, taskListIdentifier) {
     });
 }
 
-export function addCustomField(customField, targetType, taskListIdentifier) {
+export function addCustomField(
+  customField,
+  targetType,
+  taskListIdentifier,
+  workspaceIdentifier,
+) {
   return axios
-    .post(`custom/field`, {
-      ...customField,
-      contextType: 'CUSTOM',
-      targetType,
-      taskListIdentifier,
-    })
+    .post(
+      `custom/field`,
+      {
+        ...customField,
+        contextType: 'CUSTOM',
+        targetType,
+        taskListIdentifier,
+      },
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -89,23 +122,36 @@ export function addCustomField(customField, targetType, taskListIdentifier) {
     });
 }
 
-export function updateCustomField(customField, targetType, taskListIdentifier) {
+export function updateCustomField(
+  customField,
+  targetType,
+  taskListIdentifier,
+  workspaceIdentifier,
+) {
   return axios
-    .put(`custom/field`, {
-      ...customField,
-      contextType: 'CUSTOM',
-      targetType,
-      taskListIdentifier,
-    })
+    .put(
+      `custom/field`,
+      {
+        ...customField,
+        contextType: 'CUSTOM',
+        targetType,
+        taskListIdentifier,
+      },
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
+    .then(({ data }) => data)
     .catch((error) => {
       log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export function deleteCustomField(identifier) {
+export function deleteCustomField(identifier, workspaceIdentifier) {
   return axios
-    .delete(`custom/field/${identifier}`)
+    .delete(
+      `custom/field/${identifier}`,
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -184,7 +230,12 @@ export function deleteCustomFiledGroup(customFiledGroupIdentifier) {
 }
 
 export function searchCustomFiledGroups(context, profileTypeIdentifier) {
-  if (context === 'PATIENT') {
+  if (
+    context === 'PATIENT' ||
+    context === 'PROVIDER' ||
+    context === 'TASK' ||
+    context === 'WORKFLOW'
+  ) {
     return axios
       .get(`/customFieldGroup/search?context=${context}`)
       .then(({ data }) => data)
@@ -285,5 +336,50 @@ export function uploadCustomFieldOptions(fileData, additionalConfig = {}, custom
         });
       }
       throw error;
+    });
+}
+
+export function updateCustomFieldScope(customFieldIdentifier, payload) {
+  return axios
+    .patch(`custom/field/updateScope/${customFieldIdentifier}`, payload)
+    .then(({ data }) => {
+      if (data.statusCode === 'SUCCESS') {
+        return data;
+      } else {
+        throw new Error(
+          data.errorMessage || 'Failed to update custom field scope',
+        );
+      }
+    })
+    .catch((error) => {
+      log(error);
+      throw new Error(
+        error?.response?.data?.errorMessage ||
+          error?.message ||
+          'Failed to update custom field scope',
+      );
+    });
+}
+
+export function duplicateCustomField(customFieldIdentifier) {
+  return axios
+    .post(`custom/field/duplicate/${customFieldIdentifier}`)
+    .then(({ data }) => {
+      if (data && (data.identifier || data.externalIdentifier)) {
+        return data;
+      }
+
+      const errMsg =
+        data?.errorMessage ||
+        'Failed to duplicate custom field (unexpected response)';
+      throw new Error(errMsg);
+    })
+    .catch((error) => {
+      log(error);
+      throw new Error(
+        error?.response?.data?.errorMessage ||
+          error?.message ||
+          'Failed to duplicate custom field',
+      );
     });
 }

@@ -71,7 +71,6 @@ const ListDetailsTasks = ({
   updateWorkflowStatus,
   loadTasksForTaskGroup,
   setClearSearch,
-  setClearFilter,
 }) => {
   window.disabledVirtualTaskList = false;
   const isVirtualizedList = useIsVirtualizedList();
@@ -231,7 +230,6 @@ const ListDetailsTasks = ({
           confirm: () => {
             if (isSortApplied) resetSort();
             if (isSearchApplied) setClearSearch(true);
-            if (areFiltersApplied) setClearFilter(true);
           },
           closeOnConfirm: true,
         }),
@@ -243,7 +241,6 @@ const ListDetailsTasks = ({
     isSearchApplied,
     isSortApplied,
     resetSort,
-    setClearFilter,
     setClearSearch,
   ]);
 

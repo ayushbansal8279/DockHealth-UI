@@ -10,8 +10,9 @@ import {
 } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useStore, getSmoothStepPath } from 'reactflow';
+import { useStore, getSmoothStepPath, useReactFlow } from '@xyflow/react';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
@@ -20,6 +21,7 @@ import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
 import { LabelsWrapper } from './styled';
 import OutcomeInputLabel from '../OutcomeInputLabel/OutcomeInputLabel';
+import { getEdgeParams } from '../LinkPath/helpers';
 
 const DecisionTaskLink = (props) => {
   const {
@@ -32,17 +34,26 @@ const DecisionTaskLink = (props) => {
     sourcePosition,
     targetPosition,
     data,
+    selected,
   } = props;
   const { outcome, link } = data;
   const { taskOutcomeIdentifier, name: outcomeName } = outcome || {};
   const { delayPeriod, delayPeriodUnit } = link || {};
+  const { getNodes } = useReactFlow();
+  const nodes = getNodes();
+  const sourceNode = nodes.find((n) => n.id === sourceTaskIdentifier);
+  const targetNode = nodes.find((n) => n.id === targetTaskIdentifier);
+  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
+    sourceNode,
+    targetNode,
+  );
   const [, edgeCenterX, edgeCenterY] = getSmoothStepPath({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
+    sourceX: selected ? sourceX : sx,
+    sourceY: selected ? sourceY : sy,
+    sourcePosition: selected ? sourcePosition : sourcePos,
+    targetX: selected ? targetX : tx,
+    targetY: selected ? targetY : ty,
+    targetPosition: selected ? targetPosition : targetPos,
   });
   const inputReference = useRef(null);
   const edgeLabelReference = useRef(null);
@@ -90,11 +101,7 @@ const DecisionTaskLink = (props) => {
   };
 
   const togglePeriodDelay = () => {
-    if (delayOptionsVisible) {
-      removeDelayPeriod();
-    } else {
-      openDelayPopover();
-    }
+    openDelayPopover();
   };
 
   const handleDelete = (callback, actionName = 'do this action') => {
@@ -110,21 +117,21 @@ const DecisionTaskLink = (props) => {
   const menuOptions = [
     {
       key: 'edit',
-      icon: <EditIcon style={{ height: 13 }} />,
+      icon: <EditIcon fontSize="small" color="inherit" />,
       label: `Edit outcome`,
       onClick: setEdited,
     },
     {
       key: 'delay',
-      icon: <CalendarIcon size={11} />,
+      icon: <CalendarIcon size={20} fill="black" />,
       label: `${
-        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+        delayPeriod && delayPeriodUnit ? 'Edit' : 'Add'
       } time until task`,
       onClick: togglePeriodDelay,
     },
     {
       key: 'delete',
-      icon: <DeleteOutlineIcon style={{ height: 13 }} />,
+      icon: <DeleteIcon fontSize="small" color="inherit" />,
       label: `Delete link`,
       onClick: () => handleDelete(deleteLink, 'Delete link'),
     },
@@ -246,6 +253,10 @@ const DecisionTaskLink = (props) => {
                   link={link}
                   onSubmit={handleDelayPeriodSubmit}
                   onClose={closeDelayPopover}
+                  removeButtonVisible={delayOptionsVisible}
+                  onRemove={() => {
+                    handleDelete(removeDelayPeriod, 'Remove time until task');
+                  }}
                 />
               </Paper>
             </ClickAwayListener>

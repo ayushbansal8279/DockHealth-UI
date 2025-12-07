@@ -10,6 +10,7 @@ import { applyTemplate } from 'actions/template-bundle-actions';
 
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import { TasksToolbarContainer, TaskToolbarAddTask } from './styled';
 
 const TasksToolbar = (props) => {
   const {
@@ -55,8 +56,8 @@ const TasksToolbar = (props) => {
   );
 
   return (
-    <Grid container direction="row">
-      <Grid item xs>
+    <TasksToolbarContainer>
+      <TaskToolbarAddTask>
         <QuickAddTaskInput
           ref={quickAddTaskInputReference}
           taskListIdentifier={taskListIdentifier}
@@ -72,12 +73,12 @@ const TasksToolbar = (props) => {
           }}
           iconColorActive={iconColorActive}
         />
-      </Grid>
+      </TaskToolbarAddTask>
       <TaskTemplateApplicator
         onTemplateSelect={handleApplyTemplate}
         iconColorActive={iconColorActive}
       />
-    </Grid>
+    </TasksToolbarContainer>
   );
 };
 

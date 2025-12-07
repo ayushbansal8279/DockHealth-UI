@@ -22,7 +22,6 @@ import {
 } from 'selectors/user-selectors';
 import {
   currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
   taskListMembersSelector,
 } from 'selectors/task-list-selectors';
 import { openModal } from 'modal/actions';
@@ -68,6 +67,7 @@ import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/
 import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
 import { getWorkspaceTitle } from '../../workspaces/workspace-title-helpers';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -77,12 +77,10 @@ const ListDetailsHeader = (props) => {
     searchValue,
     onSearchChange,
     additionalOptions,
-    clearFilter,
-    setClearFilter,
     calendarView = false,
   } = props;
   const dispatch = useDispatch();
-  const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
+  const currentTasksStatus = useSelector(userPreferenceStatusSelector);
   const listUsers = useSelector(taskListMembersSelector);
   const taskList = useSelector(currentTaskListSelector);
   const {
@@ -351,8 +349,6 @@ const ListDetailsHeader = (props) => {
           onQuickFilterUpdate={handleQuickFilterUpdate}
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
-          clearFilter={clearFilter}
-          setClearFilter={setClearFilter}
           showFilterCount
         />
         {restrictions?.editSettings !== DISABLED &&

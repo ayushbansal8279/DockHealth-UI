@@ -18,11 +18,13 @@ import { ProfileBuilderContext } from '../ProfileBuilder';
 import {
   createProfileFieldType,
   editProfileFieldType,
+  deleteProfileFieldType,
 } from '@/app/api/profile-type-field-api';
 import { showAlert } from 'helpers/utility-functions';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { addCustomField } from '@/app/api/custom-fields-api';
+import { TargetType } from '@/app/helpers/custom-fields-helpers';
 import {
   FieldArea,
   FieldIconContainer,
@@ -68,7 +70,9 @@ const SelectedField = ({ field, category, id }) => {
     zIndex: isDragging ? 9999 : 'auto',
   };
 
-  const { setSelectedCategories } = useContext(ProfileBuilderContext);
+  const { setSelectedCategories, setCustomGroups } = useContext(
+    ProfileBuilderContext,
+  );
 
   const handleEditClick = () => {
     dispatch(
@@ -153,11 +157,11 @@ const SelectedField = ({ field, category, id }) => {
       };
 
       const profilePayload = {
-        fieldCategoryType: context,
+        fieldCategoryType: 'GLOBAL',
         fieldType: field.fieldType,
         name: value,
         contextType: 'CUSTOM',
-        targetType: context,
+        targetType: TargetType.GLOBAL,
         profileType: {
           identifier,
         },
@@ -204,6 +208,12 @@ const SelectedField = ({ field, category, id }) => {
 
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
           fields: updatedSavedRefrenceFields,
+        }).then((updatedGroup) => {
+          setCustomGroups((prev) =>
+            prev.map((cg) =>
+              cg.identifier === category.identifier ? updatedGroup : cg,
+            ),
+          );
         });
 
         updateCustomGroupsData(updatedSavedActualFields);
@@ -238,7 +248,20 @@ const SelectedField = ({ field, category, id }) => {
 
       CustomFieldApi.updateCustomFiledGroup(category.identifier, {
         fields: updatedSavedRefrenceFields,
-      });
+      })
+        .then((updatedGroup) => {
+          setCustomGroups((prev) =>
+            prev.map((cg) =>
+              cg.identifier === category.identifier ? updatedGroup : cg,
+            ),
+          );
+        })
+        .then(() => {
+          return deleteProfileFieldType(field.identifier);
+        })
+        .catch((error) => {
+          console.error('Error removing field from group:', error);
+        });
 
       const allRemainingFields = [
         ...updatedSavedActualFields,

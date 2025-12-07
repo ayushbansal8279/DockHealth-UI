@@ -105,3 +105,15 @@ export const normalizeDateOnlyIntent = (isoDateString) => {
 
   return isoDateString;
 };
+
+export function formatDateTooltip(date, intent, options = {}) {
+  const { dateFormat = 'MMM DD, YYYY', timeFormat = 'hh:mm a' } = options;
+
+  const m = intent === DueDateIntent.DATE ? moment(date).utc() : moment(date);
+  if (!m.isValid()) return String(date);
+
+  const base = m.format(dateFormat);
+  return shouldDisplayTime(date, intent)
+    ? `${base} @ ${m.format(timeFormat)}`
+    : base;
+}

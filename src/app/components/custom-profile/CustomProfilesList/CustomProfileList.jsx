@@ -81,14 +81,14 @@ import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
 import { ProfileStatus, OperationType } from '@/app/helpers/profile-helpers';
 import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import { ToolbarIconImg } from 'components/patients/PatientsToolbar/styled';
-import ReusableDataGrid from './DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import { DataGridWrapper, StyledLink } from './styled';
 import RelationshipLinks from '../RelationshipLinks';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import { BulkEditSectionContainer } from '@/app/views/user-group/styled';
-
-const DATASET_SIZE_THRESHOLD = 100;
+import { formatDateTooltip } from '@/app/helpers/date-intent-helpers';
+import TruncatedCell from '../../common/TruncatedCell/TruncatedCell';
 
 const CustomProfileListContent = ({
   profileTypeIdentifier,
@@ -168,9 +168,9 @@ const CustomProfileListContent = ({
 
   const fetchProfilesInternal = useCallback(
     (status = profileStatus) => {
-      dispatch(getProfiles(profileTypeIdentifier, status));
+      dispatch(getProfiles(profileTypeIdentifier, status, fetchProfiles));
     },
-    [dispatch, profileTypeIdentifier, profileStatus],
+    [dispatch, profileTypeIdentifier, profileStatus, fetchProfiles],
   );
 
   const fetchProfileTypesInternal = useCallback(() => {
@@ -210,6 +210,35 @@ const CustomProfileListContent = ({
     fetchProfileTypeFieldsInternal,
     fetchFiltersInternal,
   ]);
+
+  useEffect(() => {
+    hasInitializedDefaultColumns.current = false;
+  }, [profileTypeIdentifier]);
+
+  useEffect(() => {
+    if (
+      !hasInitializedDefaultColumns.current &&
+      profileTypeFields.length > 0 &&
+      (!filters || filters.length === 0)
+    ) {
+      const profileNameFields = profileTypeFields
+        .filter((field) => field.displayOptions?.includes('PROFILE_NAME'))
+        .map((field) => field.identifier);
+
+      if (profileNameFields.length > 0) {
+        setFilters(profileNameFields);
+        dispatch(
+          updateProfileListPreferences(
+            {
+              listDisplayColumns: profileNameFields,
+            },
+            profileTypeIdentifier,
+          ),
+        );
+      }
+      hasInitializedDefaultColumns.current = true;
+    }
+  }, [profileTypeFields, filters, profileTypeIdentifier, dispatch]);
 
   useEffect(() => {
     fetchProfilesInternal();
@@ -442,6 +471,7 @@ const CustomProfileListContent = ({
   };
 
   const buttonReference = useRef(null);
+  const hasInitializedDefaultColumns = useRef(false);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
 
   const handlePopoverOpen = () => {
@@ -478,6 +508,10 @@ const CustomProfileListContent = ({
     downloadProfileData(profileTypeIdentifier, filename);
   };
 
+  const renderTruncatedCell = (content, tooltipText) => (
+    <TruncatedCell content={content} tooltipText={tooltipText} />
+  );
+
   const columns = [
     ...(isGuestOrDockLite || isViewOnly
       ? []
@@ -486,7 +520,14 @@ const CustomProfileListContent = ({
             field: 'isSelected',
             headerName: 'SELECT',
             flex: 0.1,
+            minWidth: 60,
+            filterable: false,
             sortable: false,
+            disableColumnMenu: true,
+            disableExport: true,
+            disableReorder: true,
+            groupable: false,
+            hideable: false,
             headerClassName: 'no-sort-icon',
             renderHeader: () =>
               renderCheckboxColumnHeader({
@@ -517,30 +558,48 @@ const CustomProfileListContent = ({
               field: field.identifier,
               headerName: field.name,
               flex: 1,
+              minWidth: 150,
               filterable: true,
               sortable: true,
-              valueGetter: (params) => {
-                return params.row[field.name] ?? '';
+              valueGetter: (value, row) => {
+                if (!row) {
+                  return '';
+                }
+                return row[field.name] ?? '';
               },
               renderCell: (params) => {
+                if (!params || !params.row) {
+                  return '';
+                }
                 const value = params.row[field.name];
 
                 if (field.fieldType === FieldType.DATE && value) {
+                  const tooltipText = formatDateTooltip(
+                    value.date,
+                    value.intent,
+                  );
                   return (
-                    <DateLabel date={value.date} dueDateIntent={value.intent} />
+                    <DateLabel
+                      date={value.date}
+                      dueDateIntent={value.intent}
+                      tootipTitle={tooltipText}
+                    />
                   );
                 }
 
                 if (field.fieldType === FieldType.HYPERLINK) {
                   if (!value) return '';
-                  return (
+                  const href = value.startsWith('http') ? value : `//${value}`;
+
+                  return renderTruncatedCell(
                     <StyledLink
-                      href={value.startsWith('http') ? value : `//${value}`}
+                      href={href}
                       target="_blank"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {value}
-                    </StyledLink>
+                    </StyledLink>,
+                    value,
                   );
                 }
 
@@ -564,7 +623,7 @@ const CustomProfileListContent = ({
                   );
                 }
 
-                return value;
+                return renderTruncatedCell(value);
               },
             }
           : null;
@@ -576,10 +635,14 @@ const CustomProfileListContent = ({
             field: 'profileStatus',
             headerName: 'Status',
             flex: 0.2,
+            minWidth: 100,
             sortable: true,
             filterable: true,
-            valueGetter: (params) => {
-              return params.row.profileStatus || '';
+            valueGetter: (value, row) => {
+              if (!row) {
+                return '';
+              }
+              return row.profileStatus || '';
             },
             renderCell: ({ row }) => {
               const status = row.profileStatus;
@@ -592,12 +655,38 @@ const CustomProfileListContent = ({
                   ? 'Archived'
                   : status;
 
-              return displayStatus;
+              return renderTruncatedCell(displayStatus);
             },
           },
         ]
       : []),
   ];
+
+  const pinnedProfileNameFields = useMemo(() => {
+    const profileNameFields = profileTypeFields
+      .filter(
+        (field) =>
+          field.displayOptions?.includes('PROFILE_NAME') &&
+          filters.includes(field.identifier),
+      )
+      .slice(0, 2)
+      .map((field) => field.identifier);
+    return profileNameFields;
+  }, [profileTypeFields, filters]);
+
+  const pinnedColumns = useMemo(() => {
+    const leftPinned = [];
+
+    if (!isGuestOrDockLite && !isViewOnly) {
+      leftPinned.push('isSelected');
+    }
+
+    leftPinned.push(...pinnedProfileNameFields);
+
+    return {
+      ...(leftPinned.length > 0 ? { left: leftPinned } : {}),
+    };
+  }, [isGuestOrDockLite, isViewOnly, pinnedProfileNameFields]);
 
   // TODO: fix filter
   const filteredProfiles = useMemo(() => {
@@ -898,6 +987,7 @@ const CustomProfileListContent = ({
             loading={loading}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
+            pinnedColumns={pinnedColumns}
           />
         </DataGridWrapper>
       </ViewLayout>
@@ -924,6 +1014,7 @@ const CustomProfileListContent = ({
           label="object"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
+          importFileTypeHint={'Drag & drop your CSV file here'}
         />
       </Dialog>
       <ProfileUndoAlert onUndo={handleUndo} />

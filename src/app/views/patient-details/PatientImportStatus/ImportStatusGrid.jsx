@@ -119,8 +119,8 @@ const [rows, setRows] = useState([]);
   ];
 
   return (
-    <Grid container xs={12} item justifyContent="center" sx={{ paddingTop:'25px', overflow: 'hidden' }}>
-      <Grid item xs={12} xl={11} md={12} lg={11} >
+    <Grid container size={12} item justifyContent="center" sx={{ paddingTop:'25px', overflow: 'hidden' }}>
+      <Grid item size={12} xl={11} md={12} lg={11} >
           <StyledDataGrid
             columns={defaultColumns}
             getRowId={(row) => row.identifier}

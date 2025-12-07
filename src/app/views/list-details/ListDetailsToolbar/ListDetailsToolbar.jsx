@@ -6,7 +6,6 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import ViewColumn from '@mui/icons-material/ViewColumn';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
-import { updateTaskStatusToFilter } from 'actions/task-list-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userProfileSelector,
@@ -14,10 +13,7 @@ import {
   userHasBoardViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
-} from 'selectors/task-list-selectors';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import queryString from 'query-string';
@@ -34,6 +30,9 @@ import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
+import * as UserPreferenceActions from 'actions/user-preference-actions';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const ListDetailsToolbar = ({
   additionalOptions,
@@ -48,7 +47,7 @@ const ListDetailsToolbar = ({
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
+  const tasksStatus = useSelector(userPreferenceStatusSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
   const { taskListIdentifier, restrictCustomization } = taskList || {};
@@ -114,10 +113,16 @@ const ListDetailsToolbar = ({
 
   const handleChangeTasksStatus = useCallback(
     (status) => {
-      dispatch(updateTaskStatusToFilter(status));
+      dispatch(
+        UserPreferenceActions.updateTaskListStatus(
+          UserPreferenceContextType.TASK_LIST,
+          taskListIdentifier,
+          status,
+        ),
+      );
       dispatch(getCurrentListTasks());
     },
-    [dispatch],
+    [dispatch, taskListIdentifier],
   );
 
   const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);

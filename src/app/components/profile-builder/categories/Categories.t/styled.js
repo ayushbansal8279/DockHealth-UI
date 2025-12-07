@@ -21,7 +21,7 @@ export const CategoryWrapper = styled.div`
 export const AddCategoryWrapper = styled.div`
   border: 2px dashed ${palette.iron};
   border-radius: 6px;
-  height: 52px;
+  height: 48px;
   text-align: center;
   align-content: center;
   color: ${palette.coolGrey1};
@@ -59,7 +59,6 @@ export const SingleField = styled.div`
 export const CategoryLabel = styled.div`
   font-weight: 500;
   line-height: 20.16px;
-  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

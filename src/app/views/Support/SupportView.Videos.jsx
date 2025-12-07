@@ -112,16 +112,16 @@ const SupportSectionViewVideos = () => (
       alignItems="center"
       justifyContent="space-between"
       item
-      xs={12}
+      size={12}
     >
-      <Grid item xs={6} container justifyContent="flex-start">
+      <Grid item size={6} container justifyContent="flex-start">
         <Typography variant="h2">
           <b>HOW TO VIDEOS</b>
         </Typography>
       </Grid>
       <Grid
         item
-        xs={6}
+        size={6}
         container
         justifyContent="flex-end"
         direction="row"
@@ -140,7 +140,7 @@ const SupportSectionViewVideos = () => (
         </Typography>
       </Grid>
     </Grid>
-    <Grid item xs={12}>
+    <Grid item size={12}>
       <Spacing vertical={4} />
     </Grid>
     <SupportVideosContainer>

@@ -156,8 +156,11 @@ const BillingElement = ({
 
 const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
   <>
-    <Spacing vertical={2} />
-    <Grid item sm={12} container wrap="nowrap" justifyContent="flex-end">
+    <Grid
+      container
+      size={{ sm: 12 }}
+      sx={{ mt: 2, justifyContent: 'flex-end', flexWrap: 'nowrap' }}
+    >
       <H3>
         <span>By selecting Subscribe I agree to the </span>
         <Anchor
@@ -169,12 +172,10 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
       </H3>
     </Grid>
     <Grid
-      item
-      sm={12}
+      size={{ sm: 12 }}
       container
       justifyContent="flex-end"
-      wrap="nowrap"
-      sx={{ mb: 2 }}
+      sx={{ mb: 2, flexWrap: 'nowrap' }}
     >
       <Button
         onClick={cancelSaveBillingClick}
@@ -199,12 +200,10 @@ const UpdateBillingElement = ({
 }) =>
   isUpdatingBilling && (
     <Grid
-      item
-      sm={12}
+      size={{ sm: 12 }}
       container
       justifyContent="flex-end"
-      wrap="nowrap"
-      sx={{ mb: 2 }}
+      sx={{ mb: 2, flexWrap: 'nowrap' }}
     >
       <Button
         onClick={cancelUpdateBilling}
@@ -233,17 +232,21 @@ const CreditPaymentForm = ({
   const [addressLine2Visible, toggleAddressLine2Visible] = useToggle(false);
 
   return (
-    <FormContainer container spacing={2} visible={isUpdatingBilling}>
-      <Grid item sm={12}>
+    <FormContainer
+      container
+      spacing={2}
+      visible={isUpdatingBilling}
+      sx={{ width: '100%' }}
+    >
+      <Grid size={{ sm: 12 }} sx={{ mt: 2 }}>
         <MontserratTypography variant="h4">
           Credit card information
         </MontserratTypography>
       </Grid>
-      <Spacing vertical={3} />
-      <Grid item sm={12} md={6}>
+      <Grid size={{ sm: 12, md: 6 }} sx={{ mt: 1 }}>
         <FormInput required name="nameOnCard" label="Name on card" />
       </Grid>
-      <Grid item sm={12} md={6}>
+      <Grid size={{ sm: 12, md: 6 }} sx={{ mt: 1 }}>
         <BillingElement
           id="card-number"
           name="cardNumber"
@@ -271,7 +274,7 @@ const CreditPaymentForm = ({
           }
         />
       </Grid>
-      <Grid item sm={12} md={6}>
+      <Grid size={{ sm: 12, md: 6 }}>
         <BillingElement
           id="card-expiry"
           name="cardExpiration"
@@ -282,7 +285,7 @@ const CreditPaymentForm = ({
           shrink
         />
       </Grid>
-      <Grid item sm={12} md={6}>
+      <Grid size={{ sm: 12, md: 6 }}>
         <BillingElement
           id="card-cvc"
           name="cardCvc"
@@ -294,17 +297,15 @@ const CreditPaymentForm = ({
           shrink
         />
       </Grid>
-      <Spacing vertical={4} />
-      <Grid item sm={12}>
+      <Grid size={{ sm: 12 }} sx={{ mt: 2 }}>
         <MontserratTypography variant="h4">
           Billing address
         </MontserratTypography>
       </Grid>
-      <Spacing vertical={3} />
-      <Grid item sm={12}>
+      <Grid size={{ sm: 12 }} sx={{ mt: 1 }}>
         <FormInput required name="address" label="Address line 1" />
       </Grid>
-      <Grid item sm={12}>
+      <Grid size={{ sm: 12 }}>
         <MontserratTypography variant="h4">
           <AddressLineToggleContainer onClick={toggleAddressLine2Visible}>
             <span>{addressLine2Visible ? '×' : '+'}</span>
@@ -316,13 +317,13 @@ const CreditPaymentForm = ({
           <FormInput name="address2" label="" />
         </StyledCollapse>
       </Grid>
-      <Grid item sm={12} md={3}>
+      <Grid size={{ sm: 12, md: 3 }}>
         <FormInput required name="zip" label="ZIP" />
       </Grid>
-      <Grid item sm={12} md={6}>
+      <Grid size={{ sm: 12, md: 6 }}>
         <FormInput required name="city" label="City" />
       </Grid>
-      <Grid item sm={12} md={3} sx={{ mb: 5 }}>
+      <Grid size={{ sm: 12, md: 3 }} sx={{ mb: 5 }}>
         <RHFAutocomplete
           name="state"
           label="State"
@@ -330,9 +331,15 @@ const CreditPaymentForm = ({
           options={STATE_LIST_OPTIONS}
         />
       </Grid>
-      {hasDiscountCode && <Grid item sm={12} md={9} />}
+      {hasDiscountCode && <Grid size={{ sm: 12, md: 9 }} />}
       {hasDiscountCode && (
-        <Grid item sm={12} md={3} wrap="nowrap" justifyContent="flex-end">
+        <Grid
+          size={{ sm: 12, md: 3 }}
+          sx={{
+            justifyContent: 'flex-end',
+            flexWrap: 'nowrap',
+          }}
+        >
           <FormInput name="discountCode" label="Discount code" />
         </Grid>
       )}

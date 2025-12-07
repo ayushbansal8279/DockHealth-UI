@@ -991,14 +991,16 @@ const TaskItem = React.memo(
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
-        const indentSubTask =
-          !(
-            origin === TaskOrigin.DASHBOARD ||
-            origin === TaskOrigin.PERSON ||
-            (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
-            !!searchValue ||
-            !!sort.key
-          ) ?? false;
+        const indentSubTask = !(
+          origin === TaskOrigin.DASHBOARD ||
+          origin === TaskOrigin.PERSON ||
+          (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
+          !!searchValue ||
+          !!sort.key
+        )
+          ? true
+          : false;
+
         return (
           <StickyMainTaskItemCell
             isLastChild={isLastChild}
@@ -1112,8 +1114,11 @@ const TaskItem = React.memo(
 
     const getReduceWidth = (columnName) => {
       return isSubtask &&
-        (origin === 'LIST' || origin === 'PATIENT' || origin === 'TEMPLATE') &&
-        !selectedFilters &&
+        (origin === 'LIST' ||
+          origin === 'PATIENT' ||
+          origin === 'TEMPLATE' ||
+          origin === 'CUSTOM_PROFILE') &&
+        (!selectedFilters || Object.keys(selectedFilters).length === 0) &&
         !searchValue &&
         !sort.key &&
         getColumnOrder(columnName) === 0
@@ -1406,7 +1411,11 @@ const TaskItem = React.memo(
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
                     <TaskItemDropdown
-                      value={task?.priority}
+                      value={
+                        task?.priority === TaskPriority.LOW
+                          ? ''
+                          : task?.priority
+                      }
                       onChange={handlePriorityChange}
                       field={{
                         options: [

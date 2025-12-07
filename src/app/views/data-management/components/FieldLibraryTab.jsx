@@ -1,12 +1,25 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Box, Button, CircularProgress, Tooltip, Chip, IconButton } from '@mui/material';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import {
+  Box,
+  Button,
+  Tooltip,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { useDispatch } from 'react-redux';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
-import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { TabContent, ToolbarStack, DataGridContainer } from '../styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { openModal } from '@/app/modal/actions';
@@ -15,15 +28,20 @@ import AlertMessages from '@/app/alert/AlertMessages';
 import {
   deleteCustomField,
   getAllCustomFields,
+  duplicateCustomField,
 } from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
+import { ContextType } from '@/app/helpers/custom-fields-helpers';
+import { ProfileTypeCell } from './ProfileTypeCell';
 
-const FieldLibraryTab = () => {
+const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const dispatch = useDispatch();
   const [searchPhrase, setSearchPhrase] = useState('');
   const [fieldLibrary, setFieldLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedField, setSelectedField] = useState(null);
   const apiRef = useGridApiRef();
 
   const getFieldTypeInfo = (fieldType) => {
@@ -66,27 +84,36 @@ const FieldLibraryTab = () => {
     return profileTypeDetails.map((detail) => detail.name || 'Unknown');
   };
 
-  const getCategoryFromTargetType = (targetType) => {
-    return formatObjectCase(targetType);
-  };
+  const getCategoryFromContextType = (contextType) => {
+    if (!contextType) return '';
 
-  useEffect(() => {
-    const fetchFields = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const fields = await getAllCustomFields();
-        setFieldLibrary(fields || []);
-      } catch (err) {
-        setError(err.message);
-        dispatch(showGlobalErrorAlert());
-      } finally {
-        setLoading(false);
-      }
+    const contextTypeMap = {
+      [ContextType.PREDEFINED]: 'Predefined',
+      [ContextType.CUSTOM]: 'Custom',
     };
 
-    fetchFields();
-  }, [dispatch]);
+    return contextTypeMap[contextType] || contextType;
+  };
+
+  const fetchFields = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const fields = await getAllCustomFields(workspaceIdentifier, true, true);
+      setFieldLibrary(fields || []);
+    } catch (err) {
+      setError(err.message);
+      dispatch(showGlobalErrorAlert());
+    } finally {
+      setLoading(false);
+    }
+  }, [workspaceIdentifier, dispatch]);
+
+  useEffect(() => {
+    if (!isWorkspace || workspaceIdentifier) {
+      fetchFields();
+    }
+  }, [workspaceIdentifier]);
 
   const handleSearchInputChange = (value) => {
     setSearchPhrase(value);
@@ -98,13 +125,9 @@ const FieldLibraryTab = () => {
         options: {
           type: 'GLOBAL',
         },
-        onAdded: async (customField) => {
-          try {
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
-          } catch (err) {
-            dispatch(showGlobalErrorAlert());
-          }
+        workspaceIdentifier,
+        onAdded: (customField) => {
+          setFieldLibrary((prev) => [...prev, customField]);
         },
       }),
     );
@@ -117,13 +140,15 @@ const FieldLibraryTab = () => {
           type: 'GLOBAL',
         },
         customField: field,
-        onUpdated: async (updatedField) => {
-          try {
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
-          } catch (err) {
-            dispatch(showGlobalErrorAlert());
-          }
+        workspaceIdentifier,
+        onUpdated: (updatedField) => {
+          setFieldLibrary((prev) =>
+            prev.map((field) =>
+              field.identifier === updatedField.identifier
+                ? updatedField
+                : field,
+            ),
+          );
         },
       }),
     );
@@ -137,10 +162,11 @@ const FieldLibraryTab = () => {
           'Are you sure you want to delete this field from the library? This action cannot be undone.',
         confirm: async () => {
           try {
-            await deleteCustomField(field.identifier);
+            await deleteCustomField(field.identifier, workspaceIdentifier);
             dispatch(showGlobalAlert(AlertMessages.DELETED));
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
+            setFieldLibrary((prev) =>
+              prev.filter((f) => f.identifier !== field.identifier),
+            );
           } catch (err) {
             dispatch(showGlobalErrorAlert());
           }
@@ -149,13 +175,52 @@ const FieldLibraryTab = () => {
     );
   };
 
+  const handleMenuClick = (event, field) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedField(field);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuExited = () => {
+    setSelectedField(null);
+  };
+
+  const handleChangeScopeClick = () => {
+    dispatch(
+      openModal('ScopeChange', {
+        customField: selectedField,
+        workspaceIdentifier,
+        onScopeChanged: () => {
+          fetchFields();
+        },
+      }),
+    );
+    handleMenuClose();
+  };
+
+  const handleDuplicateFieldClick = async (field) => {
+    if (!field?.identifier) return;
+
+    try {
+      const duplicatedField = await duplicateCustomField(field.identifier);
+      dispatch(showGlobalAlert(AlertMessages.CREATED));
+      setFieldLibrary((prev) => [...prev, duplicatedField]);
+    } catch (error) {
+      console.error('Error duplicating field:', error);
+      dispatch(showGlobalErrorAlert());
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
         field: 'fieldType',
         headerName: 'Type',
-        width: 80,
-        flex: 0,
+        flex: 0.2,
+        minWidth: 60,
         sortable: false,
         filterable: false,
         renderCell: (params) => {
@@ -163,46 +228,38 @@ const FieldLibraryTab = () => {
           return (
             <Tooltip title={fieldTypeInfo.placeholder} arrow>
               <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                width="100%"
-                height="100%"
+                sx={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid #e0e0e0',
+                }}
               >
-                <Box
-                  sx={{
-                    width: '32px',
-                    height: '32px',
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: '1px solid #e0e0e0',
-                  }}
-                >
-                  {fieldTypeInfo.img ? (
-                    <img
-                      src={fieldTypeInfo.img}
-                      alt={fieldTypeInfo.placeholder}
-                      style={{
-                        width: '20px',
-                        height: '20px',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        fontSize: '12px',
-                        color: '#666',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      ?
-                    </Box>
-                  )}
-                </Box>
+                {fieldTypeInfo.img ? (
+                  <img
+                    src={fieldTypeInfo.img}
+                    alt={fieldTypeInfo.placeholder}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      objectFit: 'contain',
+                    }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      fontSize: '12px',
+                      color: '#666',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    ?
+                  </Box>
+                )}
               </Box>
             </Tooltip>
           );
@@ -211,111 +268,54 @@ const FieldLibraryTab = () => {
       {
         field: 'name',
         headerName: 'Field Name',
-        width: 250,
         flex: 1.25,
+        minWidth: 200,
       },
       {
-        field: 'targetType',
+        field: 'contextType',
         headerName: 'Category',
-        width: 150,
         flex: 1,
+        minWidth: 100,
         renderCell: (params) => {
-          const category = getCategoryFromTargetType(params.value);
+          const category = getCategoryFromContextType(params.value);
           return category || '';
         },
       },
       {
         field: 'profileTypeDetails',
         headerName: 'Objects',
-        width: 200,
         flex: 1.5,
-        renderCell: (params) => {
-          const profileTypeNames = getProfileTypeNames(params.value);
-
-          if (profileTypeNames.length === 0) {
-            return '';
-          }
-
-          return (
-            <Box
-              display="flex"
-              alignItems="center"
-              height="100%"
-              gap={0.5}
-              flexWrap="wrap"
-            >
-              {profileTypeNames.slice(0, 2).map((name, index) => (
-                <Chip
-                  key={index}
-                  label={name}
-                  size="small"
-                  sx={{
-                    backgroundColor: '#f5f5f5',
-                    color: '#333',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    height: '24px',
-                    '& .MuiChip-label': {
-                      padding: '0 8px',
-                      fontWeight: 500,
-                    },
-                  }}
-                />
-              ))}
-              {profileTypeNames.length > 2 && (
-                <Chip
-                  label={`+${profileTypeNames.length - 2}`}
-                  size="small"
-                  sx={{
-                    backgroundColor: '#f5f5f5',
-                    color: '#333',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    height: '24px',
-                    '& .MuiChip-label': {
-                      padding: '0 8px',
-                      fontWeight: 500,
-                    },
-                  }}
-                />
-              )}
-            </Box>
-          );
-        },
+        minWidth: 250,
+        renderCell: (params) => (
+          <ProfileTypeCell
+            profileTypeNames={getProfileTypeNames(params.value)}
+          />
+        ),
       },
       {
         field: 'validationRegexDescription',
         headerName: 'Format',
-        width: 150,
         flex: 1,
+        minWidth: 250,
         renderCell: (params) => {
           return params.value || '';
         },
       },
       {
         field: 'actions',
-        headerName: 'Actions',
-        width: 120,
-        flex: 0,
+        headerName: 'Options',
+        minWidth: 80,
+        flex: 0.2,
         sortable: false,
         filterable: false,
         renderCell: (params) => (
           <Box display="flex" alignItems="center" height="100%">
             <IconButton
               size="small"
-              onClick={() => handleEditFieldClick(params.row)}
+              onClick={(e) => handleMenuClick(e, params.row)}
               sx={{ padding: '4px' }}
             >
-              <EditIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={() => handleDeleteFieldClick(params.row)}
-              sx={{ padding: '4px' }}
-            >
-              <DeleteIcon fontSize="small" />
+              <MoreVertIcon fontSize="small" />
             </IconButton>
           </Box>
         ),
@@ -325,49 +325,78 @@ const FieldLibraryTab = () => {
       getFieldTypeInfo,
       formatObjectCase,
       getProfileTypeNames,
-      getCategoryFromTargetType,
+      getCategoryFromContextType,
     ],
   );
 
   const filteredFields = useMemo(() => {
-    if (!searchPhrase) return fieldLibrary;
-    return fieldLibrary.filter((field) => {
-      const searchLower = searchPhrase.toLowerCase();
-      const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
-      const category = getCategoryFromTargetType(field.targetType);
+    let filtered = fieldLibrary;
 
-      return (
-        field.name?.toLowerCase().includes(searchLower) ||
-        category?.toLowerCase().includes(searchLower) ||
-        field.targetType?.toLowerCase().includes(searchLower) ||
-        field.fieldType?.toLowerCase().includes(searchLower) ||
-        field.validationRegexDescription?.toLowerCase().includes(searchLower) ||
-        profileTypeNames.some((name) =>
-          name.toLowerCase().includes(searchLower),
-        )
+    if (isWorkspace) {
+      filtered = filtered.filter(
+        (field) => field.contextType !== ContextType.PREDEFINED,
       );
-    });
+    }
+
+    if (!searchPhrase) {
+      return [...filtered].sort((a, b) => {
+        if (
+          a.contextType === ContextType.PREDEFINED &&
+          b.contextType !== ContextType.PREDEFINED
+        ) {
+          return -1;
+        }
+        if (
+          a.contextType !== ContextType.PREDEFINED &&
+          b.contextType === ContextType.PREDEFINED
+        ) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+
+    return filtered
+      .filter((field) => {
+        const searchLower = searchPhrase.toLowerCase();
+        const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
+        const category = getCategoryFromContextType(field.contextType);
+
+        return (
+          field.name?.toLowerCase().includes(searchLower) ||
+          category?.toLowerCase().includes(searchLower) ||
+          field.contextType?.toLowerCase().includes(searchLower) ||
+          field.fieldType?.toLowerCase().includes(searchLower) ||
+          field.validationRegexDescription
+            ?.toLowerCase()
+            .includes(searchLower) ||
+          profileTypeNames.some((name) =>
+            name.toLowerCase().includes(searchLower),
+          )
+        );
+      })
+      .sort((a, b) => {
+        if (
+          a.contextType === ContextType.PREDEFINED &&
+          b.contextType !== ContextType.PREDEFINED
+        ) {
+          return -1;
+        }
+        if (
+          a.contextType !== ContextType.PREDEFINED &&
+          b.contextType === ContextType.PREDEFINED
+        ) {
+          return 1;
+        }
+        return 0;
+      });
   }, [
     fieldLibrary,
     searchPhrase,
+    isWorkspace,
     getProfileTypeNames,
-    getCategoryFromTargetType,
+    getCategoryFromContextType,
   ]);
-
-  if (loading) {
-    return (
-      <TabContent>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="400px"
-        >
-          <CircularProgress />
-        </Box>
-      </TabContent>
-    );
-  }
 
   if (error) {
     return (
@@ -415,8 +444,70 @@ const FieldLibraryTab = () => {
           rows={filteredFields}
           getRowId={(row) => row.identifier}
           apiRef={apiRef}
+          loading={loading}
         />
       </DataGridContainer>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        onExited={handleMenuExited}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem
+            onClick={() => {
+              handleEditFieldClick(selectedField);
+              handleMenuClose();
+            }}
+          >
+            <ListItemIcon>
+              <EditIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Edit</ListItemText>
+          </MenuItem>
+        )}
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem onClick={handleChangeScopeClick}>
+            <ListItemIcon>
+              <SwapHorizIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Change Scope</ListItemText>
+          </MenuItem>
+        )}
+        <MenuItem
+          onClick={() => {
+            handleDuplicateFieldClick(selectedField);
+            handleMenuClose();
+          }}
+        >
+          <ListItemIcon>
+            <FileCopyIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Duplicate</ListItemText>
+        </MenuItem>
+        {selectedField?.contextType !== ContextType.PREDEFINED && (
+          <MenuItem
+            onClick={() => {
+              handleDeleteFieldClick(selectedField);
+              handleMenuClose();
+            }}
+          >
+            <ListItemIcon>
+              <DeleteIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Delete</ListItemText>
+          </MenuItem>
+        )}
+      </Menu>
     </TabContent>
   );
 };

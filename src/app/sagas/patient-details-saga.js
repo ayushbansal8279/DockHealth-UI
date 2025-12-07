@@ -26,7 +26,6 @@ import {
   patientTasksSortSelector,
   currentPatientIdentifierSelector,
   currentFolderIdentifierSelector,
-  currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
@@ -44,14 +43,16 @@ import {
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { log } from 'helpers/log';
-import {
-  getFiltersStorageKey,
-  getQuickFilterStorageKey,
-  getSortStorageKey,
-} from 'helpers/mega-filter-helper';
+import { cleanedSelectedFilters } from 'helpers/mega-filter-helper';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
-import localStorageHelper from '../helpers/local-storage-helper';
-import sessionStorageHelper from '../helpers/session-storage-helper';
+import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
+import {
+  userPreferenceSelectedFiltersSelector,
+  userPreferenceSelectedQuickFilterSelector,
+  userPreferenceSortSelector,
+  userPreferenceStatusSelector,
+} from '@/app/selectors/user-preference-selectors';
+import * as UserPreferenceApi from '@/app/api/user-preference-api';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
@@ -289,13 +290,25 @@ function* getCurrentPatientAttachments() {
 }
 
 function* getCurrentPatientTasks({ payload }) {
-  const { taskStatus } = payload;
   try {
+    const { taskStatus } = payload;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-    const selectedTaskStatus = yield select(currentListTasksStatusSelector);
-    let status = taskStatus || selectedTaskStatus;
+
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
+    );
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+    const savedStatus = yield select(userPreferenceStatusSelector);
+
+    const status = taskStatus || savedStatus;
 
     const lists = yield selectedFilters && !isEmpty(selectedFilters)
       ? call(
@@ -440,9 +453,28 @@ function* changePatientTasksFilters({ selectedFilters, selectedQuickFilter }) {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
+    const newFilters = cleanedSelectedFilters(selectedFilters);
+
+    const partialDetails = {
+      selectedFilters: newFilters,
+      selectedQuickFilter,
+    };
+
+    const preferences = yield call(
+      UserPreferenceApi.updateUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
+      partialDetails,
+    );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        selectedFilters,
+        newFilters,
         'patient',
         status,
         selectedQuickFilter,
@@ -459,24 +491,23 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
-    let filters = localStorageHelper.getItem(
-      getFiltersStorageKey('patient', status),
-    );
-    if (!filters) {
-      filters = sessionStorageHelper.getItem(
-        getFiltersStorageKey('patient', status),
-      );
-    }
-    let selectedQuickFilter = localStorageHelper.getItem(
-      getQuickFilterStorageKey('patient', status),
-    );
-    if (!selectedQuickFilter) {
-      selectedQuickFilter = sessionStorageHelper.getItem(
-        getQuickFilterStorageKey('patient', status),
-      );
-    }
+    yield put(MegaFilterActions.clearFiltersForMegaFilter());
 
-    let sort = localStorageHelper.getItem(getSortStorageKey('patient', status));
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
+    );
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+
+    const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
+    const selectedQuickFilter = yield select(
+      userPreferenceSelectedQuickFilterSelector,
+    );
+    const sort = yield select(userPreferenceSortSelector);
 
     if (sort && sort.key && sort.order) {
       yield put({
@@ -490,7 +521,7 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        filters,
+        selectedFilters,
         'patient',
         status,
         selectedQuickFilter,
@@ -574,16 +605,40 @@ function* doSortPatientTasks({ payload }) {
     const { key, order } = payload;
     onSortChanged(order ? key : null, order);
 
-    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    const sortToSave = order ? { key, order } : null;
 
-    if (order) {
-      localStorageHelper.setItem(getSortStorageKey('patient', status), {
-        key,
-        order,
+    if (sortToSave) {
+      const partialDetails = {
+        sort: sortToSave,
+      };
+
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.PATIENT_LIST,
+        'patient',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
       });
-    } else if (order === null) {
-      localStorageHelper.removeItem(getSortStorageKey('patient', status));
+    } else {
+      const partialDetails = {
+        sort: null,
+      };
+
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.PATIENT_LIST,
+        'patient',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
+      });
     }
 
     yield put({
@@ -694,6 +749,13 @@ function* doUpdatePatientDetails({ payload: { patientIdentifier, details } }) {
     yield put({
       type: ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS,
       payload: { details: { ...updatedPatientDetails } },
+    });
+    yield put({
+      type: ActionTypes.UPDATE_PATIENT_IN_CURRENT_PATIENTS_LIST,
+      payload: {
+        patientIdentifier,
+        dataToUpdate: { ...updatedPatientDetails },
+      },
     });
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch {
@@ -916,13 +978,16 @@ function* updatePatientAttachment({ attachment, dataToUpdate }) {
   }
 }
 
-function* updatePatientTaskAttachment({ attachmentIdentifier, updatedFileName }) { 
+function* updatePatientTaskAttachment({
+  attachmentIdentifier,
+  updatedFileName,
+}) {
   try {
     const updatedTaskAttachment = yield call(
       TaskApi.updateTaskAttachment,
       attachmentIdentifier,
-      updatedFileName, 
-    )
+      updatedFileName,
+    );
     yield all([
       put({
         type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS,
@@ -932,18 +997,13 @@ function* updatePatientTaskAttachment({ attachmentIdentifier, updatedFileName })
       put(closeModal()),
     ]);
   } catch {
-    yield all([
-      put(showGlobalErrorAlert()),
-    ]);
+    yield all([put(showGlobalErrorAlert())]);
   }
 }
 
-function* deletePatientTaskAttachment({ identifier }) { 
+function* deletePatientTaskAttachment({ identifier }) {
   try {
-    yield call(
-      TaskApi.removeTaskAttachment,
-      identifier,
-    )
+    yield call(TaskApi.removeTaskAttachment, identifier);
     yield all([
       put({
         type: ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT_SUCCESS,
@@ -953,9 +1013,7 @@ function* deletePatientTaskAttachment({ identifier }) {
       put(closeModal()),
     ]);
   } catch {
-    yield all([
-      put(showGlobalErrorAlert()),
-    ]);
+    yield all([put(showGlobalErrorAlert())]);
   }
 }
 

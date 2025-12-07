@@ -41,7 +41,7 @@ import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const fetchPatientCustomFields = () => {
-    CustomFieldsApi.getAllPatientCustomFields()
+    CustomFieldsApi.getAllPatientCustomFields(true, undefined, undefined, true)
       .then((data) => {
         const customFieldsData = data?.filter(
           (cf) =>

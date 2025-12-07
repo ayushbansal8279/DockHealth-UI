@@ -80,7 +80,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
             <Grid container direction="column" spacing={2}>
               <Grid item>
                 <Grid container spacing={1}>
-                  <Grid item xs={5}>
+                  <Grid item size={5}>
                     <FormInput
                       readOnly={false}
                       label="First Name"
@@ -88,15 +88,14 @@ const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
                       required
                     />
                   </Grid>
-                  <Grid item xs={2}>
+                  <Grid item size={2}>
                     <FormInput
                       readOnly={false}
                       label="Middle"
                       name="middleName"
-                      xs={2}
                     />
                   </Grid>
-                  <Grid item xs={5}>
+                  <Grid item size={5}>
                     <FormInput
                       readOnly={false}
                       label="Last Name"
@@ -108,7 +107,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
               </Grid>
               <Grid item>
                 <Grid container direction="row" spacing={1}>
-                  <Grid item xs={6}>
+                  <Grid item size={6}>
                     <FormSelect
                       readOnly={false}
                       label="Sex at Birth"
@@ -116,7 +115,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
                       name="gender"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item size={6}>
                     <FormInput
                       readOnly={false}
                       label="Date of Birth"
@@ -133,7 +132,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
               </Grid>
               <Grid item>
                 <Grid container spacing={1}>
-                  <Grid item xs={6}>
+                  <Grid item size={6}>
                     <FormInput
                       readOnly={false}
                       label={uniqueIdentifierLabel}
@@ -141,21 +140,21 @@ const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
                       name="mrn"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item size={6}>
                     <FormInput readOnly={false} label="Email" name="email" />
                   </Grid>
                 </Grid>
               </Grid>
               <Grid item>
                 <Grid container spacing={1}>
-                  <Grid item xs={6}>
+                  <Grid item size={6}>
                     <FormPhoneNumberInput
                       readOnly={false}
                       label="Mobile Phone"
                       name="phoneMobile"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item size={6}>
                     <FormPhoneNumberInput
                       readOnly={false}
                       label="Home Phone"

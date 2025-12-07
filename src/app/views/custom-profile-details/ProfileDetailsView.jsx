@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Tabs, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,10 +11,7 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { initializePusher } from 'helpers/pusher-instance';
-import {
-  userProfileSelector,
-  selectedUserOrganizationSelector,
-} from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import * as TaskActions from 'actions/task-actions';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
@@ -47,8 +44,6 @@ const ProfileDetailsView = () => {
   const handleTabChange = (_, newTabValue) => {
     history.push(`${url}/${newTabValue}`);
   };
-
-  const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
   useEffect(() => {
     dispatch(initializeProfileState(profileIdentifier));
@@ -130,7 +125,7 @@ const ProfileDetailsView = () => {
     getPatientForProfile(profileIdentifier).then((patients) => {
       setPatients(patients);
     });
-  }, []);
+  }, [profileIdentifier]);
 
   useEffect(() => {
     getRelationshipTypes(profileTypeIdentifier).then((data) => {
@@ -211,6 +206,11 @@ const ProfileDetailsView = () => {
   useEffect(() => {
     const baseTabs = [...TABS_CONFIG];
 
+    const filteredBaseTabs = baseTabs.filter(
+      (tab) =>
+        !(tab.mainPath === 'patients' && (!patients || patients.length === 0)),
+    );
+
     const relationshipTabs = relationshipTypes.map((relationshipType) => ({
       label: relationshipType.name,
       mainPath: `relationships/${relationshipType.identifier}`,
@@ -219,8 +219,8 @@ const ProfileDetailsView = () => {
       exact: true,
     }));
 
-    setTabsConfiguration([...baseTabs, ...relationshipTabs]);
-  }, [relationshipTypes, profileTypeIdentifier, profileIdentifier, history]);
+    setTabsConfiguration([...filteredBaseTabs, ...relationshipTabs]);
+  }, [relationshipTypes, profileTypeIdentifier, profileIdentifier, patients]);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax

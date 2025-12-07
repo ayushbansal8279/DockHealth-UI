@@ -4,16 +4,11 @@ import React, { useCallback } from 'react';
 import { Box } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
-// import { useBoolean } from 'hooks/useBoolean';
 import { onPrint } from 'helpers/ga-event-helper';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 import { isUserViewOnly } from 'helpers/user-helper';
-import {
-  getCurrentPatientTasks,
-  setCurrentListTasksStatus,
-} from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
 import {
   userProfileSelector,
@@ -21,30 +16,30 @@ import {
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
-import { TaskStatus } from 'helpers/task-helpers';
 import ViewTypeIcon from 'img/view-type-icon.svg';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
-// import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import {
   ListsToolbarContainer,
   ListsTabsContainer,
   ListSelectionImg,
 } from './styled';
-import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
+import { ListViewType } from '../helpers';
+import * as UserPreferenceActions from '@/app/actions/user-preference-actions';
+import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
+import { getTasksForProfile } from '@/app/actions/task-actions';
 
 const TaskListToolbar = (props) => {
   const { lists } = props;
-  // const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
-  // const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
-    patientIdentifier,
+    profileIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
+
   const history = useHistory();
   const dispatch = useDispatch();
-  const tasksStatus = useSelector(currentListTasksStatusSelector);
+  const tasksStatus = useSelector(userPreferenceStatusSelector);
   const viewSetup = useSelector(userSetupClientViewSelector);
   // const [closeMorePopover] = useBoolean(false);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
@@ -107,7 +102,7 @@ const TaskListToolbar = (props) => {
   const handleListChange = (event) => {
     history.push(
       createPatientDetailsListPath(
-        patientIdentifier,
+        profileIdentifier,
         event.target?.value || lists[0].taskListIdentifier,
       ),
     );
@@ -116,7 +111,7 @@ const TaskListToolbar = (props) => {
   const handleListViewTypeChange = (event) => {
     history.push(
       createPatientDetailsListPath(
-        patientIdentifier,
+        profileIdentifier,
         event.target?.value === ListViewType.ALL_TASKS
           ? ListViewType.ALL_TASKS
           : lists[0].taskListIdentifier,
@@ -152,50 +147,26 @@ const TaskListToolbar = (props) => {
 
   const handleChangeTasksStatus = useCallback(
     (status) => {
-      dispatch(setCurrentListTasksStatus(status));
-      dispatch(getCurrentPatientTasks(status));
+      dispatch(
+        UserPreferenceActions.updateTaskListStatus(
+          UserPreferenceContextType.CUSTOM_OBJECT_LIST,
+          profileIdentifier,
+          status,
+        ),
+      );
+      dispatch(getTasksForProfile(profileIdentifier));
     },
-    [dispatch],
+    [dispatch, profileIdentifier],
   );
 
   const onPrintClick = useCallback(() => {
     onPrint();
     window.print();
-    // closeMorePopover();
-    // const title = isAllTasksView
-    //   ? 'All Tasks'
-    //   : listOptions.find(
-    //       (element) => element.value === taskListIdentifierParameter,
-    //     )?.label;
-
-    // return printTaskPdf({
-    //   title,
-    //   tasks: tasksToPrint,
-    //   taskListMembers: listUsers,
-    // });
   }, []);
 
   return (
     <ListsToolbarContainer>
       <ListsTabsContainer>
-        {/* <ToolbarSelect
-          options={LIST_TYPE_OPTIONS}
-          value={
-            isAllTasksView ? ListViewType.ALL_TASKS : ListViewType.LIST_VIEW
-          }
-          name="listType"
-          onChange={handleListViewTypeChange}
-          icon={
-            <ListSelectionImg
-              src={ViewTypeIcon}
-              alt="list type icon"
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
-            />
-          }
-          iconColorActive={iconColorActiveItem?.value}
-          width={170}
-        /> */}
-        {/* <Box px={2} /> */}
         {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
           <ToolbarSelect
             options={listOptions}

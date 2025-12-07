@@ -174,8 +174,13 @@ const ListDetailsForm = ({
       }
     >
       <FormProvider {...formMethods}>
-        <Grid container direction="column" justifyContent="space-between">
-          <Grid item>
+        <Grid
+          style={{ width: '100%' }}
+          container
+          direction="column"
+          justifyContent="space-between"
+        >
+          <Grid>
             <Header>
               <Title>{list ? 'Edit a list' : 'Create a list'}</Title>
             </Header>

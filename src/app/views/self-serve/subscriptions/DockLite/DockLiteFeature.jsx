@@ -40,7 +40,7 @@ const DockLiteFeature = (props) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={6}>
+      <Grid item size={6}>
         <LeftContainer>
           <TopContainer>
             <Title>
@@ -66,7 +66,7 @@ const DockLiteFeature = (props) => {
           </ContactUsAnchor>
         </LeftContainer>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item size={6}>
         <Container color={color}>
           <TopContainer>
             {mostPopular && <MostPopularText>Most Popular</MostPopularText>}

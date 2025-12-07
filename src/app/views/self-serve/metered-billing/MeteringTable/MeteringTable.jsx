@@ -4,7 +4,7 @@ import moment from 'moment';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import { List, PropertiesTooltipContainer } from './styled';
 import { formatKey } from './helper';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 
 const MeteringTable = ({
   billingData,

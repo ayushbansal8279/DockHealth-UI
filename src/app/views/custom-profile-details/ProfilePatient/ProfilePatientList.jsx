@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import { formatPhoneNumber } from '@/app/helpers/utility-functions';
 import { GENDER_OPTIONS_BIRTH } from '@/app/types/gender';
 import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
-import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import ReusableDataGrid from 'components/common/ReusableDataGrid';
 import { Text, PatientCell } from './styled';
 
 const renderColumnHeader = (props) => {
@@ -88,97 +88,111 @@ const ProfilePatientList = ({ patients = [] }) => {
       field: 'patient',
       headerName: customerTypeLabel.toUpperCase(),
       renderHeader: renderColumnHeader,
-      renderCell: ({ row }) => (
-        <PatientCell
-          onClick={async () => {
-            const { fromEMR, patientIdentifier } = row;
-            if (fromEMR) {
-              const patient = await lookupEMRPatient(patientIdentifier);
-
-              history.push({
-                pathname: `/core/patient/${patient.patientIdentifier}`,
-                state: {
-                  from: pathname,
-                },
-              });
-              localStorage.setItem('navigation-from', pathname);
-            } else {
-              history.push({
-                pathname: `/core/patient/${patientIdentifier}`,
-                state: {
-                  from: pathname,
-                },
-              });
-              localStorage.setItem('navigation-from', pathname);
-            }
-          }}
-          className="patient-cell"
-        >
-          <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
-            <Text width="180">
-              {row.lastName}, {row.firstName}
-            </Text>
-          </Tooltip>
-        </PatientCell>
-      ),
       width: 200,
       editable: false,
+      renderCell: (params) => {
+        const row = params.row;
+        if (!row) return null;
+
+        const { fromEMR, patientIdentifier, firstName, lastName } = row;
+
+        const displayName = `${lastName ?? ''}, ${firstName ?? ''}`.trim();
+
+        const handleClick = async () => {
+          if (fromEMR) {
+            const patient = await lookupEMRPatient(patientIdentifier);
+
+            history.push({
+              pathname: `/core/patient/${patient.patientIdentifier}`,
+              state: { from: pathname },
+            });
+          } else {
+            history.push({
+              pathname: `/core/patient/${patientIdentifier}`,
+              state: { from: pathname },
+            });
+          }
+          localStorage.setItem('navigation-from', pathname);
+        };
+
+        return (
+          <PatientCell onClick={handleClick} className="patient-cell">
+            <Tooltip placement="top" title={displayName}>
+              <Text width="180">{displayName}</Text>
+            </Tooltip>
+          </PatientCell>
+        );
+      },
     },
     {
       field: 'relationship',
       headerName: 'RELATIONSHIP',
       renderHeader: renderColumnHeader,
       width: 150,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={row.relationship}>
-          <Text>{row.relationship}</Text>
-        </Tooltip>
-      ),
       editable: false,
       pinnable: true,
+      renderCell: (params) => {
+        const value = params.value ?? '';
+        return (
+          <Tooltip placement="top" title={value}>
+            <Text>{value}</Text>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'mrn',
       headerName: uniqueIdentifierLabel.toUpperCase(),
       renderHeader: renderColumnHeader,
       width: 100,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={row.mrn}>
-          <Text width="80">{row.mrn}</Text>
-        </Tooltip>
-      ),
       editable: false,
+      renderCell: (params) => {
+        const value = params.value ?? '';
+        return (
+          <Tooltip placement="top" title={value}>
+            <Text width="80">{value}</Text>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'dob',
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) =>
-        value ? moment(value).format('MM/DD/YYYY') : '',
+      editable: false,
+      valueGetter: (value, row) => {
+        if (!value) {
+          return '';
+        }
+        return moment(value).format('MM/DD/YYYY');
+      },
       sortComparator: (v1, v2) => {
         const date1 = new Date(v1);
         const date2 = new Date(v2);
 
-        if (!date1 || isNaN(date1)) return 1;
-        if (!date2 || isNaN(date2)) return -1;
+        if (Number.isNaN(date1.getTime())) return 1;
+        if (Number.isNaN(date2.getTime())) return -1;
 
         return date1 - date2;
       },
-      editable: false,
     },
     {
       field: 'age',
       headerName: 'AGE',
       renderHeader: renderColumnHeader,
       width: 70,
-      valueGetter: ({ row }) => {
-        if (!row.dob) return '';
-        return calculateAge(new Date(row.dob));
+      editable: false,
+      valueGetter: (_value, row) => {
+        const dob = row?.dob;
+        if (!dob) {
+          return '';
+        }
+        return calculateAge(new Date(dob));
       },
-      sortComparator: (_v1, _v2, parameters1, parameters2) => {
-        const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
-        const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
+      sortComparator: (_v1, _v2, params1, params2) => {
+        const dob1 = params1.api.getCellValue(params1.id, 'dob');
+        const dob2 = params2.api.getCellValue(params2.id, 'dob');
 
         if (!dob1) return 1;
         if (!dob2) return -1;
@@ -188,61 +202,74 @@ const ProfilePatientList = ({ patients = [] }) => {
 
         return age1 - age2;
       },
-      editable: false,
     },
     {
       field: 'gender',
       headerName: 'SEX',
       renderHeader: renderColumnHeader,
       width: 100,
-      valueFormatter: ({ value }) => genderBirthOptionHash[value],
       editable: false,
+      valueFormatter: (value) => {
+        if (!value) return '';
+        return genderBirthOptionHash[value] ?? value;
+      },
     },
     {
       field: 'genderIdentity',
       headerName: 'GENDER',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueFormatter: ({ value }) => value || '',
       editable: false,
+      valueFormatter: (value) => value || '',
     },
     {
       field: 'email',
       headerName: 'EMAIL',
       renderHeader: renderColumnHeader,
       width: 140,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={row.email}>
-          <Text>{row.email}</Text>
-        </Tooltip>
-      ),
       editable: false,
+      renderCell: (params) => {
+        const value = params.value ?? '';
+        return (
+          <Tooltip placement="top" title={value}>
+            <Text>{value}</Text>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'phoneMobile',
       headerName: 'MOBILE',
       renderHeader: renderColumnHeader,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
-          <Text>{formatPhoneNumber(row.phoneMobile)}</Text>
-        </Tooltip>
-      ),
       width: 140,
       editable: false,
+      renderCell: (params) => {
+        const value = params.value;
+        const display = formatPhoneNumber(value);
+        return (
+          <Tooltip placement="top" title={display}>
+            <Text>{display}</Text>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'phoneHome',
       headerName: 'HOME',
       renderHeader: renderColumnHeader,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
-          <Text>{formatPhoneNumber(row.phoneHome)}</Text>
-        </Tooltip>
-      ),
       width: 140,
       editable: false,
+      renderCell: (params) => {
+        const value = params.value;
+        const display = formatPhoneNumber(value);
+        return (
+          <Tooltip placement="top" title={display}>
+            <Text>{display}</Text>
+          </Tooltip>
+        );
+      },
     },
-  ];
+  ];  
 
   return (
     <ReusableDataGrid

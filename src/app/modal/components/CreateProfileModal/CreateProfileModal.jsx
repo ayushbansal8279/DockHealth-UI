@@ -28,6 +28,7 @@ const CreateProfileModal = ({
   onAdded,
   onUpdated,
   isCreatingNewField,
+  workspaceIdentifier,
 }) => {
   // const isCreatingNewField = !template;
   const [, setIsSaving] = useState(false);
@@ -78,7 +79,7 @@ const CreateProfileModal = ({
 
   const handleAddSubmit = (data) => {
     setIsSaving(true);
-    createProfileType(data)
+    createProfileType(data, workspaceIdentifier)
       .then((addedField) => {
         dispatch(showGlobalAlert(AlertMessages.CREATED));
         if (typeof onAdded === 'function') onAdded(addedField);
@@ -112,7 +113,7 @@ const CreateProfileModal = ({
             <FormScrollingContainer>
               <Box overflow="hidden">
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid item size={12}>
                     <FormInput
                       required
                       autoFocus
@@ -120,7 +121,7 @@ const CreateProfileModal = ({
                       label="Object name"
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item size={12}>
                     <FormInput name="description" label="Description" />
                   </Grid>
                 </Grid>

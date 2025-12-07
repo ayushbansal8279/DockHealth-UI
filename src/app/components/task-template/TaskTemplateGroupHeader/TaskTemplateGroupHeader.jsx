@@ -1050,7 +1050,7 @@ const TaskTemplateGroupHeader = ({
                 order={getColumnOrder(TaskItemColumn.PRIORITY)}
               >
                 <TaskItemDropdown
-                  value={taskPriority}
+                  value={taskPriority === TaskPriority.LOW ? '' : taskPriority}
                   onChange={handleUpdateTaskPriority}
                   field={{
                     options: [

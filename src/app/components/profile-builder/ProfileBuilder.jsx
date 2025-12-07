@@ -21,12 +21,19 @@ import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
-import { getProfileDetailsType } from '@/app/api/profile-type-api';
+import {
+  createProfileFieldType,
+  getAllProfileFieldTypes,
+} from '@/app/api/profile-type-field-api';
+import {
+  getProfileDetailsType,
+  getAllProfileTypes,
+} from '@/app/api/profile-type-api';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import { TargetType } from '@/app/helpers/custom-fields-helpers';
 import {
   closestCenter,
   DndContext,
@@ -50,26 +57,57 @@ const ProfileBuilder = () => {
     useSensor(TouchSensor),
   );
   const dispatch = useDispatch();
-  const { tabName, identifier } = useParams();
+  const { identifier } = useParams();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isNewCategory, setNewCategory] = useState(false);
   const [allCustomFields, setAllCustomFields] = useState([]);
   const [profileName, setProfileName] = useState('');
-  const currentUser = useSelector(userProfileSelector);
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const [context, setContext] = useState(null);
+  const [profileType, setProfileType] = useState(null);
+  const [customGroups, setCustomGroups] = useState([]);
 
-  const context =
-    tabName === `${customerTypeLabel}s` ? 'PATIENT' : 'PROFILETYPE';
+  const removeCustomGroup = (groupIdentifier) => {
+    setCustomGroups((prev) =>
+      prev.filter((group) => group.identifier !== groupIdentifier),
+    );
+  };
 
-  const initializePatientData = async () => {
+  const getContextFromProfileType = (profile) => {
+    if (!profile) return null;
+
+    const isPredefinedType = profile.contextType === 'PREDEFINED';
+
+    if (isPredefinedType) {
+      const name = profile.name?.toLowerCase() || '';
+      if (name.includes('patient')) return TargetType.PATIENT;
+      if (name.includes('provider') || name.includes('user'))
+        return TargetType.PROVIDER;
+      if (name.includes('task')) return TargetType.TASK;
+      if (name.includes('workflow')) return 'WORKFLOW';
+    }
+
+    return 'PROFILETYPE';
+  };
+
+  useEffect(() => {
+    const fetchAllCustomFields = async () => {
+      const allCustomFields = await CustomFieldApi.getAllCustomFields();
+      setAllCustomFields(allCustomFields);
+    };
+    fetchAllCustomFields();
+  }, []);
+
+  const initializePredefinedData = async (
+    profileContext,
+    profileIdentifier,
+  ) => {
     try {
       const [customGroups, allCustomFields, defaultFields] = await Promise.all([
-        CustomFieldApi.searchCustomFiledGroups(context),
-        CustomFieldApi.getAllPatientCustomFields(),
-        CustomFieldApi.getDefauldFields(context),
+        CustomFieldApi.searchCustomFiledGroups(profileContext),
+        getAllProfileFieldTypes(profileIdentifier),
+        CustomFieldApi.getDefauldFields(profileContext),
       ]);
 
-      setAllCustomFields(allCustomFields);
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
@@ -77,11 +115,12 @@ const ProfileBuilder = () => {
         (group) => group.name === 'Default Group',
       );
 
+      let finalCustomGroups = [...customGroups];
       if (!hasDefaultFields) {
         const defaultCategory = {
-          context,
+          context: profileContext,
           name: 'Default Group',
-          fields: getDefaultsRefrenceIds(defaultFields),
+          fields: getDefaultsRefrenceIds(defaultFields, profileContext),
           isDefault: true,
           displayOrder: 0,
         };
@@ -89,17 +128,24 @@ const ProfileBuilder = () => {
         const savedDefault = await CustomFieldApi.saveCustomFiledGroup(
           defaultCategory,
         );
-        setSelectedCategories((prev) => [...prev, savedDefault]);
+        finalCustomGroups = [...finalCustomGroups, savedDefault];
       }
+      finalCustomGroups.sort((a, b) => {
+        if (a.name === 'Default Group') return -1;
+        if (b.name === 'Default Group') return 1;
+        return a.displayOrder - b.displayOrder;
+      });
 
-      const processedGroups = customGroups.map((category) => {
+      const processedGroups = finalCustomGroups.map((category) => {
         if (!category.fields) {
           return category;
         }
 
         const enrichedFields = category.fields.map((field) => {
           const matchingField = customFields?.find(
-            (customField) => customField.identifier === field.fieldReferenceId,
+            (customField) =>
+              customField.identifier === field.fieldReferenceId ||
+              customField.customFieldIdentifier === field.fieldReferenceId,
           );
 
           return matchingField ? { ...field, ...matchingField } : field;
@@ -107,6 +153,7 @@ const ProfileBuilder = () => {
 
         return { ...category, fields: enrichedFields };
       });
+      setCustomGroups(finalCustomGroups);
       setSelectedCategories(processedGroups);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -119,8 +166,6 @@ const ProfileBuilder = () => {
         CustomFieldApi.searchCustomFiledGroups(context, identifier),
         getAllProfileFieldTypes(identifier),
       ]);
-
-      setAllCustomFields(allCustomFields);
 
       const processedGroups = customGroups.map((category) => {
         if (!category.fields) {
@@ -137,6 +182,7 @@ const ProfileBuilder = () => {
 
         return { ...category, fields: enrichedFields };
       });
+      setCustomGroups(customGroups);
       setSelectedCategories(processedGroups);
     } catch (error) {
       dispatch(showGlobalErrorAlert());
@@ -144,22 +190,55 @@ const ProfileBuilder = () => {
   };
 
   useEffect(() => {
-    if (context === 'PATIENT') {
-      setProfileName(
-        `${
-          customerTypeLabel?.charAt(0)?.toUpperCase() +
-          customerTypeLabel?.slice(1)
-        } Object Builder`,
-      );
-      initializePatientData();
-    } else if (context === 'PROFILETYPE') {
-      getProfileDetailsType(identifier).then((profileTypeDetails) => {
-        const profileName = `${profileTypeDetails?.name} Object Builder`;
-        setProfileName(profileName);
-      });
+    const fetchProfileType = async () => {
+      if (!identifier) return;
+
+      try {
+        const predefinedTypes = await getAllProfileTypes('PREDEFINED');
+        const foundPredefined = predefinedTypes.find(
+          (pt) => pt.identifier === identifier,
+        );
+
+        if (foundPredefined) {
+          setProfileType(foundPredefined);
+        } else {
+          const profileTypeDetails = await getProfileDetailsType(identifier);
+          setProfileType(profileTypeDetails);
+        }
+      } catch (error) {
+        dispatch(showGlobalErrorAlert());
+      }
+    };
+
+    fetchProfileType();
+  }, [identifier]);
+
+  useEffect(() => {
+    if (!profileType) return;
+
+    const profileContext = getContextFromProfileType(profileType);
+    setContext(profileContext);
+
+    const name = profileType.name || '';
+    const isPredefinedType = profileType.contextType === 'PREDEFINED';
+    if (isPredefinedType) {
+      const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+      setProfileName(`${capitalizedName} Object Builder`);
+    } else {
+      setProfileName(`${name} Object Builder`);
+    }
+  }, [profileType]);
+
+  useEffect(() => {
+    if (!profileType || !context) return;
+
+    const isPredefinedType = profileType.contextType === 'PREDEFINED';
+    if (isPredefinedType) {
+      initializePredefinedData(context, profileType.identifier);
+    } else {
       initializeCustomProfileData();
     }
-  }, []);
+  }, [profileType, context]);
 
   const [isAddCategoryDrop, setAddCategoryDrop, unsetAddCategoryDrop] =
     useBoolean(false);
@@ -210,44 +289,94 @@ const ProfileBuilder = () => {
     }
   };
 
-  const handleExistingFieldDrop = (e, destination) => {
+  function buildFieldToCategoryMap(categories = []) {
+    const map = new Map();
+    categories.forEach((category) => {
+      (category.fields || []).forEach((field) => {
+        const fid = field.customFieldIdentifier ?? field.fieldReferenceId;
+        if (fid) {
+          map.set(fid, {
+            identifier: category.identifier,
+            name: category.name,
+          });
+        }
+      });
+    });
+    return map;
+  }
+
+  const handleExistingFieldDrop = async (e, destination) => {
     const draggableId = e?.active?.id.split('#')[0];
-    setSelectedCategories((prevCategories) =>
-      prevCategories.map((category) => {
+
+    const fieldToCategoryMap = buildFieldToCategoryMap(selectedCategories);
+    if (fieldToCategoryMap.has(draggableId)) {
+      const existingCategory = fieldToCategoryMap.get(draggableId);
+
+      if (existingCategory.identifier === destination) {
+        dispatch(showGlobalErrorAlert('Field already exists in this category'));
+        return;
+      }
+
+      dispatch(
+        showGlobalErrorAlert(
+          `Field already exists in another category (${existingCategory.name})`,
+        ),
+      );
+      return;
+    }
+
+    const updatedCategories = await Promise.all(
+      selectedCategories.map(async (category) => {
         if (category?.identifier !== destination) return category;
 
-        const fieldExists = category.fields.some(
-          (field) => field.identifier === draggableId,
+        const matchingCategoryFromCustomGroups = customGroups.find(
+          (cg) => cg.identifier === category.identifier,
         );
-        if (fieldExists) {
-          dispatch(showGlobalErrorAlert('Field already exists in group'));
-          return category;
-        }
+        const savedFields = matchingCategoryFromCustomGroups?.fields || [];
 
-        const savedFields = category.fields
-          .filter((field) => field.identifier)
-          .map((field) => ({ fieldReferenceId: field.identifier }));
+        const newProfileField = await createProfileFieldType({
+          customFieldIdentifier: draggableId,
+          profileType: {
+            identifier: identifier,
+          },
+        });
 
         const updatedSavedFields = [
           ...savedFields,
-          { fieldReferenceId: draggableId },
+          { fieldReferenceId: newProfileField.identifier },
         ];
 
-        CustomFieldApi.updateCustomFiledGroup(category.identifier, {
-          fields: updatedSavedFields,
-        });
-
-        const newField = allCustomFields.find(
-          (item) => item.identifier === draggableId,
+        const updatedGroup = await CustomFieldApi.updateCustomFiledGroup(
+          category.identifier,
+          {
+            fields: updatedSavedFields,
+          },
         );
+
+        setCustomGroups((prev) =>
+          prev.map((cg) =>
+            cg.identifier === category.identifier ? updatedGroup : cg,
+          ),
+        );
+
+        const originalField =
+          allCustomFields.find((item) => item.identifier === draggableId) || {};
+        const enrichedField = {
+          ...originalField,
+          customFieldIdentifier: draggableId,
+          identifier: newProfileField.identifier,
+          fieldReferenceId: newProfileField.identifier,
+        };
+
         dispatch(showGlobalAlert(AlertMessages.UPDATED));
 
         return {
           ...category,
-          fields: [...category.fields, newField],
+          fields: [...(category.fields || []), enrichedField],
         };
       }),
     );
+    setSelectedCategories(updatedCategories);
   };
 
   const handleAddFieldDrop = (e, destination) => {
@@ -286,6 +415,8 @@ const ProfileBuilder = () => {
           setNewCategory,
           isAddCategoryDrop,
           activeDragItem,
+          removeCustomGroup,
+          setCustomGroups,
         }}
       >
         <HeaderContainer>

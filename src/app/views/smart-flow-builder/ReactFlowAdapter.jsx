@@ -1,8 +1,27 @@
 import React, { useCallback, useMemo } from 'react';
-import ReactFlow, { applyEdgeChanges, applyNodeChanges } from 'reactflow';
-import { NodeType } from 'helpers/smart-flow-builder-helpers';
+import {
+  ReactFlow,
+  applyEdgeChanges,
+  applyNodeChanges,
+  Controls,
+  MiniMap,
+} from '@xyflow/react';
+import {
+  getMiniMapNodeColor,
+  NodeType,
+} from 'helpers/smart-flow-builder-helpers';
+import { useDispatch } from 'react-redux';
+import { reconnectTaskLink } from '@/app/actions/task-template-actions';
 
-const ReactFlowAdapter = ({ elements, onElementsChange, onLoad, ...props }) => {
+const ReactFlowAdapter = ({
+  elements,
+  onElementsChange,
+  onLoad,
+  onPanelClick,
+  isCurrentUserEditor,
+  ...props
+}) => {
+  const dispatch = useDispatch();
   const isNode = useCallback(
     (element) => Object.values(NodeType).includes(element.type),
     [],
@@ -15,7 +34,8 @@ const ReactFlowAdapter = ({ elements, onElementsChange, onLoad, ...props }) => {
       if (isNode(element)) {
         nodesArray.push(element);
       } else {
-        edgesArray.push(element);
+        const reconnectable = element.selected ? 'target' : false;
+        edgesArray.push({ ...element, reconnectable });
       }
     }
     return [nodesArray, edgesArray];
@@ -38,6 +58,29 @@ const ReactFlowAdapter = ({ elements, onElementsChange, onLoad, ...props }) => {
     [onElementsChange, edges, isNode],
   );
 
+  const onReconnect = useCallback(
+    (oldEdge, newConnection) => {
+      const {
+        source: oldEdgeSourceTaskIdentifier,
+        target: oldEdgeTargetTaskIdentifier,
+      } = oldEdge;
+      const {
+        source: newEdgeSourceTaskIdentifier,
+        target: newEdgeTargetTaskIdentifier,
+      } = newConnection;
+
+      if (
+        oldEdgeSourceTaskIdentifier === newEdgeSourceTaskIdentifier &&
+        oldEdgeTargetTaskIdentifier === newEdgeTargetTaskIdentifier
+      ) {
+        return;
+      }
+
+      dispatch(reconnectTaskLink(newConnection, oldEdge));
+    },
+    [dispatch],
+  );
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -46,7 +89,27 @@ const ReactFlowAdapter = ({ elements, onElementsChange, onLoad, ...props }) => {
       {...props}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-    />
+      onPaneClick={onPanelClick}
+      onReconnect={onReconnect}
+      edgesReconnectable={true}
+      reconnectRadius={20}
+    >
+      <Controls showInteractive={isCurrentUserEditor} />
+      <MiniMap
+        nodeBorderRadius={4}
+        nodeStrokeColor={() => '#ffffff'}
+        nodeColor={getMiniMapNodeColor}
+        maskColor="rgba(0, 0, 0, 0.1)"
+        style={{
+          position: 'absolute',
+          right: 60,
+          bottom: 60,
+          borderRadius: 4,
+          border: '1px solid #e0e0e0',
+          boxShadow: '0 0 6px rgba(0, 0, 0, 0.1)',
+        }}
+      />
+    </ReactFlow>
   );
 };
 

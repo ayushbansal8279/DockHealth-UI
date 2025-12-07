@@ -18,7 +18,7 @@ import { getProfileDetails } from 'api/profile-api';
 import ProfileDetailsLoader from 'views/custom-profile-details/ProfileDetailsLoader/ProfileDetailsLoader';
 import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
 import { FieldType } from 'helpers/field-type-helpers';
-import { getProfileName } from 'views/custom-profile-details/helpers';
+import { getProfileNameDisplayAndIds } from 'views/custom-profile-details/helpers';
 import {
   ProfileDetailsContainer,
   ProfileName,
@@ -40,7 +40,6 @@ const ProfileDetailsHeader = () => {
   const { name, profileTypeIdentifier, profileIdentifier } = useParams();
   const [profileTypeFields, setProfileTypeFields] = useState([]);
   const [profile, setProfile] = useState([]);
-  const [profileName, setProfileName] = useState('');
 
   const fetchProfileTypeFields = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
@@ -68,10 +67,16 @@ const ProfileDetailsHeader = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileIdentifier]);
 
-  useEffect(() => {
-    const profileNameInfo = getProfileName(profileTypeFields, profile);
-    setProfileName(profileNameInfo);
-  }, [profile, profileTypeFields]);
+  const { parts: profileNameParts, identifiers: profileNameIdentifiers } =
+    useMemo(
+      () => getProfileNameDisplayAndIds(profileTypeFields, profile),
+      [profileTypeFields, profile],
+    );
+
+  const usedProfileNameIdentifiers = useMemo(
+    () => profileNameIdentifiers.filter((id) => id !== null),
+    [profileNameIdentifiers],
+  );
 
   const history = useHistory();
   const location = useLocation();
@@ -123,9 +128,11 @@ const ProfileDetailsHeader = () => {
                 </Box>
                 <ProfileName>
                   {[
-                    `${profileName?.[1] ? profileName?.[1] + ',' : ''}`,
-                    profileName?.[0],
-                    profileName?.[2],
+                    `${
+                      profileNameParts?.[0] ? profileNameParts?.[0] + ',' : ''
+                    }`,
+                    profileNameParts?.[1],
+                    profileNameParts?.[2],
                   ].join(' ')}
                 </ProfileName>
                 <Box mx={1} />
@@ -150,9 +157,18 @@ const ProfileDetailsHeader = () => {
                     (ptField) =>
                       ptField.identifier === field?.profileTypeFieldIdentifier,
                   );
-                  return profileTypeField?.displayOptions?.includes(
-                    'PROFILE_HEADER',
-                  );
+                  const hasProfileHeader =
+                    profileTypeField?.displayOptions?.includes(
+                      'PROFILE_HEADER',
+                    );
+                  const hasProfileName =
+                    profileTypeField?.displayOptions?.includes('PROFILE_NAME');
+                  if (hasProfileHeader && hasProfileName) {
+                    const isUsedInProfileName =
+                      usedProfileNameIdentifiers.includes(field.identifier);
+                    return !isUsedInProfileName;
+                  }
+                  return hasProfileHeader;
                 })
                 .map((field) => {
                   return (
@@ -161,18 +177,29 @@ const ProfileDetailsHeader = () => {
                         <Typography>{field.profileTypeFieldName}: </Typography>
                         <Box ml={1} />
                         {field.profileTypeFieldType === FieldType.HYPERLINK && (
-                          <a href={field.value} target="_blank" rel="noreferrer">
-                            {field.profileTypeFieldName}
+                          <a
+                            href={field.value}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {field.values?.[0]}
                           </a>
                         )}
-                        {(field.profileTypeFieldType === FieldType.DATE || field.profileTypeFieldType === FieldType.DATE_TIME) && (
+                        {(field.profileTypeFieldType === FieldType.DATE ||
+                          field.profileTypeFieldType ===
+                            FieldType.DATE_TIME) && (
                           <>
-                            <DateLabel date={field.value} dueDateIntent={field.dateTimeIntent} />
+                            <DateLabel
+                              date={field.values?.[0]}
+                              dueDateIntent={field.dateTimeIntents?.[0]}
+                            />
                           </>
                         )}
-                        {(field.profileTypeFieldType === FieldType.DROPDOWN_MULTI 
-                          || field.profileTypeFieldType === FieldType.DROPDOWN 
-                          || field.profileTypeFieldType === FieldType.RELATIONSHIP) && (
+                        {(field.profileTypeFieldType ===
+                          FieldType.DROPDOWN_MULTI ||
+                          field.profileTypeFieldType === FieldType.DROPDOWN ||
+                          field.profileTypeFieldType ===
+                            FieldType.RELATIONSHIP) && (
                           <>
                             <Box ml={1} />
                             {`${
@@ -185,10 +212,10 @@ const ProfileDetailsHeader = () => {
                             }`}
                           </>
                         )}
-                        {(field.profileTypeFieldType === FieldType.TEXT 
-                          || field.profileTypeFieldType === FieldType.LONG_TEXT 
-                          || field.profileTypeFieldType === FieldType.NUMBER 
-                          || field.profileTypeFieldType === FieldType.BOOL) && (
+                        {(field.profileTypeFieldType === FieldType.TEXT ||
+                          field.profileTypeFieldType === FieldType.LONG_TEXT ||
+                          field.profileTypeFieldType === FieldType.NUMBER ||
+                          field.profileTypeFieldType === FieldType.BOOL) && (
                           <>
                             <Box ml={1} />
                             {`${field.values?.join(',') || field.value || ''}`}
@@ -203,14 +230,14 @@ const ProfileDetailsHeader = () => {
           </Box>
           <ProfileDrawer
             title={[
-              `${profileName?.[1] ? profileName?.[1] + ',' : ''}`,
-              profileName?.[0],
-              profileName?.[2],
+              `${profileNameParts?.[0] ? profileNameParts?.[0] + ',' : ''}`,
+              profileNameParts?.[1],
+              profileNameParts?.[2],
             ].join(' ')}
             open={isDrawerOpen}
             profileTypeIdentifier={profileTypeIdentifier}
             profile={profile}
-            profileName={profileName}
+            profileName={profileNameParts}
             types={profileTypeFields}
             onClose={() => {
               setIsDrawerOpen(false);
@@ -225,6 +252,9 @@ const ProfileDetailsHeader = () => {
             context={'PROFILETYPE'}
             profileTypeIdentifier={profileTypeIdentifier}
             profileIdentifier={profileIdentifier}
+            onUpdate={() => {
+              fetchProfile();
+            }}
           />
         </>
       )}

@@ -126,7 +126,7 @@ const UserProfileForm = ({ userProfile }) => {
               alignItems="center"
               container
               item
-              xs={12}
+              size={12}
               direction="row"
               wrap="nowrap"
             >
@@ -177,7 +177,7 @@ const UserProfileForm = ({ userProfile }) => {
             {!embeddedMode && (
               <>
                 <Grid container item spacing={2}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={12} md={6}>
                     <FormInput
                       required
                       type="text"
@@ -185,7 +185,7 @@ const UserProfileForm = ({ userProfile }) => {
                       label="First name"
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item size={12} md={6}>
                     <FormInput
                       required
                       type="text"
@@ -194,7 +194,7 @@ const UserProfileForm = ({ userProfile }) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <FormInput
                     readOnly
                     type="email"
@@ -210,7 +210,7 @@ const UserProfileForm = ({ userProfile }) => {
                     // }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <FormInput
                     type="password"
                     label="Password"
@@ -226,14 +226,14 @@ const UserProfileForm = ({ userProfile }) => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item size={12}>
                   <FormInfoText>
                     A valid mobile phone number is required to send an
                     authentication code for HIPAA compliance
                   </FormInfoText>
                 </Grid>
                 <Grid container item direction="row" spacing={2}>
-                  <Grid item md={6} xs={12}>
+                  <Grid item md={6} size={12}>
                     <FormPhoneNumberInput
                       name="accountPhoneNumber"
                       label="Your Mobile Phone Number"
@@ -249,7 +249,7 @@ const UserProfileForm = ({ userProfile }) => {
                       }
                     />
                   </Grid>
-                  <Grid item md={6} xs={12}>
+                  <Grid item md={6} size={12}>
                     <FormPhoneNumberInput
                       name="workPhoneNumber"
                       label="Additional Phone Number"
@@ -259,14 +259,14 @@ const UserProfileForm = ({ userProfile }) => {
               </>
             )}
             <Grid container item direction="row" spacing={2}>
-              <Grid item md={6} xs={12}>
+              <Grid item md={6} size={12}>
                 <FormInput name="title" label="Title" />
               </Grid>
-              <Grid item md={6} xs={12}>
+              <Grid item md={6} size={12}>
                 <FormInput name="department" label="Department" />
               </Grid>
               <Grid container item direction="row" spacing={2}>
-                <Grid item md={6} xs={12}>
+                <Grid item md={6} size={12}>
                   <FormInput name="credentials" label="Credentails" />
                 </Grid>
               </Grid>
@@ -274,7 +274,7 @@ const UserProfileForm = ({ userProfile }) => {
           </Grid>
         </SettingsSection>
         <Grid container>
-          <Grid item xs={12} md={4}>
+          <Grid item size={12} md={4}>
             <ConfirmButton type="submit" disabled={isSubmitting}>
               Save
             </ConfirmButton>
