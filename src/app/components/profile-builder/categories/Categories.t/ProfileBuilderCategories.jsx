@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import TEXT from 'img/profile-builder/ShortText.svg';
 import LONG_TEXT from 'img/profile-builder/RichText.svg';
 import DATE from 'img/profile-builder/Calender.svg';
@@ -12,6 +19,14 @@ import {
   CategoryTitle,
   SingleFieldWrapper,
   CategoryWrapper,
+  ExistingFieldsSection,
+  ExistingFieldsContent,
+  ExistingFieldsList,
+  EmptyStateContainer,
+  EmptyStateMessage,
+  EmptyStateHint,
+  PaginationContainer,
+  SearchFieldWrapper,
 } from './styled';
 import { Box, Pagination, Typography } from '@mui/material';
 import { FieldType, fieldTypes } from '../../helper';
@@ -38,12 +53,79 @@ const FieldTypeImages = {
 const ProfileBuilderCategories = ({ allCustomFields }) => {
   const [searchedCustomField, setSearchedCustomField] =
     useState(allCustomFields);
-  const [searchTextValue, setSearchTextValue] = useState(allCustomFields);
+  const [searchTextValue, setSearchTextValue] = useState('');
   const { activeDragItem } = useContext(ProfileBuilderContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const listContainerRef = useRef(null);
+  const resizeObserverRef = useRef(null);
 
   useEffect(() => {
     setSearchedCustomField(allCustomFields);
+    setCurrentPage(1);
   }, [allCustomFields]);
+
+  const calculateItemsPerPage = useCallback(() => {
+    if (!listContainerRef.current) return;
+
+    const container = listContainerRef.current;
+    const availableHeight = container.clientHeight;
+
+    if (availableHeight <= 0) {
+      const isMobile = window.innerWidth <= 1024;
+      setItemsPerPage(isMobile ? 4 : 8);
+      return;
+    }
+
+    const itemHeight = 44;
+    const gap = 10;
+
+    const isMobile = window.innerWidth <= 1024;
+    const columnsPerRow = isMobile ? 1 : 2;
+
+    const rowsPerPage = Math.max(
+      1,
+      Math.floor((availableHeight + gap) / (itemHeight + gap)),
+    );
+
+    const calculatedItemsPerPage = rowsPerPage * columnsPerRow;
+
+    setItemsPerPage(Math.max(2, calculatedItemsPerPage));
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (!listContainerRef.current) return;
+
+      calculateItemsPerPage();
+
+      if (typeof ResizeObserver !== 'undefined') {
+        resizeObserverRef.current = new ResizeObserver(() => {
+          requestAnimationFrame(() => {
+            calculateItemsPerPage();
+          });
+        });
+
+        resizeObserverRef.current.observe(listContainerRef.current);
+      }
+    }, 0);
+
+    const handleResize = () => {
+      requestAnimationFrame(() => {
+        calculateItemsPerPage();
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+      }
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [calculateItemsPerPage]);
 
   const handleTextChange = (value) => {
     setSearchTextValue(value);
@@ -52,6 +134,7 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
     );
 
     setSearchedCustomField(filteredList);
+    setCurrentPage(1);
   };
 
   const { setNodeRef: addNewFieldsDropRef } = useDroppable({
@@ -62,13 +145,24 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
     id: 'add-existing-fields-area-source',
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
-
   const paginatedFields = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return searchedCustomField.slice(start, start + itemsPerPage);
-  }, [searchedCustomField, currentPage]);
+  }, [searchedCustomField, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(searchedCustomField.length / itemsPerPage);
+  const hasResults = searchedCustomField.length > 0;
+
+  useEffect(() => {
+    if (hasResults && currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage, hasResults, itemsPerPage]);
+
+  const startIndex = hasResults ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const endIndex = hasResults
+    ? Math.min(currentPage * itemsPerPage, searchedCustomField.length)
+    : 0;
 
   return (
     <CategoryContainer>
@@ -93,65 +187,74 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
             })}
           </SingleFieldWrapper>
         </Box>
-        <Box mt={3}>
+        <Box
+          mt={3}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
           <CategoryTitle>Add Existing Fields</CategoryTitle>
-          <Box>
-            <TextField
-              border
-              size="small"
-              placeholder="Search Existing Field"
-              width="48%"
-              value={searchTextValue}
-              onChange={handleTextChange}
-            />
+          <ExistingFieldsSection>
+            <SearchFieldWrapper>
+              <TextField
+                border
+                size="small"
+                placeholder="Search Existing Field"
+                width="100%"
+                value={searchTextValue}
+                onChange={handleTextChange}
+              />
+            </SearchFieldWrapper>
             <Spacing vertical={4} />
-            <Box
-              sx={{
-                maxHeight: '210px',
-                overflowY: 'auto',
-                pr: 1,
-              }}
-            >
-              <SingleFieldWrapper>
-                {paginatedFields.map((item, index) => (
-                  <AddExistingFieldsCategory
-                    key={item.id}
-                    item={item}
-                    isTrauncated={item.name.length >= 15}
-                    fieldTypeImages={FieldTypeImages}
-                    index={index}
-                  />
-                ))}
-              </SingleFieldWrapper>
-            </Box>
-
-            {searchedCustomField.length > itemsPerPage && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  mt: 2,
+            <ExistingFieldsContent>
+              <ExistingFieldsList
+                ref={(node) => {
+                  listContainerRef.current = node;
+                  addExistingFieldsDropRef(node);
                 }}
               >
-                <Typography>
-                  {currentPage * itemsPerPage - itemsPerPage + 1} -{' '}
-                  {Math.min(
-                    currentPage * itemsPerPage,
-                    searchedCustomField.length,
-                  )}{' '}
-                  of {searchedCustomField.length}
-                </Typography>
+                {paginatedFields.length > 0 ? (
+                  <SingleFieldWrapper>
+                    {paginatedFields.map((item, index) => (
+                      <AddExistingFieldsCategory
+                        key={item.id || item.identifier}
+                        item={item}
+                        isTrauncated={item.name.length >= 15}
+                        fieldTypeImages={FieldTypeImages}
+                        index={index}
+                      />
+                    ))}
+                  </SingleFieldWrapper>
+                ) : (
+                  <EmptyStateContainer>
+                    <EmptyStateMessage>
+                      No fields found matching your search.
+                    </EmptyStateMessage>
+                    <EmptyStateHint>
+                      Try a different search term or add a new field above.
+                    </EmptyStateHint>
+                  </EmptyStateContainer>
+                )}
+              </ExistingFieldsList>
 
-                <Pagination
-                  count={Math.ceil(searchedCustomField.length / itemsPerPage)}
-                  page={currentPage}
-                  onChange={(_, val) => setCurrentPage(val)}
-                  size="small"
-                />
-              </Box>
-            )}
-          </Box>
+              {hasResults && (
+                <PaginationContainer>
+                  <Pagination
+                    count={Math.max(1, totalPages)}
+                    page={currentPage}
+                    onChange={(_, val) => setCurrentPage(val)}
+                    size="small"
+                  />
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {`${startIndex} - ${endIndex} of ${searchedCustomField.length}`}
+                  </Typography>
+                </PaginationContainer>
+              )}
+            </ExistingFieldsContent>
+          </ExistingFieldsSection>
         </Box>
       </CategoryWrapper>
     </CategoryContainer>
