@@ -33,7 +33,7 @@ const InviteToListModal = ({
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <Grid container direction="column" item wrap="nowrap">
+      <Grid style={{ width: '100%' }} direction="column" item wrap="nowrap">
         <Header>
           <Title>{title}</Title>
         </Header>

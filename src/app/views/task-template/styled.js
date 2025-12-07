@@ -15,6 +15,7 @@ export const SearchWrapper = styled.div`
 
 export const SearchAndFilterContainer = styled.div`
   display: flex;
+  justify-content: space-between;
 
   @media print {
     display: none;
