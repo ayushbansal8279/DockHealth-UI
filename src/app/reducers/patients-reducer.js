@@ -137,8 +137,7 @@ const PatientsReducer = (state = initialState, action) => {
 
     case ActionTypes.UPDATE_PATIENT_IN_CURRENT_PATIENTS_LIST: {
       const { patientIdentifier, dataToUpdate } = action?.payload;
-
-      const updatedPatients = state.currentPatientsList.patients.map(
+      const updatedPatients = state?.currentPatientsList?.patients?.map(
         (patient) =>
           patient.patientIdentifier === patientIdentifier
             ? { ...patient, ...dataToUpdate }
