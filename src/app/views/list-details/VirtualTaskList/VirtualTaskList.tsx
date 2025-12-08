@@ -18,7 +18,6 @@ import VQuickAddTask from 'views/list-details/VirtualTaskList/VirtualSegment/VQu
 import VTaskHeader from 'views/list-details/VirtualTaskList/VirtualSegment/VTaskHeader/VTaskHeader';
 import {
   currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
 } from 'selectors/task-list-selectors';
 import VLoadMoreTasks from './VirtualSegment/VLoadMoreTasks/VLoadMoreTasks';
 import {
@@ -32,6 +31,7 @@ import {
   patientSelector,
 } from '@/app/selectors/patient-details-selectors';
 import VListSpacer from './VirtualSegment/VListSpacer/VListSpacer';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 export interface Props {
   groupedTasks: any[];
@@ -172,9 +172,7 @@ function VirtualTaskList({
   const showIncompleteWorkflowIdentifiers = useSelector(
     (state: any) => state?.taskItems?.showIncompleteWorkflowIdentifiers,
   );
-  const currentTaskListTasksStatus = useSelector(
-    currentTaskListTasksStatusSelector,
-  );
+  const currentTaskListTasksStatus = useSelector(userPreferenceStatusSelector);
   const currentPatientTasksStatus = useSelector(currentListTasksStatusSelector);
   const currentTaskList = useSelector(currentTaskListSelector);
   const currentPatient = useSelector(patientSelector);
@@ -232,9 +230,7 @@ function VirtualTaskList({
           child,
           tasksMap,
           isShowCompletedTasksEnabled,
-          origin === 'PATIENT'
-            ? currentPatientTasksStatus
-            : currentTaskListTasksStatus,
+          currentTaskListTasksStatus,
           showCompletedWorkflowIdentifiers,
           showIncompleteWorkflowIdentifiers,
         ),
