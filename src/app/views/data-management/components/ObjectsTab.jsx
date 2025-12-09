@@ -109,9 +109,19 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const onOpenProfileBuilder = useCallback(
     ({ row: { identifier } }) => {
       const profileTypePath = `/settings/object-builder/objects/${identifier}`;
-      history.push(profileTypePath);
+      const queryParams = new URLSearchParams();
+      
+      if (isWorkspace && workspaceIdentifier) {
+        queryParams.set('scope', 'workspace');
+        queryParams.set('scopeId', workspaceIdentifier);
+      } else {
+        queryParams.set('scope', 'org');
+      }
+      
+      const fullPath = `${profileTypePath}?${queryParams.toString()}`;
+      history.push(fullPath);
     },
-    [history],
+    [history, isWorkspace, workspaceIdentifier],
   );
 
   const onDeleteProfile = useCallback(

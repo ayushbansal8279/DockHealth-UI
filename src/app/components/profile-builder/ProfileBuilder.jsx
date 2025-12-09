@@ -47,6 +47,17 @@ import {
 import AddCategory from './categories/Categories.t/AddCategory';
 import AddExistingFieldsCategory from './categories/Categories.t/AddExistingFieldsCategory';
 import AddNewFieldsCategory from './categories/Categories.t/AddNewFieldsCategory';
+import { workspaceSelector } from '@/app/selectors/workspace-selectors';
+import { useProfileBuilderScope } from '@/app/hooks/useProfileBuilderScope';
+import {
+  getCurrentWorkspace,
+  clearWorkspaceState,
+} from '@/app/actions/workspace-actions';
+import {
+  organizationSelector,
+  organizationWorkspaceLabelSelector,
+} from '@/app/selectors/organization-selectors';
+import ProfileBuilderHeader from './ProfileBuilderHeader';
 
 export const ProfileBuilderContext = createContext({});
 
@@ -65,6 +76,21 @@ const ProfileBuilder = () => {
   const [context, setContext] = useState(null);
   const [profileType, setProfileType] = useState(null);
   const [customGroups, setCustomGroups] = useState([]);
+
+  const { scope, scopeId } = useProfileBuilderScope();
+  const workspace = useSelector(workspaceSelector);
+  const organization = useSelector(organizationSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
+
+  useEffect(() => {
+    if (scope === 'workspace' && scopeId) {
+      sessionStorage.setItem('currentWorkspaceIdentifier', scopeId);
+      dispatch(getCurrentWorkspace(scopeId));
+    } else {
+      sessionStorage.removeItem('currentWorkspaceIdentifier');
+      dispatch(clearWorkspaceState());
+    }
+  }, [scope, scopeId, dispatch]);
 
   const removeCustomGroup = (groupIdentifier) => {
     setCustomGroups((prev) =>
@@ -220,13 +246,7 @@ const ProfileBuilder = () => {
     setContext(profileContext);
 
     const name = profileType.name || '';
-    const isPredefinedType = profileType.contextType === 'PREDEFINED';
-    if (isPredefinedType) {
-      const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
-      setProfileName(`${capitalizedName} Object Builder`);
-    } else {
-      setProfileName(`${name} Object Builder`);
-    }
+    setProfileName(name);
   }, [profileType]);
 
   useEffect(() => {
@@ -420,7 +440,13 @@ const ProfileBuilder = () => {
         }}
       >
         <HeaderContainer>
-          <BasicLayoutHeader title={profileName} />
+          <ProfileBuilderHeader
+            scope={scope}
+            profileName={profileName}
+            workspaceName={workspace?.workspaceName}
+            workspaceLabel={workspaceLabel}
+            organizationName={organization?.organizationName}
+          />
         </HeaderContainer>
         <DndContext
           sensors={sensors}

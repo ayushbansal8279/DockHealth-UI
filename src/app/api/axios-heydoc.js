@@ -36,9 +36,16 @@ axiosInstance.interceptors.request.use(
     const currentOrganizationIdentifier = sessionStorage.getItem(
       'currentOrganizationIdentifier',
     );
+    const currentWorkspaceIdentifier = sessionStorage.getItem(
+      'currentWorkspaceIdentifier',
+    );
 
     config.headers.CurrentOrganizationIdentifier =
       currentOrganizationIdentifier;
+
+    if (currentWorkspaceIdentifier) {
+      config.headers.CurrentWorkspaceIdentifier = currentWorkspaceIdentifier;
+    }
 
     // Only set Bearer token if we have one and cookie might not be available
     // This is a fallback mechanism - ideally cookie should be used
