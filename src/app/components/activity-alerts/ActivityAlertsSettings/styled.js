@@ -43,6 +43,13 @@ export const ActivityAlertsSettingsItemsHeader = styled.div`
 export const ActivityAlertsSettingsItemsHeaderLabel = styled.div`
   font-size: ${fontSizes.small};
   text-align: center;
+  transition: opacity 0.2s ease;
+
+  ${(props) =>
+    props.$disabled &&
+    `
+    opacity: 0.4;
+  `}
 `;
 
 export const ActivityAlertsSettingsItemsHeaderBlueLabel = styled.div`
@@ -64,6 +71,13 @@ export const CheckboxContainer = styled.div`
   height: 100%;
   justify-content: center;
   align-items: center;
+  transition: opacity 0.2s ease;
+
+  ${(props) =>
+    props.$disabled &&
+    `
+    opacity: 0.4;
+  `}
 `;
 
 export const ArrowButton = styled.button`
@@ -75,4 +89,8 @@ export const ArrowButton = styled.button`
 export const ActivityAlertsSettingsHeader = styled.div`
   display: flex;
   padding: ${spacing.large} ${spacing.large} ${spacing.smallPlus};
+`;
+
+export const AllEventsItem = styled(ActivityAlertsSettingsItem)`
+  border: 1px solid ${palette.lightGrey};
 `;
