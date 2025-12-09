@@ -2,20 +2,39 @@ import moment from 'moment';
 import { Box, Grid, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   isPlanTrial,
   isPlanFree,
   BillingFrequency,
   priceFormatter,
+  isPlanPaid,
+  getPaidPlanCancelDate,
 } from 'helpers/subscription-helper';
 import {
   themeMontserrat500,
   themeMontserrat600,
   themeMontserratNormal,
 } from 'styles/theme-montserrat';
+import { openModal } from 'modal/actions';
 import { PlanColumnLink, PlanContainer } from './styled';
+import {
+  SubscriptionActionButton,
+  SubscriptionActionContainer,
+} from '../SubscriptionPlanTail/styled';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
 
 const CurrentPlan = ({ currentSubscriptionPlan }) => {
+  const dispatch = useDispatch();
+  const organization = useSelector(organizationSelector);
+  const currentUser = useSelector(userProfileSelector);
+  const paidPlanCancelDate = getPaidPlanCancelDate(
+    currentUser,
+    organization?.organizationIdentifier,
+  );
+  const isSubscriptionCancelled = paidPlanCancelDate;
+  const isPaidSubscription = isPlanPaid(currentSubscriptionPlan);
   const {
     activeUserCount,
     activeDockLiteUserCount,
@@ -32,6 +51,18 @@ const CurrentPlan = ({ currentSubscriptionPlan }) => {
     professionalServicesIncluded,
     trialEndDate,
   } = subscriptionDetails || {};
+
+  const handleCancelSubscription = () => {
+    dispatch(
+      openModal('CancelSubscription', {
+        subscriptionDetails,
+        nextBillingDate,
+        subscriptionPlanName,
+      }),
+    );
+  };
+
+  const handleResubscribe = () => {};
 
   return (
     <PlanContainer>
@@ -108,6 +139,19 @@ const CurrentPlan = ({ currentSubscriptionPlan }) => {
           </ThemeProvider>
         )}
       </Grid>
+      {isPaidSubscription && (
+        <SubscriptionActionContainer>
+          <SubscriptionActionButton
+            onClick={
+              isSubscriptionCancelled
+                ? handleResubscribe
+                : handleCancelSubscription
+            }
+          >
+            {isSubscriptionCancelled ? 'Re-subscribe' : 'Cancel Subscription'}
+          </SubscriptionActionButton>
+        </SubscriptionActionContainer>
+      )}
     </PlanContainer>
   );
 };

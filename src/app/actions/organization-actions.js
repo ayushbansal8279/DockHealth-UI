@@ -63,6 +63,16 @@ export function updateSubscriptionDetails(newPlan) {
   };
 }
 
+export function cancelSubscription(
+  organizationIdentifier,
+  cancellationDetails,
+) {
+  return {
+    type: ActionTypes.CANCEL_SUBSCRIPTION,
+    organizationIdentifier,
+    cancellationDetails,
+  };
+}
 export const getBillingEstimate =
   ({ subscriptionPlan, billingFrequency } = {}) =>
   (dispatch) => {
