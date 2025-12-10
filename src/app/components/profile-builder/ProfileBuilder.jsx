@@ -403,6 +403,8 @@ const ProfileBuilder = () => {
     });
   };
 
+  const isPredefinedProfile = profileType?.contextType === 'PREDEFINED';
+
   return (
     <ProfileBuilderContainer>
       <ProfileBuilderContext.Provider
@@ -417,6 +419,7 @@ const ProfileBuilder = () => {
           activeDragItem,
           removeCustomGroup,
           setCustomGroups,
+          isPredefinedProfile,
         }}
       >
         <HeaderContainer>
