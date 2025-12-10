@@ -87,6 +87,15 @@ const SelectedCategory = ({ category }) => {
       return;
     }
 
+    if (isPredefinedProfile && !isDefaultField) {
+      const destinationField = category?.fields?.[destinationIndex];
+      const isDestinationDefault = destinationField?.contextType === 'DEFAULT';
+
+      if (isDestinationDefault) {
+        return;
+      }
+    }
+
     if (sourceIndex !== destinationIndex) {
       let fields = [...category?.fields];
       const [removed] = fields.splice(sourceIndex, 1);
