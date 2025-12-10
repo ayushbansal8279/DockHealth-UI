@@ -13,7 +13,7 @@ export const BooleanBox = styled.div`
 `;
 
 export const PlaceholderContainer = styled.div`
-  top: 0px;
+  top: 5px;
   position: absolute;
   left: 0px;
   z-index: 9;
@@ -25,6 +25,7 @@ export const BooleanSelect = styled(Select)`
     & .MuiSelect-root {
       padding: 0px;
       background: white;
+      height: 32px;
     }
     & .MuiSelect-root:before {
       display: none;

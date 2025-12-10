@@ -30,6 +30,7 @@ export const DecisionSelect = styled(Select)`
   & .MuiSelect-root {
     padding: 0px;
     background: white;
+    height: 32px;
   }
   & .MuiSelect-root:before {
     display: none;
