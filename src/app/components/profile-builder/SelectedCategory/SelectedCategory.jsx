@@ -37,6 +37,7 @@ const SelectedCategory = ({ category }) => {
     setSelectedCategories,
     removeCustomGroup,
     setCustomGroups,
+    isPredefinedProfile,
   } = useContext(ProfileBuilderContext);
   const { setNodeRef } = useDroppable({
     id: category?.identifier,
@@ -78,6 +79,13 @@ const SelectedCategory = ({ category }) => {
 
     const sourceIndex = active?.data?.current?.sortable?.index;
     const destinationIndex = over?.data?.current?.sortable?.index;
+
+    const draggedField = category?.fields?.[sourceIndex];
+    const isDefaultField = draggedField?.contextType === 'DEFAULT';
+
+    if (isPredefinedProfile && isDefaultField) {
+      return;
+    }
 
     if (sourceIndex !== destinationIndex) {
       let fields = [...category?.fields];

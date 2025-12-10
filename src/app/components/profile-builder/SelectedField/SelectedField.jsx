@@ -63,6 +63,11 @@ const SelectedField = ({ field, category, id }) => {
     isDragging,
   } = useSortable({ id });
 
+  const { isPredefinedProfile } = useContext(ProfileBuilderContext);
+
+  const canDrag = !(isPredefinedProfile && isDefault);
+  const dragListeners = canDrag ? listeners : {};
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -283,9 +288,12 @@ const SelectedField = ({ field, category, id }) => {
     <>
       <FieldArea key={id} ref={setNodeRef} style={style}>
         <DragIndicator
-          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          style={{ 
+            cursor: canDrag ? (isDragging ? 'grabbing' : 'grab') : 'default',
+            opacity: canDrag ? 1 : 0.3,
+          }}
           {...attributes}
-          {...listeners}
+          {...dragListeners}
         />
         <FieldIconContainer>
           <img
