@@ -169,7 +169,7 @@ const TaskTemplateGroupHeader = ({
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
   const dropDirectionRef = useDropDirection();
-  const { changeViewType, tasks, handleAddTask } = useContext(TaskViewContext);
+  const { changeViewType: viewType } = useContext(TaskViewContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
@@ -401,18 +401,6 @@ const TaskTemplateGroupHeader = ({
     );
   }, [currentList, dispatch, templateGroup]);
 
-  const handleAddTaskToWorkflow = () => {
-    if (taskListRestrictions?.workflowAddTask !== DISABLED) {
-      setIsAddingTask(true);
-      if (origin === 'LIST' || origin === 'PATIENT') {
-        setOpen(true);
-        setIsWorkflowExpanded(true);
-        collapse.set(identifier, false);
-        collapse.handleAddWorkflowIdentifier(identifier);
-      }
-    }
-  };
-
   const handleEditName = () => {
     if (restrictions?.name !== DISABLED) {
       setIsEditing(true);
@@ -599,33 +587,39 @@ const TaskTemplateGroupHeader = ({
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
 
-  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() =>
-    collapse.get(identifier) === undefined ? false : !collapse.get(identifier),
+  const workflowDefaultCollapsed = viewType === 'SLIM_VIEW';
+  const workflowCollapsed = collapse.getOrDefault(
+    identifier,
+    workflowDefaultCollapsed,
   );
+  const isWorkflowOpen = !workflowCollapsed;
+
+  const handleToggleWorkflow = useCallback(() => {
+    const nextCollapsed = !workflowCollapsed;
+    collapse.set(identifier, nextCollapsed);
+  }, [viewType, identifier, collapse]);
+
+  const handleAddTaskToWorkflow = () => {
+    if (taskListRestrictions?.workflowAddTask !== DISABLED) {
+      setIsAddingTask(true);
+      if (origin === 'LIST' || origin === 'PATIENT') {
+        setOpen(true);
+        handleToggleWorkflow();
+        collapse.set(identifier, false);
+        collapse.handleAddWorkflowIdentifier(identifier);
+      }
+    }
+  };
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
   const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const handleOpen = useCallback(() => {
     setOpen(!isOpen);
-    setIsWorkflowExpanded(!isWorkflowExpanded);
-    collapse.set(identifier, isWorkflowExpanded);
+    handleToggleWorkflow();
+    collapse.set(identifier, isWorkflowOpen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [identifier, isOpen, setOpen, isWorkflowExpanded]);
-
-  useEffect(() => {
-    if (changeViewType === 'FULL_VIEW' && !tasks.includes(identifier)) {
-      setIsWorkflowExpanded(true);
-      collapse.set(identifier, false);
-      handleAddTask(identifier);
-    }
-
-    if (changeViewType === 'SLIM_VIEW' && !tasks.includes(identifier)) {
-      setIsWorkflowExpanded(false);
-      collapse.set(identifier, true);
-      handleAddTask(identifier);
-    }
-  }, [changeViewType, collapse, handleAddTask, identifier, tasks]);
+  }, [identifier, isOpen, setOpen, isWorkflowOpen]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
@@ -666,7 +660,7 @@ const TaskTemplateGroupHeader = ({
             <ChevronContainer>
               {showTasksWithGroup && origin !== 'DASHBOARD' && (
                 <RotatableChevron
-                  rotated={origin === 'DASHBOARD' ? isOpen : isWorkflowExpanded}
+                  rotated={origin === 'DASHBOARD' ? isOpen : isWorkflowOpen}
                   onClick={handleOpen}
                   color={palette.crystalBlue}
                 />
@@ -695,7 +689,7 @@ const TaskTemplateGroupHeader = ({
       selected,
       handleBundleSelect,
       showTasksWithGroup,
-      isWorkflowExpanded,
+      isWorkflowOpen,
       handleOpen,
     ],
   );
@@ -724,7 +718,7 @@ const TaskTemplateGroupHeader = ({
       <TaskTemplateGroupHeaderContainer
         onContextMenu={handleTaskItemRightClick}
         isSelected={isBundleSelected}
-        isOpen={isWorkflowExpanded}
+        isOpen={isWorkflowOpen}
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}
         origin={origin}
