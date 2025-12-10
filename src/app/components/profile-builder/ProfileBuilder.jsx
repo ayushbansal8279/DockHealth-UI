@@ -53,10 +53,7 @@ import {
   getCurrentWorkspace,
   clearWorkspaceState,
 } from '@/app/actions/workspace-actions';
-import {
-  organizationSelector,
-  organizationWorkspaceLabelSelector,
-} from '@/app/selectors/organization-selectors';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import ProfileBuilderHeader from './ProfileBuilderHeader';
 
 export const ProfileBuilderContext = createContext({});
@@ -79,7 +76,6 @@ const ProfileBuilder = () => {
 
   const { scope, scopeId } = useProfileBuilderScope();
   const workspace = useSelector(workspaceSelector);
-  const organization = useSelector(organizationSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   useEffect(() => {
@@ -442,10 +438,10 @@ const ProfileBuilder = () => {
         <HeaderContainer>
           <ProfileBuilderHeader
             scope={scope}
+            scopeId={scopeId}
             profileName={profileName}
             workspaceName={workspace?.workspaceName}
             workspaceLabel={workspaceLabel}
-            organizationName={organization?.organizationName}
           />
         </HeaderContainer>
         <DndContext

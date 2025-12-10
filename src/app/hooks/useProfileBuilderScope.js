@@ -9,7 +9,11 @@ export function useProfileBuilderScope() {
     const scopeIdParam = searchParams.scopeId;
 
     const scope =
-      scopeParam === 'org' || scopeParam === 'workspace' ? scopeParam : null;
+      scopeParam === 'workspace'
+        ? 'workspace'
+        : scopeParam === 'org'
+        ? 'org'
+        : 'org';
 
     const scopeId = scope === 'workspace' && scopeIdParam ? scopeIdParam : null;
 

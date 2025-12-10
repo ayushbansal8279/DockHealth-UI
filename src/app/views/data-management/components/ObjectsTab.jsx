@@ -109,17 +109,16 @@ const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const onOpenProfileBuilder = useCallback(
     ({ row: { identifier } }) => {
       const profileTypePath = `/settings/object-builder/objects/${identifier}`;
-      const queryParams = new URLSearchParams();
       
       if (isWorkspace && workspaceIdentifier) {
+        const queryParams = new URLSearchParams();
         queryParams.set('scope', 'workspace');
         queryParams.set('scopeId', workspaceIdentifier);
+        const fullPath = `${profileTypePath}?${queryParams.toString()}`;
+        history.push(fullPath);
       } else {
-        queryParams.set('scope', 'org');
+        history.push(profileTypePath);
       }
-      
-      const fullPath = `${profileTypePath}?${queryParams.toString()}`;
-      history.push(fullPath);
     },
     [history, isWorkspace, workspaceIdentifier],
   );

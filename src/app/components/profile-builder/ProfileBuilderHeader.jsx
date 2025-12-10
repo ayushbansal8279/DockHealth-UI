@@ -6,15 +6,23 @@ import { BreadcrumbLink, BreadcrumbSeparator } from './styled';
 
 const ProfileBuilderHeader = ({
   scope,
+  scopeId,
   profileName,
   workspaceName,
   workspaceLabel,
-  organizationName,
 }) => {
   const renderBreadcrumb = () => {
+    if (scope !== 'workspace') {
+      return (
+        <Box display="flex" alignItems="center" flex={1} overflow="hidden">
+          {profileName && <span>{profileName}</span>}
+        </Box>
+      );
+    }
+
     const breadcrumbParts = [];
 
-    if (scope === 'workspace' && workspaceName) {
+    if (workspaceName) {
       breadcrumbParts.push(
         <BreadcrumbLink key="workspace-label" to={WORKSPACE_PATH}>
           {workspaceLabel}
@@ -24,11 +32,12 @@ const ProfileBuilderHeader = ({
         <BreadcrumbSeparator key="sep1">/</BreadcrumbSeparator>,
       );
       breadcrumbParts.push(
-        <span key="workspace-name">{workspaceName}</span>,
-      );
-    } else if (scope === 'org' && organizationName) {
-      breadcrumbParts.push(
-        <span key="org-name">{organizationName}</span>,
+        <BreadcrumbLink
+          key="workspace-name"
+          to={`/core/workspace/${scopeId}`}
+        >
+          {workspaceName}
+        </BreadcrumbLink>,
       );
     }
 
