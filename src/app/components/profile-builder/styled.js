@@ -1,6 +1,7 @@
 import palette from '@/app/styles/palette';
 import spacing from '@/app/styles/spacing';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const BuilderContainer = styled.div`
   display: flex;
@@ -50,4 +51,20 @@ export const ProfileBuilderContainer = styled.div`
   height: 100%;
   position: relative;
   overflow: auto;
+`;
+
+export const BreadcrumbLink = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: ${palette.brightBlue};
+    text-decoration: underline;
+  }
+`;
+
+export const BreadcrumbSeparator = styled.span`
+  margin: 0 8px;
+  color: ${palette.coolGrey2};
 `;
