@@ -1,6 +1,8 @@
 import React, {
   createContext,
   useCallback,
+  useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -29,6 +31,8 @@ import {
   TouchSensor,
 } from '@dnd-kit/core';
 import { DropDirectionContext } from '@/app/context-api/DropDirectionContext';
+import { CollapseContext } from '../../VirtualTaskList/VirtualTaskList';
+import TaskViewContext from '@/app/context-api/task-view-context';
 
 export interface Props {
   nodes?: Node[];
@@ -53,6 +57,25 @@ function Virtualized({
   const dispatch = useDispatch();
 
   const flatNodes = useMemo(() => walk(nodes), [nodes]);
+  const seeded = useRef(new Set<string>());
+  const { set } = useContext(CollapseContext);
+  const { changeViewType: viewType } = useContext(TaskViewContext);
+
+  const collapsibleIds = useMemo(() => {
+    return flatNodes
+      .filter((node) => {
+        if (node.phantom) return false;
+        const isTaskParent =
+          node.kind === 'Task' && node.data?.itemType === 'TASK';
+        const isWorkflowParent =
+          node.kind === 'Task' && node.data?.itemType === 'BUNDLE';
+        const isWorkflowTask = node.kind === 'TaskOfBundle';
+
+        return isTaskParent || isWorkflowParent || isWorkflowTask;
+      })
+      .map((node) => node.id);
+  }, [flatNodes]);
+
   const [activeId, setActiveId] = useState<string | number | null>(null);
   const dropDirectionRef = useRef(null);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
@@ -203,6 +226,20 @@ function Virtualized({
     [flatNodes, dispatch, tasksMap],
   );
 
+  useEffect(() => {
+    seeded.current.clear();
+  }, [viewType]);
+
+  useEffect(() => {
+    const defaultCollapsed = viewType === 'SLIM_VIEW';
+
+    collapsibleIds.forEach((id) => {
+      if (!seeded.current.has(id)) {
+        set(id, defaultCollapsed);
+        seeded.current.add(id);
+      }
+    });
+  }, [collapsibleIds, viewType, set]);
   return (
     <>
       <DropDirectionContext.Provider value={dropDirectionRef}>

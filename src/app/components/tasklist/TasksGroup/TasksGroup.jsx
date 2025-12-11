@@ -314,7 +314,7 @@ const TasksGroup = ({
         <GroupOpenContainer onClick={onToggleGroupOpen}>
           <RotatableChevron
             alt="arrow"
-            rotated={!collapse.get(taskGroupIdentifier)}
+            rotated={!collapse.getOrDefault(taskGroupIdentifier, false)}
             color="#8492A4"
           />
         </GroupOpenContainer>
