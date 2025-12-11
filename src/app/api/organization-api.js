@@ -9,7 +9,10 @@ import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 export function getOrganizationUsersAndUserGroups(workspaceIdentifier = null) {
   return axios
-    .get('user/findAllUsersByOrganizationId?includeGroups=true', withWorkspaceHeaders(workspaceIdentifier))
+    .get(
+      'user/findAllUsersByOrganizationId?includeGroups=true',
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then((response) => response.data)
     .catch((error) => error?.response?.data);
 }
@@ -112,6 +115,18 @@ export function updateSubscriptionPlan(newPlan) {
     .put(`/organization/saveBillingDetails`, {
       subscriptionDetails: newPlan,
     })
+    .then(({ data }) => data);
+}
+
+export function cancelSubscription(
+  organizationIdentifier,
+  cancellationDetails,
+) {
+  return axios
+    .patch(
+      `/organization/cancelSubscription?orgId=${organizationIdentifier}`,
+      cancellationDetails,
+    )
     .then(({ data }) => data);
 }
 

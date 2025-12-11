@@ -1,3 +1,4 @@
+import moment from 'moment';
 import palette from '../styles/palette';
 
 export const SubscriptionPlan = {
@@ -263,4 +264,44 @@ export function isPlanStandard(subscription) {
 
 export function isPlanPremium(subscription) {
   return subscription?.subscriptionPlan === 'PLAN_PREMIUM';
+}
+
+export const getSubscriptionEndInfo = (subscriptionEndDate) => {
+  const endDate = moment(subscriptionEndDate);
+  const today = moment();
+
+  const daysRemaining = endDate.diff(today, 'days');
+  const formattedDate = endDate.format('MM/DD/YY');
+  const daysText = daysRemaining === 1 ? 'Day' : 'Days';
+
+  return { daysRemaining, formattedDate, daysText };
+};
+
+export const shouldShowImmediateCancelBanner = (
+  subscriptionCancelDate,
+  daysRemaining,
+) => {
+  return Boolean(subscriptionCancelDate) && daysRemaining > 0;
+};
+
+export const shouldShowFinalCancelBanner = (
+  subscriptionCancelDate,
+  daysRemaining,
+) => {
+  return Boolean(subscriptionCancelDate) && daysRemaining <= 0;
+};
+
+export function isPlanPaid(subscription) {
+  const paidPlans = ['PLAN_STANDARD', 'PLAN_PRO', 'PLAN_PREMIUM'];
+  return paidPlans.includes(
+    subscription?.subscriptionDetails?.subscriptionPlan,
+  );
+}
+
+export function getPaidPlanCancelDate(currentUser, organizationIdentifier) {
+  const org = currentUser?.userOrganizations?.find(
+    (o) => o.organizationIdentifier === organizationIdentifier,
+  );
+
+  return org?.paidPlanCancelDate || null;
 }

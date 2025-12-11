@@ -16,6 +16,7 @@ import { organizationStatusesSelector } from 'selectors/organization-selectors';
 import pluck from 'ramda/src/pluck';
 import move from 'ramda/src/move';
 import * as CustomFieldsApi from 'api/custom-fields-api';
+import { getCurrentUserOrganizations } from '../actions/user-actions';
 
 const GET_ORGANIZATION_STATUSES = '@@saga/GET_ORGANIZATION_STATUSES';
 const DELETE_ORGANIZATION_STATUS = '@@saga/DELETE_ORGANIZATION_STATUS';
@@ -182,6 +183,19 @@ function* updateSubscriptionPlan({ newPlan }) {
   }
 }
 
+function* cancelSubscription({ organizationIdentifier, cancellationDetails }) {
+  try {
+    yield call(
+      OrganizationApi.cancelSubscription,
+      organizationIdentifier,
+      cancellationDetails,
+    );
+    yield put(getCurrentUserOrganizations());
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* updateOrganizationWorkspaceLabel({ workspaceLabel }) {
   try {
     yield call(
@@ -225,6 +239,7 @@ export default function* watchOrganization() {
     ActionTypes.UPDATE_SUBSCRIPTION_PLAN,
     updateSubscriptionPlan,
   );
+  yield takeLatest(ActionTypes.CANCEL_SUBSCRIPTION, cancelSubscription);
   yield takeLatest(
     ActionTypes.UPDATE_ORGANIZATION_WORKSPACE_LABEL,
     updateOrganizationWorkspaceLabel,

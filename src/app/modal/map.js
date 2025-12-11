@@ -97,6 +97,8 @@ import ScopeChangeModal from './components/ScopeChangeModal/ScopeChangeModal';
 import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
 import CreateEscalationPolicyModal from './components/CreateEscalationPolicyModal/CreateEscalationPolicyModal';
 import EditIntegrationModal from './components/EditIntegrationModal/EditIntegrationModal';
+import CancelSubscriptionModal from './components/CancelSubscriptionModal/CancelSubscriptionModal';
+import CancelSubscriptionConfirmationModal from './components/CancelSubscriptionConfirmationModal/CancelSubscriptionConfirmationModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -198,6 +200,8 @@ const MODAL_MAP = {
   CreateEscalationPolicy: CreateEscalationPolicyModal,
   EditIntegration: EditIntegrationModal,
   ScopeChange: ScopeChangeModal,
+  CancelSubscription: CancelSubscriptionModal,
+  CancelSubscriptionConfirmation: CancelSubscriptionConfirmationModal,
 };
 
 export default MODAL_MAP;

@@ -24,7 +24,8 @@ export const Container = styled.div`
   padding: 18px 18px;
   border-radius: 10px;
   border-top: 10px solid ${({ color }) => color};
-  border: ${({ active, pro, selected }) => `solid ${containerBorderStyle(active, pro, selected)}`};
+  border: ${({ active, pro, selected }) =>
+    `solid ${containerBorderStyle(active, pro, selected)}`};
   font-family: inherit;
 `;
 
@@ -129,6 +130,24 @@ export const SubscribeButton = styled.button`
   color: ${({ active }) => (active ? palette.oPlusRed : palette.white)};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const SubscriptionActionContainer = styled.div`
+  width: auto;
+  display: inline-block;
+`;
+export const SubscriptionActionButton = styled.button`
+  height: 32px;
+  padding: 14px;
+  border-radius: 7px;
+  background-color: 'transparent';
+  border: 1px solid ${palette.newDarkBlue};
+  color: ${palette.newDarkBlue};
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
   display: flex;
   align-items: center;
   justify-content: center;
