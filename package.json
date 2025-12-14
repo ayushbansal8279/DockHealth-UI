@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --port 3000",
     "dev-alternate": "vite --port 3100",
-    "build": "vite build",
+    "build": "node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build",
     "start": "vite serve",
     "server:prod": "http-server dist -p 3000 -c-1 --cors",
     "prepare": "husky install",
